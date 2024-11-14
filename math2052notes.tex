@@ -1,0 +1,1985 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\input{preamble.tex}
+
+\begin{document}
+\title{MATH 2052 Notes}
+\date{Winter Term 2 2022}
+
+\maketitle
+
+\begin{tcolorbox}[title=, fonttitle=\huge\sffamily\bfseries\selectfont,interior style={left color=contcol1!40!white,right color=contcol2!40!white},frame style={left color=contcol1!80!white,right color=contcol2!80!white},coltitle=black,top=2mm,bottom=2mm,left=2mm,right=2mm,drop fuzzy shadow,enhanced,breakable]
+  \tableofcontents
+\end{tcolorbox}
+
+\newpage
+
+\section{Integration}
+\subsection{Darboux Sums}
+\begin{remark}
+  See OneNote for graphs and figures for this section.
+\end{remark}
+\begin{definition}
+  Let $f$ be a bounded function on $[a, b]$. Letting $S \subseteq [a, b]$, we let
+  \begin{align*}
+    M(f, S) &= \sup \{f(x) \mid x \in S\}\\
+    m(f, S) &= \inf \{f(x) \mid x \in S\}\\
+  \end{align*}
+\end{definition}
+\begin{definition}
+  A \textbf{partition} of the closed interval $[a, b]$ is a finite sequence $(t_n)$ where $t_0 = a$ and $t_n = b$ with $t_0 < t_1 < \ldots < t_n$.
+\end{definition}
+\begin{definition}
+  The \textbf{upper Darboux sum} $U(f, P)$ of a function $f$ with respect to a partition $P$ is \[
+    U(f, P) = \sum_{k=1}^n M(f, [t_{k-1}, t_k])(t_k - t_{k-1})
+  \] and the \textbf{lower Darboux sum} $L(f, P)$ is \[
+    L(f, P) = \sum_{k=1}^n m(f, [t_{k-1}, t_k])(t_k - t_{k-1})
+  \]
+  See Fig. 1 thru 4 in Note.
+\end{definition}
+\begin{remark}
+  We see that the LDS is underestimating the area under the curve while the UDS is overestimating it.
+\end{remark}
+\begin{example}
+  Let $f(x) = x-1$ on $[0, 2]$ with partitions $t_0 = 0, t_1 = \frac{1}{2}, t_2 = \frac{3}{2}, t_3 = 2$.
+
+  We have
+  \begin{align*}
+    U(f, P) &= \sum_{k=1}^3 M(f, [t_{k-1}, t_k])(t_k - t_{k-1})\\
+    &=M\left(f, \left[0, \frac{1}{2}\right]\right)\left(\frac{1}{2}-0\right) + M\left(f, \left[\frac{1}{2}, \frac{3}{2}\right]\right)\left(\frac{3}{2} - \frac{1}{2}\right) + M\left(f, \left[\frac{3}{2}, 2\right]\right)\left(2 - \frac{3}{2}\right)\\
+    &= \left(-\frac{1}{2}\right)\left(\frac{1}{2}\right) + \left(\frac{1}{2}\right)(1) + (1)\left(\frac{1}{2}\right)\\
+    &= \frac{3}{4}
+  \end{align*}
+
+  Note that changing the partitions will change the result, for example:
+
+  Let $t_0 = 0, t_1 = \frac{3}{2}, t_2 = \frac{7}{4}, t_3 = 2$.
+
+  Then,
+  \begin{align*}
+    U(f, P) &= \sum_{k=1}^3 M(f, [t_{k-1}, t_k])(t_k - t_{k-1})\\
+    &=M\left(f, \left[0, \frac{3}{2}\right]\right)\left(\frac{3}{2}-0\right) + M\left(f, \left[\frac{3}{2}, \frac{7}{4}\right]\right)\left(\frac{7}{4} - \frac{3}{2}\right) + M\left(f, \left[\frac{7}{4}, 2\right]\right)\left(2 - \frac{7}{4}\right)\\
+    &= \left(\frac{1}{2}\right)\left(\frac{3}{2}\right) + \left(\frac{3}{4}\right)\left(\frac{1}{4}\right) + (1)\left(\frac{1}{4}\right)\\
+    &= \frac{19}{16}
+  \end{align*}
+\end{example}
+\begin{corollary}
+  We note that
+  \begin{align*}
+    U(f, P) &= \sum_{k=1}^n M(f, [t_{k-1}, t_k])(t_k - t_{k-1}) \tag{Note that the second term is always greater than 0}\\
+    &\leq \sum_{k=1}^n M(f, [a, b])(t_k - t_{k-1}) \tag{if $A \subseteq B$, then $\sup A \leq \sup B$}\\
+    &= M(f, [a, b])\sum_{k=1}^n (t_k - t_{k-1})\\
+    &= M(f, [a, b])\left((t_1 - t_0) + (t_2 - t_1) + \dots + (t_n - t_{n-1})\right)\\
+    &= M(f, [a, b])(-t_0 + t_n)\\
+    &= M(f, [a, b])(b-a)\\
+  \end{align*}
+  Similarly, $L(f, P) \geq m(f, [a, b])(b-a)$.
+\end{corollary}
+\begin{proposition}
+  Thus,
+  \begin{equation} \label{eq:darbouxinequality}
+    m(f, [a, b])(b-a) \leq L(f, P) \leq U(f, P) \leq M(f, [a, b])(b-a)
+  \end{equation}
+\end{proposition}
+\begin{definition}
+  The \textbf{upper Darboux integral} $U(f)$ of $f$ over $[a, b]$ is \[
+    U(f) = \inf \{U(f, P) \mid P \text{ is a partition of } [a, b]\}
+  \]
+  and the \textbf{lower Darboux integral} $L(f)$ of $f$ over $[a, b]$ is \[
+    L(f) = \sup \{L(f, P) \mid P \text{ is a partition of } [a, b]\}
+  \]
+
+  We are taking the ``most accurate'' Darboux sums to get the area under the curve.
+\end{definition}
+\begin{lemma}
+  By \eqref{eq:darbouxinequality}, $U(f, P), L(f, P)$ are bounded and so $U(f), L(f)$ exists.
+\end{lemma}
+\begin{remark}
+  We will eventually prove $L(f) \leq U(f)$, but this is not obvious.
+\end{remark}
+\begin{definition}
+  If $L(f) = U(f)$, then we say $f$ is integrable on $[a, b]$, and write $\int_a^b f(x) dx$ or $\int_a^b f$.
+\end{definition}
+\begin{example}
+  Let $f(x) = c$ on $[a, b]$. Then for all sub-intervals $[t_{k-1}, t_k]$ of a partition $P$, \[
+    M(f, [t_{k-1}, t_k]) = c = m(f, [t_{k-1}, t_k])
+  \]
+  and so for any partition $P$,
+  \begin{align*}
+    U(f, P) &= \sum_{k=1}^n c(t_k - t_{k-1})\\
+    &=c \sum_{k=1}^n(t_k - t_{k-1})\\
+    &=c (b-a)\\
+    &= L(f, P) \tag{By similar argument}\\
+  \end{align*}
+  therefore, $U(f) = \inf\{c(b-a) \mid P \text{ is a partition of } [a, b]\} = c(b-a) = L(f)$. Thus, $\int_{a}^b c \, dx = c(b-a)$.
+\end{example}
+\begin{remark}
+  Recall:
+  \[
+    \sum_{k=1}^n = \frac{n(n+1)}{2}
+  \]
+\end{remark}
+\begin{example}
+  Let $f(x) = x$ on $[0, b]$ with $b > 0$.
+
+  For any sub-interval $[t_{k-1}, t_k]$ of any partition $P$, $M(f, [t_{k-1}, t_k]) = t_k$ and $m(f, [t_{k-1}, t_k]) = t_{k-1}$. Thus,
+  \begin{align*}
+    U(f, P) &= \sum_{k=1}^n t_k(t_k - t_{k-1})\\
+    L(f, P) &= \sum_{k=1}^n t_{k-1}(t_k - t_{k-1})\\
+  \end{align*}
+  How do we find the $\inf$ of an infinite number of possible partitions?
+
+  Consider the family of partitions $P_n$ with $t_k = \frac{kb}{n}$. There will be $n$ sub-intervals of the same width. For those $P_n$,
+  \begin{align*}
+    U(f, P_n) &= \sum_{k=1}^n\frac{kb}{n}\left(\frac{kb}{n} - \frac{(k-1)b}{n}\right)\\
+    &= \frac{b^2}{n^2}\sum_{k=1}^n k(k-(k-1))\\
+    &= \frac{b^2}{n^2}\sum_{k=1}^n k(1)\\
+    &= \frac{b^2}{n^2}\left(\frac{n(n+1)}{2}\right)\\
+    &= \frac{b^2}{2} \left(\frac{n^2+n}{n^2}\right)\\
+  \end{align*}
+  Since $\frac{n^2 + n}{n^2} > \frac{n^2}{n^2} = 1$ and $\lim_{n\to\infty} \frac{n^2 + n}{n^2} = 1$, \[
+    \inf \{\frac{b^2}{2}\left(\frac{n^2 + n}{n^2}\right) \mid n \in \N\} = \frac{b^2}{2}
+  \]
+  Thus $U(f) \leq \frac{b^2}{2}$ as $U$ is the infimum over all partitions.
+
+  Similarly for these $P_n$,
+  \begin{align*}
+    L(f, P_n) &= \sum_{k=1}^n\frac{(k-1)b}{n}\left(\frac{kb}{n} - \frac{(k-1)b}{n}\right)\\
+    &= \frac{b^2}{n^2}\sum_{k=1}^n k - 1(k-(k-1))\\
+    &= \frac{b^2}{n^2}\sum_{k=1}^n k-1\\
+    &= \frac{b^2}{n^2}\left(\frac{n(n+1)}{2} - n\right)\\
+    &= \frac{b^2}{2} \left(\frac{n^2-n}{n^2}\right)\\
+  \end{align*}
+  Since $\frac{n^2 - n}{n^2} < \frac{n^2}{n^2} = 1$ and $\lim_{n\to\infty} \frac{n^2 - n}{1}$, \[
+    \sup \{\frac{b^2}{2}\left(\frac{n^2 - n}{n^2}\right) \mid n \in \N\} = \frac{b^2}{2}
+  \]
+  Thus $L(f) \geq \frac{b^2}{2}$ as $L$ is the supremum over all partitions.
+
+  Thus we have $\frac{b^2}{2} \leq L(f) \leq U(f) \leq \frac{b^2}{2}$ and so $L(f) = U(f) = \frac{b^2}{2}$.
+
+  Thus $\int_b^a x \, dx = \frac{b^2}{2}$.
+\end{example}
+\begin{example}
+  Consider \[
+    f(x) =
+    \begin{cases}
+      1, & x \in Q\\
+      0, & x \in \overline{Q}\\
+    \end{cases}
+  \]
+  Note that between any 2 distinct real numbers, there exists both a rational and irrational number between them.
+
+  Thus, $M(f, [t_{k-1}, t_k]) = 1$ and $m(f, [t_{k-1}, t_k]) = 0$.
+
+  Thus for any $P$,
+  \begin{align*}
+    U(f, P) &= \sum_{k=1}^n (t_k - t_{k-1})\\
+    &= b-a\\
+    L(f, P) &= \sum_{k=1}^n (0)(t_k - t_{k-1})\\
+    &= 0\\
+  \end{align*}
+  Hence $U(f) = b-a$ and $L(f) = 0$, and so $U(f) \neq L(f)$, and thus $\int_b^a f(x) \, dx$ does not exist.
+\end{example}
+\begin{clemma}[Lemma 32.2]
+  Let $f$ be a bounded function on $[a, b]$. If $P, Q$ are partitions of $[a, b]$ with $P \subseteq Q$ (i.e., Q is a ``finer'' partition), then \[
+    L(f, P) \leq L(f, Q) \leq U(f, Q) \leq U(f, P)
+  \]
+\end{clemma}
+\begin{proof}
+  $L(f, Q) \leq U(f, Q)$ is clear by definition. We show $L(f, P) \leq L(f, Q)$ as the proof of the other case is similar. Assume that $Q$ has $1$ more point than $P$, for we could then apply this lemma repeatedly to get the general result. If $P$ consists of $a=t_0, t_1, \ldots, t_n = b$, let $Q$ consist of $a = t_0, t_1, \ldots, t_{k-1}, u, t_k, \ldots, t_n = b$ for some $k$ with $1 \leq k \leq n$. Then most terms in $L(f, P)$ and $L(f, Q)$ are the same. In particular, we have
+  \begin{equation}\label{lemma32.2}
+    L(f, Q) - L(f, P) = m(f, [t_{k-1}, u])(u - t_{k-1}) + m(f, [u, t_n])(t_n - u) - m(f, [t_{k-1}, t_k])(t_k - t_{k-1})
+  \end{equation}
+  Since $[t_{k-1}, u] \subseteq [t_{k-1}, t_k]$, we have $\inf \{f(x) \mid x \in [t_{k-1}, u]\} \geq \inf \{f(x) \mid x \in [t_{k-1}, t_k]\}$ and so $m(f, [t_{k-1}, u]) \geq m(f, [t_{k-1}, t_k])$, similarly $m(f, [u, t_k]) \geq m(f, [t_{k-1}, t_k])$. Thus, by \eqref{lemma32.2}, we have
+  \begin{align*}
+    L(f, Q) - L(f, P) &\geq m(f, [t_{k-1}, t_k])(u - t_{k-1} + t_k - u - (t_k - t_{k-1}))\\
+    &= 0\\
+  \end{align*}
+  Thus $L(f, Q) \geq L(f, P)$ as required.
+\end{proof}
+\begin{clemma}[Lemma 32.3]
+  Let $f$ be bounded on $[a, b]$, and let $P, Q$ be partitions of $[a, b]$. Then $L(f, P) \leq U(f, Q)$.
+\end{clemma}
+\begin{proof}
+  Note that $P \cup Q$ is a partition of $[a, b]$. Since $P \subseteq P \cup Q$ and $Q \subseteq P \cup Q$, by Lemma 32.2, we have
+  \begin{align*}
+    L(f, P) &\leq L(f, P \cup Q)\\
+    & \leq U(f, P \cup Q)\\
+    &\leq U(f, Q)\\
+  \end{align*}
+\end{proof}
+\begin{cthm}[Theorem 32.4]
+  Let $f$ be bounded on $[a, b]$. Then $L(f) \leq U(f)$.
+\end{cthm}
+\begin{proof}
+  Fix a partition $P$ of $[a, b]$. By Lemma 32.3, $L(f, P)$ is a lower bound of the set $\{U(f, Q) \mid Q \text{ is a partition of } [a, b]\}$. Thus for any $P$, $L(f, P) \leq U(f)$ since $U(f)$ is the infimum. Thus implies $U(f)$ is an upper bound of $\{L(f, P) \mid P \text{ is a partition of } [a, b]\}$. Since $L(f) = \sup\{L(f, P)\}$, $L(f) \leq U(f)$.
+\end{proof}
+\subsection{Integration Formulas}
+\begin{cthm}[Theorem 32.5]
+  A bounded function $f$ on $[a, b]$ is integrable iff \[
+    \forall \ep > 0, \exists P \text{ of } [a, b] \text{ s.t. } U(f, P) - L(f, P) < \ep
+  \]
+\end{cthm}
+\begin{proof}
+  We prove the forwards direction:
+
+  Suppose $f$ is integrable. Let $\ep > 0$ be given. Then there exists partitions $P_1, P_2$ with $L(f, P_1) > L(f) - \frac{\ep}{2}$ and $U(f, P_2) < U(f) + \frac{\ep}{2}$. Recall that $L(f)$ and $U(f)$ are the sup/inf of all the $L/U(f, P)$.
+
+  Let $P = P_1 \cup P_2$. Then use Lemma 32.2 to get
+  \begin{align*}
+    U(f, P) - L(f, P) &\leq U(f, P_2) - L(f, P_1) \tag{Since $P_1, P_2 \subseteq P$}\\
+    &< U(f) + \frac{\ep}{2} - \left(L(f) - \frac{\ep}{2}\right)\\
+    &= U(f) - L(f) + \ep\\
+    &= \ep \tag{$U(f) = L(f)$ in integrable functions}\\
+  \end{align*}
+
+  We now show the reverse:
+
+  Suppose $\forall \ep > 0, \exists P \text{ of } [a, b] \text{ s.t. } U(f, P) - L(f, P) < \ep$ holds for some partition $P$. Then $U(f) \leq U(f, P)$ and $L(f) \geq L(f, P)$. Then, we have
+  \begin{align*}
+    U(f, P) &= U(f, P) - L(f, P) + L(f, P)\\
+    &< \ep + L(f, P)\\
+    &\leq \ep + L(f)\\
+  \end{align*}
+  Since $\ep > 0$ is arbitrary, we have $U(f) \leq L(f)$, for if $U(f) > L(f)$, we can set $\ep = U(f) - L(f)$ and we will get $U(f) < U(f).$  But since $L(f) \leq U(f)$, we must have $U(f) = L(f)$. Thus $f$ is integrable.
+\end{proof}
+\begin{definition}
+  A function $f$ is monotonic on an interval $I$ if it is either increasing or decreasing on $I$. In other words, \[
+    x < y \implies f(x) \leq f(y)
+  \] (or $\geq$)
+\end{definition}
+\begin{definition}
+  The \textbf{mesh} of a partition $P$ is the maximum length of the sub-intervals comprising $P$.
+\end{definition}
+\begin{cthm}[Theorem 33.1]
+  Every monotonic function $f$ on $[a, b]$ is integrable.
+\end{cthm}
+
+\begin{proof}
+  We prove the increasing case.
+
+  We may assume that $b > a \implies f(b) > f(a)$, for otherwise $f$ is constant. Since $f(a) < f(x) < f(b) \forall x \in [a, b]$, $f$ is bounded on $[a, b]$.
+
+  Let $\ep > 0$ be given. Take a partition of $[a, b]$ with mesh \[
+    \{t_k - t_{k-1} \mid 1 \leq k \leq n\} < \frac{\ep}{f(b) - f(a)}
+  \]
+  Then
+  \begin{align*}
+    U(f, P) - L(f, P) &= \sum_{k=1}^n (M(f, [t_{k-1}, t_k]) - m(f, [t_{k-1}, t_k])(t_k - t_{k-1})\\
+      &= \sum_{k=1}^n (f(t_k) - f(t_{k-1}))(t_k - t_{k-1})\\
+      &< \sum_{k=1}^n (f(t_k) - f(t_{k-1}))\left(\frac{\ep}{f(b) - f(a)}\right)\\
+      &= \left(\frac{\ep}{f(b) - f(a)}\right)\sum_{k=1}^n (f(t_k) - f(t_{k-1}))\\
+      &= \left(\frac{\ep}{f(b) - f(a)}\right)(-f(a) + f(b)) \tag{Telescoping Series}\\
+      &= \ep
+    \end{align*}
+    By Theorem 32.5, $f$ is integrable.
+  \end{proof}
+  \begin{example}
+    The following functions are integrable:
+    \begin{itemize}
+      \item $\sqrt{x}$
+      \item $\frac{1}{x}$
+      \item $\left(\frac{1}{x}\right)^n$
+      \item $\ln x$
+      \item $e^x$
+      \item $\frac{1}{\ln x}$
+      \item $\frac{1}{e^x}$
+      \item $\floor{x}$
+      \item $\ceil{x}$
+      \item $\tan x$
+    \end{itemize}
+  \end{example}
+  \begin{cthm}[Theorem 33.2]
+    Every continuous function $f$ on $[a, b]$ is integrable.
+  \end{cthm}
+  \begin{proof}
+    Let $\ep > 0$ be given. Since $f$ is cts. on $[a, b]$, then by Theorem 19.2, $f$ is uniformly cts. on $[a, b]$. Thus there is a \[
+      \delta > 0 \text{ such that } x, y \in [a, b] \text{ and } \abs{x-y} < \delta \implies \abs{f(x) - f(y)} < \frac{\ep}{b-a}
+    \] Let $P$ be a partition with mesh less than $\delta$.
+
+    By Theorem 18.1, $f$ assumes its max and min in each closed sub-interval. Thus the above implies \[
+      M(f, [t_{k-1}, t_k]) - m(f, [t_{k-1}, t_k]) < \frac{\ep}{b-a}
+    \] and $M(f, [t_{k-1}, t_k]) = f(x)$ for some $x \in [t_{k-1}, t_k]$ and the same for $m$ with $y$.
+
+    Thus
+    \begin{align*}
+      U(f, P) - L(f, P) &= \sum_{k=1}^n (M(f, [t_{k-1}, t_k]) - m(f, [t_{k-1}, t_k]))(t_k - t_{k-1})\\
+      &< \sum_{k=1}^n \frac{\ep}{b-a}(t_k - t_{k-1})\\
+      &= \frac{\ep}{b-a} b-a\\
+      &= \ep
+    \end{align*}
+    Thus $f$ is integrable on $[a, b]$.
+  \end{proof}
+  \begin{example}
+    The following functions are integrable:
+    \begin{itemize}
+      \item $\sin x$
+      \item $\cos x$
+      \item $\frac{p(x)}{q(x)}$
+      \item $e^{-x^2}$
+      \item $\frac{\sin x \ln x}{x^2 + 1}$
+    \end{itemize}
+  \end{example}
+  \begin{cthm}[Theorem 33.3]
+    Let $f, g$ be integrable on $[a, b]$ and let $c$ be constant. Then,
+    \begin{enumerate}
+      \item $cf$ is integrable with $\int_a^b cf = c\int_a^b f$
+      \item $f + g$ is integrable with $\int_a^b (f + g) = \int_a^b f + \int_a^b g$
+      \item One can show $fg$ is integrable, but there is not a nice formula for this
+    \end{enumerate}
+  \end{cthm}
+  \begin{lemma}
+    \begin{enumerate}
+      \item If $c > 0$, then $\inf \{cs \mid s \in S\} = c \inf S$ and $\sup \{cs \mid s \in S\} = c\sup S$
+      \item $\inf \{-s \mid S \in S\} = -\sup S$ and $\sup\{-s \mid s \in S\} = -\inf S$
+      \item $\inf\{f(x) + g(x) \mid x \in S\} \geq \inf \{f(x) \mid x \in S\} + \inf \{g(x) \mid x \in S\}$ and $\sup\{f(x) + g(x) \mid x \in S\} \leq \sup \{f(x) \mid x \in S\} + \sup \{g(x) \mid x \in S\}$
+    \end{enumerate}
+  \end{lemma}
+  \begin{proof}
+    Proof of (1):
+
+    If $c = 0$, the result is clear. First suppose $c > 0$, then for all sub-intervals we have $M(cf, [t_{k-1}, t_k]) = cM(f, [t_{k-1}, t_k])$ and $m(cf, [t_{k-1}, t_k]) = cm(f, [t_{k-1}, t_k])$. Thus for all partitions $P$, we have $U(cf, P) = cU(f, P)$ and $L(cf, P) = cL(f, P)$. Lemma (i) implies $U(cf) = cU(f)$ and $L(cf) = cL(f)$. We then have
+    \begin{align*}
+      L(cf) &= cL(f)\\
+      &= cU(f) \tag{$f$ is integrable}\\
+      &= U(cf)
+    \end{align*}
+    thus $cf$ is integrable with integral $\int_a^b cf = U(cf) = cU(f) = c\int_a^b f$.
+
+    Now take $c = -1$. Then Lemma (ii) implies $M(-f, [t_{k-1}, t_k]) = -m(f, [t_{k-1}, t_k])$ and $m(-f, [t_{k-1}, t_k]) = -M(f, [t_{k-1}, t_k])$. Then $U(-f, P) = L(f, P)$ and $L(-f, P) = U(f, P)$. Thus
+    \begin{align*}
+      U(-f) &= \inf\{U(f, P) \mid P \text{ is a partition of } [a, b]\}\\
+      &= \inf\{-L(f, P) \mid P \text{ is a partition of } [a, b]\}\\
+      &= \sup\{L(f, P) \mid P \text{ is a partition of } [a, b]\}\\
+      &= -L(f)
+    \end{align*}
+    One can similarly show $L(-f) = -U(f)$. Hence,
+    \begin{align*}
+      U(-f) &= -L(f)\\
+      &= -U(f)\\
+      &= L(-f)
+    \end{align*}
+    Hence, $-f$ is integrable with integral $\int_a^b -f = U(-f) = -U(f) = -\int_a^b f$.
+
+    Finally suppose $c < 0$. Then,
+    \begin{align*}
+      \int_b^a cf &= -\int_a^b (-c)f\\
+      &= -(-c)\int_a^b f\\
+      &= c\int_a^b f\\
+    \end{align*}
+  \end{proof}
+  \begin{proof}
+    Proof of (2):
+
+    We use Theorem 32.5. Let $\ep > 0$ be given. Then there exist partitions $P_1, P_2$ of $[a, b]$ with $U(f, P_1) = L(f, P_2) < \frac{\ep}{2}$ and $U(g, P_2) - L(g, P_2) < \frac{\ep}{2}$. Let $P = P_1 \cup P_2$, and using Lemma 32.2 yields $U(f, P) - L(f, P) < \frac{\ep}{2}$ and $U(g, P) - L(g, P) < \frac{\ep}{2}$. By Lemma (iii), we have $m(f + g, [t_{k-1}, t_k]) \geq m(f, [t_{k-1}, t_k]) + m(g, [t_{k-1}, t_k])$ and so $L(f+g, P) \geq L(f, P) + L(g, P)$.
+    Similarly, $U(f + g, P) \leq U(f, P) + U(g, P)$. Thus,
+    \begin{align*}
+      U(f + g, P) - L(f + g, P) &\leq U(f, P) + U(g, P) - L(f, P) - L(g, P)\\
+      &= \frac{\ep}{2} + \frac{\ep}{2}\\
+      &= \ep
+    \end{align*}
+    Thus by Theorem 32.5, $f + g$ is integrable.
+    We have
+    \begin{align*}
+      \int_b^a (f + g) = U(f + g) &\leq U(f + g, P)\\
+      &\leq U(f, P) + U(g, P)\\
+      &< L(f, P) + L(g, P) + \ep\\
+      &\leq L(f) + L(g) + \ep\\
+      &= \int_a^b f + \int_a^b g + \ep\\
+    \end{align*}
+    Since $\ep > 0$ is arbitrary, $\int_b^a (f +g) \leq \int_a^b f + \int_a^b g$.
+    Also,
+    \begin{align*}
+      \int_a^b (f + g) = L(f+g) &\geq L(f + g, P)\\
+      &\geq L(f, P) + L(g, P)\\
+      &> U(f, P) + U(g, P) - \ep\\
+      &\geq U(f) + U(g) - \ep\\
+      &= \int_a^b f + \int_a^b g - \ep\\
+    \end{align*}
+    Since $\ep > 0$ is arbitrary, we have $\int_a^b (f+g) \geq \int_a^b f + \int_a^b g$.
+    Thus $\int_a^b (f+g) = \int_a^b f + \int_a^b g$.
+  \end{proof}
+  \begin{cthm}[Theorem 33.4]
+    \begin{itemize}
+      \item If $f, g$ are integrable on $[a, b]$ and $f(x) \leq g(x) \; \forall x \in [a, b]$ then $\int_a^b f \leq \int_a^b g$
+      \item If $g$ is a cts. non-negative function on $[a, b]$ with $\int_a^b g = 0$, then $g(x) = 0 \; \forall x \in [a, b]$
+    \end{itemize}
+  \end{cthm}
+  \begin{proof}
+    Theorem 33.3 implies that $h = g - f$ is integrable on $[a, b]$. Since $h(x) \geq 0 \; \forall x \in [a, b]$, we have $L(h, P) \geq 0 \; \forall$ partitions $P$ of $[a, b]$.
+
+    Thus $\int_a^b h = L(h) \geq 0$. Thus since $g = f + h$, we have \[\int_a^b g = \int_a^b (f + h) = \int_a^b f + \int_a^b h \geq \int_a^b f\]
+  \end{proof}
+  \begin{cthm}[Theorem 33.5]
+    If $f$ is integrable on $[a, b]$, then $\abs{f}$ is integrable with \[
+      \abs{\int_a^b f} \leq \int_a^b \abs{f}
+    \]
+  \end{cthm}
+  \begin{proof}
+    Since $-|f| \leq f \leq |f|$, Theorem 33.3, 33.4 implies $-\int_a^b |f| \leq \int_a^b f \leq \int_a^b |f|$ hence $\abs{\int_a^b f} \leq \int_a^b \abs{f}$.
+  \end{proof}
+  \begin{cthm}[Theorem 33.6]
+    Let $f$ defined on $[a, b]$ and let $a < c < b$. If $f$ is integrable on $[a, c]$ and $[c, b]$, then $f$ is integrable on $[a, b]$ with \[
+      \int_a^b f = \int_a^c f + \int_c^b f
+    \]
+  \end{cthm}
+  \begin{proof}
+    Since $f$ is bounded on $[a, c]$ and $[c, b]$, so $f$ is bounded on $[a, b]$. Let $\ep > 0$ be given. Theorem 32.5 implies there exist partitions $P_1$ of $[a, c]$ and $P_2$ of $[c, b]$ with \[
+      U(f, P_1) - L(f, P_1) < \frac{\ep}{2} \text{ and } U(f, P_2) - L(f, P_2) < \frac{\ep}{2}
+    \]
+    Then $P = P_1 \cup P_2$ is a partition of $[a, b]$.
+
+    Thus, \[
+      U(f, P) - L(f, P) = U(f, P_1) + U(f, P_2) - L(f, P_1) - L(f, P_1) < \ep
+    \]
+    Thus $f$ is integrable on $[a, b]$.
+
+    Also, we have
+    \begin{align*}
+      \int_b^a &\leq U(f, P)\\
+      &= U(f, P_1) + U(f, P_2)\\
+      &< L(f, P_1) + L(f, P_2) + \ep\\
+      &\leq \int_a^c f + \int_c^b f + \ep\\
+    \end{align*}
+    for any $\ep > 0$, and hence \[
+      \int_a^b f \leq \int_a^c f + \int_c^b f
+    \]
+    Also, we have
+    \begin{align*}
+      \int_b^a &\geq L(f, P)\\
+      &= L(f, P_1) + L(f, P_2)\\
+      &> U(f, P_1) + U(f, P_2) - \ep\\
+      &\geq \int_a^c f + \int_c^b f - \ep\\
+    \end{align*}
+    for any $\ep > 0$, and hence \[
+      \int_a^b f \geq \int_a^c f + \int_c^b f
+    \]
+    Thus \[
+      \int_a^b f = \int_a^c f + \int_c^b f
+    \]
+  \end{proof}
+  \begin{definition}
+    A function $f$ is \textbf{piecewise monotonic} on $[a, b]$ if there is a partition $P$ such that $f$ is monotonic on each open subinterval $(t_{k-1}, t_k)$.
+  \end{definition}
+  \begin{definition}
+    A function $f$ is \textbf{piecewise continuous} if $f$ is uniformly continuous on each open subinterval $(t_{k-1}, t_k)$.
+  \end{definition}
+  \begin{cthm}[Theorem 33.8]
+    If $f$ is piecewise cts. or is a bounded piecewise monotonic function on $[a, b]$, then $f$ is integrable on $[a, b]$.
+  \end{cthm}
+  \begin{proof}
+    We first show in either case, if we consider $f$ on the open subinterval $(t_{k-1}, t_k)$, we can extend it to an integrable function $f_k$ defined on the closed interval $[t_{k-1}, t_k]$. If $f$ is uniformly cts. on $(t_{k-1}, t_k)$, then $f$ can be extended to a cts. function on $[t_{k-1}, t_k]$. Since $f_k$ is cts. on $[t_{k-1}, t_k]$, by 33.2 it is integrable here.
+
+    If $f$ is bounded and monotonic on $(t_{k-1}, t_k)$, say $f$ is increasing, then we can set $f_k(t_{k-1}) = \inf\{f(x) \mid x \in (t_{k-1}, t_k)\}$ and $f_k(t_k) = \sup\{f(x) \mid x \in (t_{k-1}, t_k)\}$ to yield an increasing function $f_k$ on $[t_{k-1}, t_k]$. A similar extension can be made for a decreasing function. Since the resulting function $f_k$ is monotonic on $[t_{k-1}, t_k]$, by 33.1 it is integrable there.
+
+    In either case, we have $f = f_k$ on $[t_{k-1}, t_k]$ except possibly at the endpoints, and $f_k$ is integrable on the closed subinterval. By Exercise 32.7, $f$ is integrable on $[t_{k-1}, t_k]$ since they differ at only finitely many points. 33.6 then implies that $f$ is integrable over $[a, b]$.
+  \end{proof}
+  \subsection{Fundamental Theorem of Calculus I}
+  \begin{cthm}[FTC I]
+    If $g$ is cts on $[a, b]$, diff-able on $(a, b)$ and if $g'$ is integrable on $[a, b]$, then \[
+      \int_b^a g' = g(b) - g(a)
+    \]
+  \end{cthm}
+  \begin{proof}
+    Let $\ep > 0$ be given. Since $g'$ is integrable, by 32.5 there is a partition $P$ of $[a, b]$ with \[
+      U(g', P) - L(g', P) < \ep
+    \]
+    Since $g$ is cts and diff-able, we can apply MVT to $g$ on each sub-interval ${t_{k-1}, t_k}$ to get $x_k \in (t_{k-1}, t_k)$ with \[
+      g'(x_k) = \frac{g(t_k) - g(t_{k-1})}{t_k - t_{k-1}}
+    \]
+    Thus, \[
+      g'(x_k)(t_k - t_{k-1}) = g(t_k) - g(t_{k-1})
+    \]
+    Summing this over $k$ yields \[
+      \sum_{k=1}^n g'(x_k)(t_k - t_{k-1}) = \sum_{k=1}^n (g(t_k) - g(t_{k-1})) = g(b) - g(a)
+    \]
+    Since $x_k \in [t_{k-1}, t_k]$, we have \[
+      m(g', [t_{k-1}, t_k]) \leq g'(x_k) \leq M(g', [t_{k-1}, t_k])
+    \]
+    Multiplying by $t_k - t_{k-1} > 0$ yields
+    \[
+      m(g', [t_{k-1}, t_k])(t_k - t_{k-1}) \leq g'(x_k)(t_k - t_{k-1}) \leq M(g', [t_{k-1}, t_k])(t_k - t_{k-1})
+    \]
+    Summing this over $k$ and using the above equality and definitions yields \[
+      L(g', P) \leq g(b) - g(a) \leq U(g', P)
+    \]
+    On the other hand, we have \[
+      L(g', P) \leq \int_a^b g' \leq U(g', P)
+    \]
+    Subtracting the first from the second yields \[
+      L(f', P) - U(g', P) \leq \int_a^b g' - (g(b) - g(a)) \leq U(g', P) - L(g', P)
+    \]
+    However, recall that we have $U(g', P) - L(g', P) < \ep$. Using this, we have \[
+      -\ep < \int_a^b g' - (g(b) - g(a)) < \ep
+    \]
+    Thus \[
+      0 \leq \abs{\int_a^b g' - (g(b) - g(a))} < \ep
+    \]
+    and so \[
+      \abs{\int_a^b g' - (g(b) - g(a))} = 0
+    \] and so \[
+      \int_a^b g' = g(b) - g(a)
+    \]
+  \end{proof}
+  \begin{remark}
+    If we are trying to integrate an integrable function $f$, FTC(I) shows us that we should look for a function $F$ such that $F' = f$. Then we'd have \[
+      \int_a^b f = F(b) - F(a)
+    \]
+  \end{remark}
+  \begin{definition}
+    Let $f$ be an integrable function. $F$ is the function where $F' = f$, and is called the \textbf{antiderivative} of $f$. It is common to write \[
+      F(x)\Big|_a^b
+    \] for $F(b) - F(a)$.
+  \end{definition}
+  \begin{example}
+    Consider $\int_0^b x^3 \; dx$. Can we find $F$ such that $F'(x) = x^3$? Let $F(x) = \frac{1}{4}x^4$.
+
+    We thus have \[
+      \int_0^b x^3 \; dx = \frac{1}{4}x^4\Big|_0^b = \frac{1}{4}b^4 - \frac{1}{4}0^4 = \frac{1}{4}b^4
+    \]
+  \end{example}
+  \begin{proposition}
+    In general, if $n \neq -1$ and if in the case that $n < 0$, we have either $a, b > 0$ or $a, b < 0$, then \[
+      \int_a^b x^n \; dx = \frac{1}{n+1}x^{n+1}\Big|_a^b = \frac{1}{n+1}b^{n+1} - \frac{1}{n+1}a^{n+1}
+    \]
+  \end{proposition}
+  \begin{example}
+    Consider $\int_0^1 \sqrt{x}\; dx$ which is the area under $f(x) = \sqrt{x}$ between $x=0$ and $x=1$. We have \[
+      \int_0^1 \sqrt{x} \; dx = \int_0^1 x^{\frac{1}{2}} \; dx = \frac{2}{3}x^\frac{3}{2}\Big|_0^1 = \frac{2}{3}
+    \]
+  \end{example}
+  \begin{remark}
+    We know how to integrate $x^n$ for $n \neq -1$. What if $n = -1$? For $a, b > 0$ we have \[
+      \int_a^b x^{-1} \; dx = \int_a^b \frac{1}{x} \; dx = \ln x\Big|_a^b = \ln b - \ln a
+    \]
+  \end{remark}
+  \begin{remark}
+    Consider $\int_a^b f$. Suppose it is unknown if $f$ is integrable, but there is a function $F$ with $F' = f$. Does this imply $f$ is integrable?
+
+    No! Consider \[
+      F(x) =
+      \begin{cases}
+        x^2\sin(\frac{1}{x^2}) & \text{if } x \neq 0\\
+        0 & \text{if } x = 0
+      \end{cases}
+    \]
+    We have \[
+      f = F' =
+      \begin{cases}
+        2x\sin\left(\frac{1}{x^2}\right) - \frac{2}{x}\cos\left(\frac{1}{x^2}\right) & \text{if } x \neq 0\\
+        0 & \text{if } x = 0
+      \end{cases}
+    \]
+
+    So if we were to start with $f$, then $F$ is a diff-able function with $F' = f$. However, $f$ is unbounded near 0
+    and hence not integrable.
+  \end{remark}
+  \begin{definition}
+    We call the integral $\int_a^b f(x) \; dx$ where $a, b \in \R$ the \textbf{definite integral}.
+  \end{definition}
+  \begin{remark}
+    If 2 functions have the same derivative, they must differ by at most a constant. Thus if $F$ is an antiderivative of $f$, so is $F(x) + c$ for any constant c, and these give all the antiderivatives for $f$.
+  \end{remark}
+  \begin{definition}
+    $F(x) + c$ is called the \textbf{indefinite integral} of $f(x)$, and is written \[
+      \int f(x) \; dx
+    \]
+  \end{definition}
+  \begin{example}
+    \[
+      \int \frac{1}{x} \; dx = \ln |x| + c
+    \]
+    \[
+      \int x^2 \; dx = \frac{1}{3}x^3 + c
+    \]
+    \[
+      \int 2x^3 -7x + 3 \; dx = 2\int x^3 \; dx - 7\int x \; dx + \int 3 \; dx = \frac{1}{2}x^4 - \frac{7}{2}x^2 + 3x + c
+    \]
+    \[
+      \int e^x \; dx = e^x + c
+    \]
+    \[
+      \int e^{2x} \; dx = \frac{1}{2}e^{2x} + c
+    \]
+    \[
+      \int e^{-x^2} \; dx
+    \] has no obvious antiderivative.
+    \[
+      \int \sin x \; dx = - \cos x + c
+    \]
+    \[
+      \int \cos x \; dx = \sin x + c
+    \]
+  \end{example}
+  \begin{example}
+    What is the area under one bump of the sine curve?
+    \[
+      \int_0^\pi \sin x \; dx = -\cos x \Big|_0^\pi = - \cos \pi - (-\cos 0) = 2
+    \]
+    What is the area between $0$ and $2\pi$?
+    \[
+      \int_0^{2\pi} \sin x \; dx = -\cos x\Big|_0^{2\pi} = -\cos 2\pi - (-\cos 0) = 0
+    \]
+  \end{example}
+  \subsection{Integration by Parts}
+  \begin{cthm}[Integration by Parts]
+    Suppose $u, v$ are cts. on $[a, b]$, diff-able on $(a, b)$, and suppose $u', v'$ are integrable on $[a, b]$. Then, \[
+      \int_a^b u(x)v'(x) \; dx = u(x)v(x)\Big|_a^b - \int_a^b u'(x)v(x) \; dx
+    \] This is often written as \[
+      \int udv = uv - \int vdu
+    \]
+  \end{cthm}
+  \begin{proof}
+    Let $g(x) = u(x)v(x)$, so that $g'(x) = u'(x)v(x) + u(x)v'(x)$. Since $u, v$ are cts. then they are integrable. By assumption $u', v'$ are integrable, so it follows that $u'v$ and $uv'$ are integrable.
+
+    BY FTC I, we have \[
+      \int_a^b g'(x) \; dx = g(x)\Big|_a^b = u(x)v(x)\Big|_a^b
+    \]
+    By 33.3, we have
+    \begin{align*}
+      \int_a^b g'(x) \; dx &= \int_a^b u'(x)v(x) + u(x)v'(x) \; dx\\
+      &= \int_a^b u'(x)v(x) \; dx + \int_a^b u(x)v'(x) \; dx\\
+    \end{align*}
+    Equating yields \[
+      \int_a^b u'(x)v(x) \; dx + \int_a^b u(x)v'(x) \; dx = u(x)v(x)\Big|_a^b
+    \]
+    and rearranging this yields the theorem.
+  \end{proof}
+  \begin{remark}
+    To use integration by parts, we view the function that we are integrating as a product, ideally one where one factor simplifies after it is differentiated, and the other factor doesn't get too much more complicated when integrating it.
+  \end{remark}
+  \begin{example}
+    Evaluate $\int_0^\pi x\sin x \; dx$.
+
+    Let's let $u(x) = x$, $v'(x) = \sin x$. Then $u'(x) = 1$ and $v(x) = -\cos x$.
+    Then
+    \begin{align*}
+      \int_0^\pi x\sin x \; dx &= -x \cos x\Big|_0^\pi - \int_0^\pi -\cos x \; dx\\
+      &= -\pi(-1) - 0 + \int_0^\pi \cos x \; dx\\
+      &= \pi + \sin x\Big|_0^\pi\\
+      &= \pi + 0 - 0\\
+      &= \pi
+    \end{align*}
+    and
+    \begin{align*}
+      \int x \sin x \; dx &= -x \cos x - \int -\cos x \; dx\\
+      &= -x \cos x + \int \cos x \; dx\\
+      &= -x \cos x + \sin x + c
+    \end{align*}
+  \end{example}
+  \begin{example}
+    Find $\int \ln x \; dx$. The trick here is to view the integrand as $(1)(\ln x)$. So $u(x) = \ln x$, $v'(x) = 1$. Then $u'(x) = \frac{1}{x}$ and $v(x) = x$. Integration by parts yields
+    \begin{align*}
+      \int \ln x \; dx &= x \ln x - \int (x)\left(\frac{1}{x}\right) \; dx\\
+      &= x \ln x - x + c\\
+    \end{align*}
+
+    Now let's find \[
+      \int_1^e \ln x \; dx = (x \ln x - e)\Big|_1^e = e \ln e - e - (\ln 1 - 1) = 1
+    \]
+  \end{example}
+  \begin{example}
+    Find \[
+      \int xe^x \; dx
+    \]
+    Let $u(x) = x$ and $v'(x) = e^x$. Then $u'(x) = 1$ and $v(x) = e^x$.
+
+    Integration by parts yields
+    \begin{align*}
+      \int xe^x \; dx &= xe^x - \int e^x \; dx\\
+      &= xe^x - e^x + c\\
+    \end{align*}
+  \end{example}
+  \begin{example}
+    Find $\int \arctan x \; dx$.
+
+    Recall that $(\arctan x)' = \frac{1}{x^2 + 1}$. Let $u(x) = \arctan x$ and $v'(x) = 1$. Then $u'(x) = \frac{1}{x^2 + 1}$ and $v(x) = x$. We have
+    \begin{align*}
+      \int \arctan x \; dx &= x \arctan x - \int \frac{x}{x^2 + 1} \; dx\\
+      &= x \arctan x - \frac{1}{2}\ln(x^2 + 1) + c
+    \end{align*}
+  \end{example}
+  \begin{example}
+    Find $\int (\ln x)^2 \; dx$.
+
+    Let $u(x) = (\ln x)^2$ and $v'(x) = 1$. Then $u'(x) = 2\ln x \frac{1}{x}$ and $v(x) = x$.
+    Then
+    \begin{align*}
+      \int (\ln x)^2 \; dx &= x(\ln x)^2 - 2\int \ln x \; dx\\
+      &= x(\ln x)^2 - 2(x \ln x - x) + c\\
+      &= x((\ln x)^2 - 2\ln x + 2) + c\\
+    \end{align*}
+  \end{example}
+  \begin{example}
+    Find $\int x^2 \cos(2x) \; dx$. Let $u(x) = x^2, v'(x) = \cos(2x)$. Thus $u'(x) = 2x$ and $v(x) = \frac{1}{2}\sin(2x)$. We have
+    \begin{align*}
+      \int x^2\cos(2x) \; dx &= \frac{x^2}{2}\sin(2x) - \int x \sin(2x) \; dx\\
+    \end{align*}
+    For the integral on the right side, we can use integration by parts again with $u(x) = x$ and $v'(x) = \sin(2x)$. Then we have $u'(x) = 1$ and $v(x) = \frac{-1}{2}\cos(2x)$. Thus
+    \begin{align*}
+      \int x^2\cos(2x) \; dx &= \frac{x^2}{2}\sin(2x) - \left(- \frac{x}{2}\cos (2x) - \int\left(\frac{-1}{2} \cos (2x)\right)\right) dx\\
+      &= \frac{x^2}{2}\sin(2x) + \frac{x}{2}\cos(2x) - \frac{1}{2}\int \cos (2x) \; dx\\
+      &= \frac{x^2}{2}\sin(2x) + \frac{x}{2}\cos(2x) - \frac{1}{4} \sin (2x) + c\\
+    \end{align*}
+  \end{example}
+  \subsection{Fundamental Theorem of Calculus II}
+  \begin{definition}
+    If $b > a$, define \[
+      \int_a^b f = -\int_b^a f
+    \]
+  \end{definition}
+  \begin{corollary}
+    We have
+    \begin{align*}
+      \int_a^a f(x) \; dx
+      &= \int_a^b f(x) \; dx + \int_b^a f(x) \; dx\\
+      &= \int_a^b f(x) \; dx - \int_a^b f(x) \; dx\\
+      &= 0\\
+    \end{align*}
+  \end{corollary}
+  \begin{cthm}[FTC II]
+    Let $f$ be integrable on $[a, b]$. For a point $x \in [a, b]$, define $F(x) = \int_a^x f(t) \; dt$. Then $f$ is continuous on $[a, b]$. Furthermore, if $f$ is continuous at $x_0 \in [a, b]$, then $F$ is diff-able at $x_0$ and $F'(x_0) = f(x_0)$.
+
+    In Leibniz notation, \[
+      \frac{d}{dx} \int_a^x f(t) \; dt = f(x)
+    \]
+  \end{cthm}
+  \begin{proof}
+    Since $f$ is integrable on $I := [a, b]$, it is bounded there, thus $\exists B > 0$ with $\abs{f(x)} \leq B \; \forall x\in I$.
+
+    Let $\ep > 0$ be given, and suppose $x, y \in I$ with $\abs{x-y} < \frac{\ep}{B}$. WLOG, suppose $x < y$. Then
+    \begin{align*}
+      \abs{F(y) - F(x)} &= \abs{\int_a^y f(t)\; dt - \int_a^x f(t) \; dt}\\
+      &= \abs{\int_a^y f(t) \; dt + \int_x^a f(t) \; dt}\\
+      &= \abs{\int_x^y f(t) \; dt} \tag{Theorem 33.6}\\
+      &\leq \int_x^y \abs{f(t)} \; dt \tag{Theorem 33.5}\\
+      &\leq \int_x^y B \; dt\\\
+      &= B(y - x)\\
+      &< B \frac{\ep}{B}\\
+      &= \ep
+    \end{align*}
+    Thus $f$ is uniformly continuous on $I$.
+
+    For $x = x_0$, we have
+    \begin{align*}
+      F(x) - F(x_0) &= \int_a^x f(t) \; dt - \int_a^{x_0} f(t) \; dt\\
+      &= \int_a^x f(t) \; dt + \int_{x_0}^a f(t) \; dt\\
+      &= \int_{x_0}^x f(t) \; dt\\
+    \end{align*} and \[
+      \frac{F(x) - F(x_0)}{x-x_0} = \frac{1}{x - x_0} \int_{x_0}^x f(t) \; dt
+    \] as \[
+      \lim_{x \to x_0} \frac{F(x) - F(x_0)}{x-x_0} = F'(x_0)
+    \]
+    We also have
+    \begin{align*}
+      \frac{1}{x - x_0} \int_{x_0}^x f(t) \; dt &= \frac{f(x_0)}{x - x_0} \int_{x_0}^x 1 \; dt\\
+      &= \frac{f(x_0)}{x- x_0}(x-x_0)\\
+      &= f(x_0)
+    \end{align*}
+    Thus $\frac{F(x) - F(x_0)}{x - x_0} - F(x_0) = \frac{1}{x-x_0} \int_{x_0}^x (f(t) - f(x_0)) \; dt$.
+
+    Let $\ep > 0$ be given. Since $f$ is continuous at $x_0$, then $\exists \delta > 0$ s.t. $t \in (a, b)$ and $|t - x_0| < \delta \implies \abs{f(t) - f(x_0)} < \ep$.
+
+    In the case $x > x_0$, we have
+    \begin{align*}
+      \abs{\frac{F(x) - F(x_0)}{x - x_0} - F(x_0)} &= \frac{1}{\abs{x - x_0}} \abs{\int_{x_0}^x (f(t) - f(x_0)) \; dt}\\
+      &\leq \frac{1}{x-x_0} \int_{x_0}^x \abs{f(t) - f(x_0)} \; dt \tag{Theorem 33.5}\\
+      &\leq \frac{1}{x -x_0}\int_{x_0}^x \ep \; dt \tag{Theorem 33.4 (i)}\\
+      &= \ep (x-x_0)\left(\frac{1}{x-x_0}\right)\\
+      &= \ep
+    \end{align*}
+
+    In the other case
+    \begin{align*}
+      \abs{\frac{F(x) - F(x_0)}{x - x_0} - F(x_0)} &= \frac{1}{\abs{x - x_0}} \abs{\int_{x_0}^x (f(t) - f(x_0)) \; dt}\\
+      &\leq \frac{1}{x_0 - x} \int_{x_0}^x \abs{f(t) - f(x_0)} \; dt \tag{Theorem 33.5}\\
+      &\leq \frac{1}{x_0 - x}\int_{x_0}^x \ep \; dt \tag{Theorem 33.4 (i)}\\
+      &= \frac{-1}{x_0 - x}\int_x^{x_0} \ep \; dt\\
+      &= \ep (x_0-x)\left(\frac{1}{x_0-x}\right)\\
+      &= \ep
+    \end{align*}
+
+    Thus by a definition of a limit, we've shown that \[
+      \lim_{x \to x_0} \frac{F(x) - F(x_0)}{x - x_0} = f(x_0)
+    \] which implies $F'(x_0) = f(x_0)$.
+  \end{proof}
+  \begin{example}
+    Let \[
+      g(x) = \int_1^x t^2 \; dt\\
+    \]
+    By FTC II, $g'(x) = x^2$.
+  \end{example}
+  \begin{example}
+    Let \[
+      p(x) = \int_1^x e^{-t^2} \; dt\\
+    \]
+    By FTC II, $p'(x) = e^{-x^2}$.
+  \end{example}
+  \begin{example}
+    Let $F(x) = \int_{2x}^{x^2} e^{-t^2} \; dt$. Find $F'$.
+
+    Let $p(x) = \int_0^x e^{-t^2} \; dt$, then by FTC II $p'(x) = e^{-x^2}$.
+
+    Thus
+    \begin{align*}
+      F(x) &= \int_{2x}^0 e^{-t^2} \; dt + \int_0^{x^2} e^{-t^2} \; dt\\
+      &= -\int_0^{2x} e^{-t^2} \; dt + \int_0^{x^2} e^{-t^2} \; dt\\
+      &= -p(2x) + p(x^2)\\
+    \end{align*}
+
+    Thus $F'(x) = -2p'(x) + 2xp'(x^2)$. Since $2x, x^2, p(x)$ are diff-able, we have \[
+      F'(x) = -2e^{-4x^2} 2xe^{-x^4}
+    \]
+  \end{example}
+  \begin{example}
+    Let $Li(x) = \int_2^x \frac{1}{\ln t} \; dt$. Then $Li'(x) = \frac{1}{\ln x}$.
+  \end{example}
+  \begin{cthm}[Change of Variables]
+    Let $u$ be a diff-able function on an open interval $J$ with $u'$ continuous. Let $I$ be an open interval with $u(x) \in I$ for $x \in J$. If $f$ is continuous on $I$, then $f \circ u$ is continuous on $J$ with \[
+      \int_a^b (f \circ u)(x) u'(x) \; dx = \int_{u(a)}^{u(b)} f(u) \; du
+    \] for $a, b \in J$.
+  \end{cthm}
+  \begin{proof}
+    $f \circ u$ is continuous by Theorem 17.5. Let $c \in I$, define \[
+      F(u) = \int_c^u f(t) \; dt
+    \]
+    By FTC II, $F'(u) = f(u)$ for all $u \in I$. Let $g = f \circ u $, then $g'(x) = F'(u(x))u'(x) = f(u(x))u'(x)$.
+
+    Hence,
+    \begin{align*}
+      \int_a^b (f \circ u)(x) u'(x) \; dx &= \int_a^b g'(x) \; dx\\
+      &= g(b) - g(a)\\
+      &= F(u(b)) - F(u(a))\\
+      &= \int_c^{u(b)} f(t) \; dt - \int_c^{u(a)} f(t) \; dt \\
+      &= \int_c^{u(b)} f(t) \; dt + \int_{u(a)}^c f(t) \; dt \\
+      &= \int_{u(a)}^{u(b)} f(t) \; dt
+    \end{align*}
+  \end{proof}
+  \begin{remark}
+    Look for integrals in the form \[
+      \int f(u(x)) u'(x) \; dx
+    \]
+  \end{remark}
+  \begin{example}
+    Find \[
+      \int_0^2 xe^{-x^2} \; dx
+    \]
+    We have $u(x) = -x^2$, so $u'(x) = -2x$. Then $f(u) = -\frac{1}{2}e^u$, this yields $f(u(x)) u'(x) = -\frac{1}{2}e^{-x^2} \cdot -2x = xe^{-x^2}$. Then
+    \begin{align*}
+      \int_{u(0) = 0}^{u(2) = 4} -\frac{1}{2}e^u \; du &= -\frac{1}{2}e^u\Big|_0^4\\
+      &= -\frac{1}{2}(e^{-4}-1)
+    \end{align*}
+
+    We often write this as $u = -x^2, du = -2xdx$ so $-\frac{1}{2}du = xdx$
+  \end{example}
+  \begin{example}
+    Find \[
+      \int_0^2 \frac{x^2}{\sqrt{x^3 + 1}} \; dx
+    \]
+    Let $u = x^3 + 1, du = 3x^2 \; dx$ and $\frac{1}{3}du = x^2 \; dx$.
+    Then we have
+    \begin{align*}
+      \int_0^2 \frac{x^2}{\sqrt{x^3 + 1}} \; dx &= \frac{1}{3}\int_1^9 \frac{1}{\sqrt{u}} \; du\\
+      &= \frac{2}{3}u^{\frac{1}{2}}\Big|_1^9\\
+      &= \frac{2}{3}(3-1)\\
+      &= \frac{4}{3}\\
+    \end{align*}
+  \end{example}
+  \begin{example}
+    Find \[
+      \int xe^{-x^2} \; dx
+    \]
+    Let $u = -x^2 \implies du = -2x \; dx \implies =\frac{1}{2} du = x \; dx$. Then we have
+    \begin{align*}
+      \int xe^{-x^2} \; dx &= \int -\frac{1}{2}e^u \; du\\
+      &= -\frac{1}{2} e^u + c\\
+      &= -\frac{1}{2}e^{-x^2} + c\\
+    \end{align*}
+  \end{example}
+  \begin{example}
+    Find \[
+      \int x\sqrt{4-x} \; dx
+    \]
+    Let $u = 4-x \implies du = -1 \; dx$ and $x = 4 - u$. Then we have
+    \begin{align*}
+      \int x\sqrt{4-x} \; dx &= -\int 4 - u \; du\\
+      &= -\int 4u^{0.5} - u^{1.5} \; du\\
+      &= -(4\cdot \frac{2}{3}u^{1.5} - \frac{2}{5}u^\frac{5}{2}) + c\\
+      &= -\frac{8}{3}u^\frac{3}{2} + \frac{2}{5}u^\frac{5}{2} + c\\
+      &= -\frac{8}{3}(4-x)^\frac{3}{2} + \frac{2}{5}(4-x)^\frac{5}{2} + c\\
+    \end{align*}
+  \end{example}
+  \begin{example}
+    Find \[
+      \int \frac{x+1}{x^2 + 1} \; dx
+    \]
+    Let $u = x^2 + 1 \implies du = 2x \; dx \implies \frac{1}{2} du = x \; dx$. Then we have
+    \begin{align*}
+      \int \frac{x+1}{x^2 + 1} \; dx &= \int \left(\frac{x}{x^2 + 1} + \frac{1}{x^2 + 1}\right) \; dx\\
+      &= \frac{1}{2} \int\frac{1}{u} \; du + \arctan x\\
+      &= \frac{1}{2} \ln |u| + \arctan x\\
+      &= \frac{1}{2} \ln |x^2 + 1| + \arctan x + c\\
+    \end{align*}
+  \end{example}
+  \begin{example}
+    Find \[
+      \int \frac{1}{1 + e^x} \; dx
+    \]
+    Let $u = e^{-x+1} \implies du = -e^{-x} \; dx \implies -du = e^{-x} \; dx$. Then we have
+    \begin{align*}
+      \int \frac{1}{1 + e^x} \; dx &= \int \frac{e^{-x}}{e^{-x} + 1} \; dx\\
+      &= \int\frac{-1}{u} \; du\\
+      &= -\ln |u| + c\\
+      &= -\ln|e^{-x} + 1| + c\\
+    \end{align*}
+  \end{example}
+  \begin{example}
+    Find \[
+      \int \sec x \; dx
+    \]
+    Note that $\sec' x = \sec x \tan x$ and $\tan' x = \sec^2 x$ so $\sec' x + \tan' x = \sec x(\tan x + \sec x)$.
+    Let $u = \sec x + \tan x \implies du = \sec x(\tan x + \sec x) \; dx$. Then we have
+    \begin{align*}
+      \int \sec x \; dx &= \int \frac{\sec x(\sec x + \tan x)}{\sec x + \tan x}\\
+      &= \int \frac{1}{u} \; du\\
+      &= \ln |u| + c\\
+      &= \ln |\sec x + \tan x| + c\\
+    \end{align*}
+  \end{example}
+  \begin{example}
+    Find \[
+      \int \cos (\ln x) \; dx
+    \]
+    Let $t = \ln x \implies x = e^t \implies dt = \frac{1}{x} \; dx \implies dx = xdt =e^tdt$.
+
+    Then we have
+    \begin{align*}
+      \int \cos (\ln x) \; dx &= \int e^t\cos t \; dt\\
+      &=\frac{1}{2}e^t(\cos t + \sin t) + c\\
+      &= \frac{1}{2} x(\cos \ln x + \sin \ln x) + c\\
+    \end{align*}
+  \end{example}
+  \begin{example}
+    Find \[
+      \int x^5 e^{x^2}\; dx
+    \]
+    Let $t=x^2 \implies dt = 2x \; dx \implies xdx = \frac{1}{2}dt$.
+
+    Then we have
+    \begin{align*}
+      \int x^5 e^{x^2}\; dx &= \frac{1}{2}\int t^2 e^t \; dt\\
+      &= \frac{1}{2}\left(t^2e^t - 2\int te^t \; dt\right) \tag{Integration by parts}\\
+      &= \frac{1}{2}t^2e^t - \left(te^t - \int e^t \; dt\right)\\
+      &= \frac{1}{2}e^{x^2}(x^4 - 2x^2 + 2) + c\\
+    \end{align*}
+  \end{example}
+  \subsection{Trig Substitution}
+  \begin{cthm}[Trig substitution]
+    For factors like $\sqrt{a^2 - x^2}, \sqrt{a^2 + x^2}, \sqrt{x^2 - a^2}$ for some constant $a$.
+
+    Recall that $\sin^2 \theta + \cos^2 \theta = 1$, which yields $1 - \sin^2 \theta = cos^2 \theta$, and $\tan^2 \theta + 1 = \sec^2 \theta$. We use these identities to remove square roots.
+  \end{cthm}
+  \begin{example}
+    Find \[
+      \int \frac{1}{\sqrt{1-x^2}} \; dx
+    \]
+    Let $x = \sin \theta \implies dx = \cos \theta \; d\theta$, and $1 - x^2 = 1-\sin^2 \theta = \cos^2 \theta$ and so $\sqrt{1 - x^2} = \sqrt{\cos^2 \theta} = \abs{\cos \theta} = \cos \theta$ since $\cos \theta$ is positive for $-\frac{\pi}{2} < x < \frac{\pi}{2}$, and for these $\theta$, $-1 < x < 1$, which is our domain.
+
+    Then we have
+    \begin{align*}
+      \int \frac{1}{\sqrt{1-x^2}} \; dx &= \int \frac{\cos \theta}{\cos \theta} \; d\theta\\
+      &= \int 1 \; d\theta\\
+      &= \theta + c\\
+      &= \arcsin x + c\\
+    \end{align*}
+  \end{example}
+  \begin{example}
+    Find \[
+      \int_{2}^{2\sqrt{2}} \sqrt{x^2 - 4} \; dx
+    \]
+    Let $x = 2\sec \theta \implies x^2 - 4 = 4(\sec^2 \theta - 1) = 4\tan^2 \theta$ and $dx = 2\sec\theta\tan\theta \; d\theta$.
+
+    Then we have
+    \begin{align*}
+      \sqrt{x^2 - 4} &= \sqrt{4\tan^2\theta}\\
+      &= 2\abs{\tan \theta}\\
+    \end{align*} and we can drop the absolute value if theta is in the 1st or 3rd quadrant.
+
+    Also, \[
+      \frac{\pi}{2} = \sec \theta = \frac{1}{\cos \theta} \implies \cos \theta = \frac{2}{x}
+    \]
+    When $x = 2, \cos \theta = 1 \implies \theta = 0$.
+
+    When $x = 2\sqrt{2}, \cos \theta = \frac{1}{\sqrt{2}} \implies \theta = \frac{\pi}{4}$.
+
+    The integral becomes:
+    \begin{align*}
+      \int_{2}^{2\sqrt{2}} \sqrt{x^2 - 4} \; dx &= \int_0^{\frac{\pi}{4}} (2\tan\theta)(2\sec\theta\tan\theta) \; d\theta\\
+      &= 4\int_0^{\frac{\pi}{4}} \sec \theta \tan^2\theta \; d\theta\\
+      &= 4\int_0^{\frac{\pi}{4}} \sec\theta(\sec^2\theta - 1)\; d\theta\\
+    &= 4\int_0^{\frac{\pi}{4}} \sec^3\theta - \sec\theta)\; d\theta\\\
+    &= 4(\frac{1}{2}\sec\theta\tan\theta + \frac{1}{2}\ln |\sec\theta+\tan\theta| =- \ln |\sec\theta+\tan\theta|)\Big|_0^{\frac{\pi}{4}}\\
+    &= 2(\sec\theta\tan\theta = \ln|\sec\theta + \tan\theta|)\Big|_0^{\frac{\pi}{4}}\\
+    &= 2(\sqrt{2} - \ln(\sqrt{2}+1))\\
+  \end{align*}
+  Say we want $\int\sqrt{x^2 - 4} \; dx$. By above, this would be \[
+    2(\sec\theta\tan\theta - \ln|\sec\theta + \tan\theta|) + c
+  \]
+  Our substitution was $\sec \theta = \frac{x}{2}$. We also have $\tan^2 \theta = \sec^2 - 1 = \frac{x^2-4}{4} \implies \tan \theta = \frac{\sqrt{x^2-4}}{2}$.
+
+  Then,
+  \begin{align*}
+    \int \sqrt{x^2-4}\; dx &= 2\left(\frac{x}{2} \cdot \frac{\sqrt{x^2 = 4}}{2} - \ln \abs{\frac{x}{2} + \frac{\sqrt{x^2 - 4}}{2}}\right) + c\\
+    &= \frac{x}{2}\sqrt{x^2-4} - 2\ln |x + \sqrt{x^2 - 4}| + 2\ln 2 + c\\
+    &= \frac{x}{2}\sqrt{x^2-4} - 2\ln |x + \sqrt{x^2 - 4}| + c \tag{constant can be absorbed into $c$}\\
+  \end{align*}
+\end{example}
+\begin{example}
+  Let's find the area of a circle, $x^2 + y^2 = r^2 \implies y^2 = r^2 - x^2 \implies y = \pm \sqrt{r^2 - x^2}$.
+
+  Integrate $y = \sqrt{r^2 - x^2}$ from $0 \to r$ and multiply this by $4$ to get the area of the whole circle.
+
+  Let $x = r\sin\theta \implies dx = r\cos\theta \; d\theta$ and $r^2 - x^2 = r^2 - r^2\sin^2\theta = r^2(1-\sin^2\theta) = r^2\cos\theta$. Thus $\sqrt{r^2 - x^2} = r\cos\theta$.
+  Then we have
+  \begin{align*}
+    A &= 4\int_0^r \sqrt{r^2 - x^2} \; dx\\
+    &= 4\int_0^{\frac{\pi}{2}}r\cos\theta r\cos\theta \; d\theta \tag{$x = 0 \implies \theta = 0$, $x = r \implies \theta = \frac{\pi}{2}$}\\
+    &= 4r^2\int_0^{\frac{\pi}{2}} \cos^2\theta \; d\theta\\
+    &= 4r^2\int_0^{\frac{\pi}{2}} \frac{1 + \cos 2\theta}{2} \; d\theta\\
+    &= 2r^2 \int_0^{\frac{\pi}{2}} 1 + \cos2\theta \; d\theta\\
+    &= 2r^2 (\theta + \frac{1}{2}\sin 2\theta)\Big|_0^{\frac{\pi}{2}}\\
+    &= 2r^2 (\frac{\pi}{2} + 0 - 0)\\
+    &= \pi r^2
+  \end{align*}
+\end{example}
+\begin{example}
+  Find \[
+    \int \frac{x^3}{(4x^2 +9)^{\frac{3}{2}}} \; dx
+  \]
+
+  We use $\tan^2 \theta + 1 = \sec^2 \theta$.
+
+  Let $x = \frac{3}{2} \tan \theta, \implies dx = \frac{3}{2}\sec^2 \theta \; d\theta$, so $4x^2 + 9 = 9\tan^2\theta + 9 = 9(\tan^2 \theta /+ 1) = 9\sec^2 \theta$.
+
+  We have $(4x^2 + 9)^{\frac{3}{2}} = (9\sec^2\theta)^{\frac{3}{2}} = 27\sec^3\theta$. So $x^3 = \frac{27}{8} \tan^3 \theta$.
+
+  Then we have
+  \begin{align*}
+    \int \frac{x^3}{(4x^2 +9)^{\frac{3}{2}}} \; dx &= \frac{27}{8}\cdot\frac{3}{2}\cdot\frac{1}{27} \int \frac{\tan^3\theta\sec^2\theta}{\sec^3\theta} \; d\theta\\
+    &= \frac{3}{16}\int\frac{\tan^3\theta}{\sec \theta} \; d\theta\\
+    &= \frac{3}{16}\int\frac{\sin^3\theta}{\cos^2 \theta} \; d\theta\\
+    &= \frac{3}{16}\int\frac{\sin^2\theta(1-\cos^2\theta)}{\cos^2 \theta} \; d\theta \tag{Let $u = \cos \theta \implies du = -\sin \theta \; d\theta$}\\
+    &= -\frac{3}{16}\int\frac{1-u^2}{u^2}\; du\\
+    &= -\frac{3}{16}\int\frac{1}{u^2} - 1\; du\\
+    &= -\frac{3}{16}\left(-\frac{1}{u} -u\right) + c\\
+    &= \frac{3}{16}\left(\frac{1}{u} + u\right) + c\\
+    &= \frac{3}{16}\left(\frac{u^2 + 1}{u} \right) + c\\
+    &= \frac{3}{16}\left(\frac{\cos^2 \theta + 1}{\cos\theta} \right) + c \tag{$\tan \theta = \frac{2x}{3}$}\\
+    &= \frac{3}{16} \left(\frac{\left(\frac{3}{\sqrt{4x^2 + 9}}\right)^2 + 1}{\frac{3}{\sqrt{4x^2 + 9}}}\right) + c\\
+  \end{align*}
+\end{example}
+\subsection{Partial Fractions}
+\begin{remark}
+  Let's find $A, B$ with \[
+    \frac{1}{x^2-1} = \frac{A}{x-1} + \frac{B}{x+1}
+  \]
+
+  We multiply by the denominator which yields
+  \begin{align*}
+    1 &= A(x+1) + B(x-1)\\
+    &= Ax + A + Bx - B\\
+    &= (A + B)x + (A - B)
+  \end{align*}
+  so $A + B = 0$ and $A - B = 1$. We can solve this using linear algebra techniques, or we can substitute values for $x$.
+
+  Let $x = 1$, then $1 = A(x+1) + B(x-1)\implies 1 = A(2) + B(0) \implies A = \frac{1}{2}$. Similarly, setting $x = -1$ yields $B = -\frac{1}{2}$.
+
+  Note that the above method assumes an unique solution exists.
+\end{remark}
+\begin{cthm}[Partial Fraction Decomposition]
+  Consider a ratio of polynomials $f(x)/g(x)$. If $\deg f \geq \deg g$, we may use long division to write the ratio as $h(x) +
+  \frac{f_1(x)}{g(x)}$, with $h$ a polynominal and $\deg f_1 < \deg g$.
+
+  Thus we may assume $\deg f < \deg g$. Suppose $g$ factors over $\R$ as follows,
+  \[
+    g(x) = p_1(x)^{n_1}\dots p_k(x)^{n_k}
+  \] where each $p_i$ is co-prime and irreducible and $n_i \in \Z^+$. By the Fundamental Theorem of Algebra, each $p_i$ will either be degree $1$ or $2$. We may then write \[
+    \frac{f(x)}{g(x)} = \sum_{i=1}^k T_i(x)
+  \] where $T_i$ is as follows:
+
+  \begin{enumerate}
+    \item If $\deg p_i = 1$, then $T_i(x) = \frac{A_1}{p_i(x)} + \dots + \frac{A_{n_i}}{P_i(x)^{n_i}}$ for $A_j \in \R$.
+    \item If $\deg p_i = 2$, then $T_i(x) = \frac{A_1x + B_1}{p_i(x)} + \dots + \frac{A_{n_i}x + B_{n_i}}{P_i(x)^{n_i}}$ for $A_j, B_j \in \R$.
+  \end{enumerate}
+\end{cthm}
+\begin{example}
+  Find the PFD of \[
+    \frac{2x-1}{x^2 + x - 2} = \frac{2x-1}{(x-1)(x+2)} = \frac{A}{x-1} + \frac{B}{x+2}
+  \]
+
+  We multiply by the denominator and get \[
+    2x + 1 = A(x+2) + B(x-1)
+  \]
+  Let $x = 1$, this yields $3 = 3A \implies A = 1$.
+
+  Let $x = -2$, this yields $-3 = -3B \implies B = 1$.
+
+  Thus \[
+    \frac{2x-1}{x^2 + x - 2} = \frac{1}{x-1} + \frac{1}{x+2}
+  \] and \[
+    \int \frac{2x-1}{x^2 + x - 2} \; dx = \int \frac{1}{x-1} + \frac{1}{x+2}  \; dx = \ln |x-1| + \ln |x+2| + c
+  \]
+\end{example}
+\begin{example}
+  Find the PFD of \[
+    \frac{4}{x^3 + x^2 -x -1} = \frac{4}{(x-1)(x+1)^2} = = \frac{A}{x-1} + \frac{B}{x+1} + \frac{C}{(x+1)^2}
+  \]
+  Note we get the above by factoring by grouping.
+
+  We multiply by the denominator and get \[
+    4 = A(x+1)^2 + B(x-1)(x+1) + C(x-1)
+  \]
+  Let $x = -1$, this yields $4= 4A \implies A = 1$.
+
+  Let $x = 1$, this yields $4= -2C \implies C = -2$.
+
+  Let $x = 0$, this yields $4 = 1 - B + 2 \implies B = -1$.
+
+  Thus \[
+    \frac{4}{x^3 + x^2 -x -1} = \frac{1}{x-1} - \frac{1}{x+1} - \frac{2}{(x+1)^2}
+  \] and \[
+    \int \frac{4}{x^3 + x^2 -x -1} \; dx = \int \frac{1}{x-1} - \frac{1}{x+1} - \frac{2}{(x+1)^2} \; dx= \ln |x-1| + \ln|x+1| + \frac{2}{x+1}
+  \]
+\end{example}
+\begin{example}
+  Find the PFD of \[
+    \frac{6x-3}{x^3 - 1} = \frac{6x-3}{(x-1)(x^2 + x + 1)} = \frac{A}{x-1} + \frac{Bx + C}{x^2 + x + 1}
+  \]
+  We multiply by the denominator and get \[
+    6x-3 = A(x^2 + x + 1) + (Bx + C)(x-1)
+  \]
+
+  Let $x = 1$, this yields $3 = 3A \implies A = 1$.
+
+  Let $x = 0$, this yields $-3 = (1)(1) - C \implies C = 4$.
+
+  Let $x = 2$, this yields $9 = 7 + (2B + 4)(1) \implies B = -1$.
+
+  Thus \[
+    \frac{6x-3}{x^3 - 1} = \frac{1}{x-1} + \frac{4-x}{x^2+x+1}
+  \]
+  How do we integrate $-\int \frac{x-4}{x^2+x+1} \; dx$?
+
+  The ideal substitution would be $u = x^2+x+1 \implies du = 2x+1 \; dx$. Thus we will try to get this to appear.
+
+  \begin{align*}
+    -\int \frac{x-4}{x^2+x+1} \; dx &= -\frac{1}{2}\int \frac{2x+1-9}{x^2+x+1} \; dx\\
+    &= -\frac{1}{2} \int \frac{2x+1}{x^2+x+1} \; dx + \frac{9}{2}\int \frac{1}{x^2+x+1} \; dx\\
+  \end{align*}
+  Let's integrate the first term for now:
+  \begin{align*}
+    -\frac{1}{2} \int \frac{2x+1}{x^2+x+1} \; dx&= -\frac{1}{2}\int \frac{1}{u} \; du\\
+    &= -\frac{1}{2} \ln |u|\\
+    &= -\frac{1}{2} \ln (x^2 + x + 1)\\
+  \end{align*}
+  Now for the second term, we complete the square:
+  Note that \[
+    x^2 + x + 1 = \left(x^2 + x + \frac{1}{4}\right) + \frac{3}{4} = \left(x+\frac{1}{2}\right)^2 + \frac{3}{4}
+  \]
+  \begin{align*}
+    \frac{9}{2}\int \frac{1}{x^2+x+1} \; dx &= \frac{9}{2} \int \frac{1}{\left(x+ \frac{1}{2}\right)^2 + \frac{3}{4}} \; dx\\
+    &= \frac{9}{2} \int \frac{1}{\frac{3}{4}\left(\frac{4}{3}\left(x + \frac{1}{2}\right)^2 + 1\right)} \; dx\\
+    &= 6\int\frac{1}{\left(\frac{2}{\sqrt{3}}\left(x+\frac{1}{2}\right)\right)^2 + 1} \; dx
+  \end{align*}
+  Let $u = \frac{2}{\sqrt{3}}\left(x + \frac{1}{2}\right) \implies du = \frac{2}{\sqrt{3}} dx \implies dx = \frac{\sqrt{3}}{2}$.
+  Thus,
+  \begin{align*}
+    6\int\frac{1}{\left(\frac{2}{\sqrt{3}}\left(x+\frac{1}{2}\right)\right)^2 + 1} \; dx &= 6\cdot\frac{\sqrt{3}}{2}\int \frac{1}{u^2 + 1} \; du\\
+    &= 3\sqrt{3} \arctan u + c\\
+    &= 3\sqrt{3} \arctan \left(\frac{2}{\sqrt{3}}\left(x+\frac{1}{2}\right)\right) + c\\
+  \end{align*}
+  Thus, \[
+    -\int \frac{x -4}{x^2+x+1} \; dx = -\frac{1}{2} \ln |x^2+x+1| + 3\sqrt{3} \arctan\left(\frac{2x+1}{\sqrt{3}}\right) + c
+  \] and so \[
+    \int \frac{6x=3}{x^3 -1} \; dx= \ln |x-1| -\frac{1}{2} \ln |x^2+x+1| + 3\sqrt{3} \arctan\left(\frac{2x+1}{\sqrt{3}}\right) + c
+  \]
+\end{example}
+\section{Differential Equations}
+\begin{definition}
+  A \textbf{differential equation} is an equation that relates a function to its derivative.
+\end{definition}
+\begin{example}
+  Solve $y' = ky$ for some fixed $k \in \R$.
+
+  Note that $y(x) = 0$ is a solution, and for non-zero $y$ we can divide it out.
+  This yields
+  \begin{align*}
+    \frac{1}{y}y' &= k\\
+    \implies \int \frac{1}{y} y' \; dx &= \int k \; dx\\
+    \implies \int \frac{1}{u} \; du &= kx +c_1 \tag{with $u = y \implies du = y' \; dx$}\\
+    \implies \ln |u| + c_2 &= kx + c_1\\
+    \implies \ln |y| + c_2 &= kx + c_1\\
+    \implies \ln |y| &= kx + c_3 \tag{where $c_3 = c_1 - c_2$}\\
+    \implies |y| &= e^{kx + c_3}\\
+    &= e^{kx} \cdot e^{c_3}\\
+    \implies y &= \pm e^{kx} \cdot e^{c_3}\\
+    &= ce^{kx} \tag{where $c = \pm e^{c_3}$, and since $0$ is a solution, we have $c \in \R$}\\
+  \end{align*}
+\end{example}
+\begin{remark}
+  This works because we could rearrange the differential equation to the form \[
+    F(y)y' = G(x)
+  \]
+  Such an equation is called \textbf{separable}. Integration wrt $x$ yields
+  \begin{align*}
+    \int F(y)y' \; dx &= \int G(x) \; dx\\
+    \implies \int F(y) \; dy &= \int G(x) \; dx\\
+  \end{align*}
+\end{remark}
+\begin{example}
+  Solve $y' =  \frac{-x}{y}$. We have
+  \begin{align*}
+    yy' &= -x\\
+    \implies \int yy' \; dx &= \int -x \; dx\\
+    \implies \int y \; dy &= \int -x \; dx\\
+    \implies \frac{1}{2}y^2 &= -\frac{1}{2} x^2 + c\\
+    \implies x^2 + y^2 &= 2c\\
+  \end{align*}
+  This is a circle with radius $\sqrt{2c}$. So, the slope of the tangent lines on a circle are $-\frac{x}{y}$
+\end{example}
+\section{Series and Sequences of Functions}
+\begin{cthm}[Integral Test]
+  Let $f$ be a continuous, non-negative, and decreasing function on $[k, \infty)$ and let $f(n) = a_n$, then \[
+    \int_k^{\infty} f(x)\; dx \text{ is convergent } \iff \sum_{n=k}^\infty a_n \text{ converges}
+  \]
+\end{cthm}
+\subsection{Power Series}
+\begin{definition}
+  Given a sequence $(a_n)_{n=0}^\infty$, the series $\sum_{n=0}^\infty = a_nx^n$ is a \textbf{power series} centered at $0$ with coefficients $a_n$ and $x$ is a variable. This series may converge for some values of $x$ and diverge for others. Since \[
+    \sum_{n=0}^\infty a_nx^n = a_0 + a_1x+a_2x^2 + \dots
+  \] the series converges to $a_0$ when $x=0$.
+\end{definition}
+\begin{example}
+  \[
+    \sum_{n=0}^\infty n^n x^n
+  \] so \[
+    a_n =
+    \begin{cases}
+      0 & n=0\\
+      n^n & n \geq 1\\
+    \end{cases}
+  \]
+  Let's fix $x$ and use the root test. Have $\lim_{n\to\infty} \abs{n^nx^n}^{\frac{1}{n}} = \lim_{n\to\infty} n\abs{x}$. We need this $<1$ to converge, which only happens when $x=0$. Thus the series converges only at $x=0$.
+\end{example}
+\begin{example}
+  \[
+    \sum_{n=0}^\infty x^n
+  \] so $a_n = 1$ is a power series.
+  This is the geometric series! Proved in 1052 this converges for $\abs{x} < 1$ and diverges for $\abs{x} > 1$. Know that it converges to $\frac{1}{1-x}$ when it converges.
+\end{example}
+\begin{example}
+  \[
+    \sum_{n=0}^\infty \frac{1}{n!}x^n
+  \] so $a_n = \frac{1}{n!}$.
+  Let's fix $x$ and use the ratio test.
+  \[
+    \lim_{n\to\infty}\abs{\frac{\frac{1}{(n+1)!}x^{n+1}}{\frac{1}{n!}x^n}} = \lim_{n\to\infty} \frac{n!}{(n+1)!}\abs{x} = \abs{x}\lim_{n\to\infty} \frac{1}{n+1} = 0 < 1
+  \]
+  Thus this power series converges absolutely for all $x$.
+\end{example}
+\begin{theorem}
+  For the power series $\sum_{n=0}^\infty a_nx^n$, let
+  \[
+    R = \lim_{n\to\infty} \abs{\frac{a_n}{a_{n+1}}}
+  \]
+  Then the power series converges absolutely for $\abs{x} < R$ and diverges for $\abs{x} > R$. $R$ is called the \textbf{radius of convergence}.
+\end{theorem}
+\begin{proof}
+  We use the ratio test on $\sum_{n=0}^\infty a_nx^n$. Have \[
+    \lim_{n\to\infty} \abs{\frac{a_{n+1}x^{n+1}}{a_nx^n}} = \lim_{n\to\infty}\abs{\frac{a_{n+1}}{a_n}}\abs{x}
+  \]
+  Case 1: $0 < R < \infty$
+
+  Then by Theorem 9.6 implies $\lim_{n\to\infty} \abs{\frac{a_{n+1}}{a_n}} = \lim_{n\to\infty} \frac{1}{\abs{\frac{a_{n+1}}{a_n}}} = \frac{1}{R}$ and so the limit above is $\frac{\abs{x}}{R}$.
+
+  By the ratio test, the series converges absolutely if $\frac{|x|}{R} < 1 \iff \abs{x} < R$, and diverges if $\abs{x} > R$.
+
+  Case 2: $R = \infty$
+
+  Theorem 9.10 implies $\lim_{n\to\infty} \abs{\frac{a_{n+1}}{a_n}} = \lim_{n\to\infty} \frac{1}{\abs{\frac{a_n}{a_{n+1}}}} = 0$ and so the limit above is $0 < 1 \forall x$, so the series converges absolutely for all $x$.
+
+  Case 3: $R = 0$. Theorem 9.10 implies $\lim_{n\to\infty} \abs{\frac{a_{n+1}}{a_n}} = \lim_{n\to\infty} \frac{1}{\abs{\frac{a_n}{a_{n+1}}}} = \infty$. Thus the limit above is $\infty$ for all $x$ and so the series converges only for $x=0$.
+\end{proof}
+\begin{example}
+  \[
+    \sum_{n=1}^\infty \frac{1}{n}x^n
+  \] so $a_n =
+  \begin{cases}
+    0 & n = 0\\
+    \frac{1}{n} & n=1\\
+  \end{cases}$
+
+  We have $\lim_{n\to\infty} \abs{\frac{a_n}{a_{n+1}}} = \lim_{n\to\infty} \abs{\frac{\frac{1}{n}}{\frac{1}{n+1}}} = \lim_{n\to\infty} \frac{n+1}{n} = 1$.
+
+  This power series converges absolutely for $\abs{x} < 1$ and diverges for $\abs{x} > 1$.
+
+  What about for $x = \pm 1$? When $x=1$, the series is $\sum_{n=1}^\infty \frac{1}{n}$ which is the harmonic series and diverges.
+
+  When $x=-1$, the series is $\sum_{n=1}^\infty \frac{(-1)^n}{n}$ which converges conditionally. Thus the series converges for $x \in [-1, 1)$.
+\end{example}
+\begin{remark}
+  In general, the endpoints must be checked separately.
+\end{remark}
+\begin{definition}
+  The interval on which a power series converges is called the \textbf{interval of convergence}.
+\end{definition}
+\begin{example}
+  \[
+    \sum_{n=1}^\infty \frac{1}{n^2} x^n
+  \] We have $\lim_{n\to\infty} \abs{\frac{a_n}{a_{n+1}}} = \lim_{n\to\infty} \abs{\frac{\frac{1}{n^2}}{\frac{1}{(n+1)^2}}} = \lim_{n\to\infty} \frac{(n+1)^2}{n^2} = 1$. Thus it converges for $\abs{x} < 1$. At $x=1$, the series is $\sum_{n=1}^\infty \frac{1}{n^2}$ and at $x=-1$, the series is $\sum_{n=1}^\infty \frac{(-1)^n}{n^2}$ which both converge.
+
+  The interval of convergence is $[-1, 1]$.
+\end{example}
+\begin{example}
+  \[
+    \sum_{n=0}^\infty 3^nx^{2n}
+  \] so $a_{2n} = 3^n$ and $a_{n+1} = 0$ (the series is $3^0 + 3x^2 + 3^2x^4 + \dots$)
+
+  We have $\lim_{n\to\infty} \abs{\frac{a_n}{a_{n+1}}}$ which doesn't exist as every second term is $0$. Let's fix $x$ and use the ratio test,
+  $\lim_{n\to\infty} \abs{\frac{3^{n+1}x^{2(n+1)}}{3^n2^n}} = \lim_{n\to\infty} 3x^2 = 3x^2$. So, we must have $3x^2 < 1 \implies \abs{x} < \frac{1}{\sqrt{3}}$ for it to converge. At $x=\frac{1}{\sqrt{3}}$, series is $\lim_{n\to\infty} 3^n\left(\frac{1}{\sqrt{3}}\right)^{2n} = \sum_{n=0}^\infty 1$ which diverges, at $x = -\frac{1}{\sqrt{3}}$, series is $\sum_{n=0}^\infty 3^n \left(-\frac{1}{\sqrt{3}}\right)^{2n} = \sum_{n=0}^\infty 1$ which diverges.
+
+  Thus the radius of convergence is $\left(-\frac{1}{\sqrt{3}}, \frac{1}{\sqrt{3}}\right)$.\
+
+  An alternative method to solve is let $y =x^2$, so series is $\sum_{n=0}^\infty 3^ny^n$. Then $R = \lim_{n\to\infty} \frac{3^n}{3^{n+1}} = \frac{1}{3}$. Then series converges for $\abs{y} < \frac{1}{\sqrt{3}} \implies \abs{x^2} < \frac{1}{3} \implies \abs{x} < \frac{1}{\sqrt{3}}$ as before.
+\end{example}
+\subsubsection{Series not Centered at 0}
+\begin{definition}
+  The power series $\sum_{n=0}^\infty a_n(x-x_0)$ centered at $x_0$ will still have a radius of convergence of $R$ and will converge for $\abs{x-x_0} < R$. That is, for $x_0 - R < x < x_0 + R$. It for diverge for $\abs{x-x_0} > R$. Convergent of endpoints needs to be checked separately.
+\end{definition}
+\begin{example}
+  \[
+    \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n} (x-1)^n
+  \] so $a_n =
+  \begin{cases}
+    0 & n=1\\
+    \frac{(-1)^{n+1}}{n} & n \geq 1\\
+  \end{cases}$ and $x_0 = 1$.
+
+  Have
+  \begin{align*}
+    \lim_{n\to\infty} \abs{\frac{\frac{(-1)^{n+1}}{n}}{\frac{(-1)^{n+2}}{n+2}}} &= \lim_{n\to\infty} \abs{\frac{n+1}{n}}\\
+    &= 1\\
+    &= R\\
+  \end{align*} and so this converges for $\abs{x-1} < 1$ or $0 < x < 2$.
+
+  At $x=0$, series is
+  \begin{align*}
+    \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n} (-1)^n &= \sum_{n=1}^\infty \frac{(-1)^{2n+1}}{n}\\
+    &= -\sum_{n=1}^\infty \frac{-1}{n}\\
+  \end{align*} which diverges.
+
+  At $x=2$, series is
+  \begin{align*}
+    \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n} (1)^n &= \sum_{n=1}^\infty \frac{(-1)^{n+1}}{n}\\
+  \end{align*} which converges conditionally.
+
+  Thus the interval of convergence is $(0, 2]$.
+\end{example}
+\begin{remark}
+  A power series is a function of $x$ with domain its interval of convergence. Want to know is it continuous, differentiable, integrable.
+
+  The partial sums of a power series are polynomials, which are continuous. If the series converges, its sum is the limit of the sequence of partial sums.
+
+  Is the limit of a convergent sequence of continuous functions necessarily continuous?
+
+  The answer is no.
+\end{remark}
+\begin{example}
+  Let $f_n(x) = x^n$ for $x \in [0, 1]$. These are the functions $x, x^2, x^3, \ldots$. Each of these functions is continuous on $[0, 1]$. For $x < 1$, have $\lim_{n\to\infty} x^n = 0$, but at $x=1$, have $\lim_{n\to\infty} 1^n = 1$. Thus the sequence of continuous functions $f_n(x)$ converges to the discontinuous function $f(x) =
+  \begin{cases}
+    0 & x < 1\\
+    1 & x = 1\\
+  \end{cases}$
+
+  We are essentially fixing a point $x$ and looking at the sequence $f_n(x)$ separately for each value of $x$. This is called point-wise convergence.
+\end{example}
+\begin{definition}
+  The sequence of functions $f_n$ on $S \subseteq \R$ converges \textbf{pointwise} to a function $f$ on $S$ if for all $x \in S$, $\lim_{n\to\infty} f_n(x) = f(x)$. Formally,
+  \[
+    \forall x \in S, \forall \ep > 0, \exists N, n > N \implies \abs{f_n(x) - f(x)} < \ep
+  \]
+  Here, $N$ may depend on $\ep$ and/or $x$. That is, can choose $N$ differently for different $x$.
+\end{definition}
+\begin{example}
+  In the previous example, given a fixed $\ep = 0.1$, increasingly large $N$ are needed for $x$ near $1$.
+
+  At $x = \frac{1}{2}$, we have
+  \begin{align*}
+    \left(\frac{1}{2}\right)^n &< 0.1\\
+    \implies 2^n &> 10\\
+    \implies n &> 4\\
+  \end{align*}
+  so take $N = 4$ for this $x$ and $\ep$.
+
+  Now with the same $\ep$ take $x = \frac{9}{10}$. Have
+  \begin{align*}
+    \left(\frac{9}{10}\right)^n &< 0.1\\
+    \implies \left(\frac{10}{9}\right)^n &> 10\\
+    \implies n \ln \frac{10}{9} &> \ln 10\\
+    \implies n &> \frac{\ln 10}{\ln \frac{10}{9}} \approx 21.8\\
+  \end{align*}
+  so take $N = 22$ for this $x$ and $\ep$.
+
+  Now with the same $\ep$ take $x = \frac{99}{100}$. Have
+  \begin{align*}
+    \left(\frac{99}{100}\right)^n &< 0.1\\
+    \implies n &> \frac{\ln 10}{\ln \frac{100}{99}} \approx 229.1\\
+  \end{align*}
+  so take $N = 230$ for this $x$ and $\ep$.
+
+  At $x=1$, sequence is $1, 1, 1, 1, 1, \ldots$. It seems that $N$ will not change wrt $x$. We can strengthen the definition so that one $N$ must work for all $x$.
+\end{example}
+\subsection{Uniform Convergence}
+\begin{definition}
+  The sequence of functions $f_n$ on $S \subseteq \R$ \textbf{converges uniformly} to a function $f$ on $S$ if \[
+    \forall \ep > 0, \exists N, \forall x \in S, n > N \implies \abs{f_n(x) - f(x)} < \ep
+  \]
+\end{definition}
+\begin{remark}
+  If $f_n$ converges to $f$ uniformly, it also does pointwise as well.
+\end{remark}
+\begin{example}
+  Let's return to our example.
+
+  We have $f(x) =
+  \begin{cases}
+    0 & x < 1\\
+    1 & x = 1\\
+  \end{cases}$
+
+  Does this converge uniformly?
+
+  Suppose so for contradiction. Take $\ep = \frac{1}{2}$. The definition implies we have \[
+    \exists N, \forall x \in [0, 1], n > N \implies \abs{x^n - f(x)} < \frac{1}{2}
+  \]
+  Take $x \in [0, 1)$ so we can simplify $f(x)$ as it is always $0$. Take $n = N+1$.
+  We then have $x^{N+1} < \frac{1}{2}$.
+
+  Let $x_1 = \frac{1}{2^{\frac{1}{N+1}}}$, and thus have $0 < x_1 < 1$, but $x_1^{N+1} = \frac{1}{2}$, so we have $\frac{1}{2} < \frac{1}{2}$ from the $\ep-N$ definition, which is a contradiction. Thus these functions do not converge uniformly.
+\end{example}
+\begin{corollary}
+  Any uniformly convergent sequence is pointwise convergent. (trivial)
+\end{corollary}
+\begin{example}
+  Let $f(x) = \frac{1}{n} \sin(nx)$ on $\R$.
+
+  Have $f_1(x) = \sin x$, $f_2(x) = \frac{1}{2}\sin 2x$, and so on. The period and the amplitude are decreasing.
+
+  Looks like $f(x)$ approaches the constant zero function. We can show this is convergent uniformly on $\R$. Have
+  \begin{align*}
+    \abs{f_n(x) - 0} &= \frac{1}{n}\abs{\sin nx}\\
+    &< \frac{1}{n} (1)\\
+    < \ep
+  \end{align*} so $n > \frac{1}{\ep} = N$.
+
+  Let $\ep > 0$ be given. Let $N = \frac{1}{\ep}$. Then for $x \in \R$ and $n > N$ implies
+  \begin{align*}
+    \abs{f_n(x) - 0} < \ep
+  \end{align*} as required.
+\end{example}
+\begin{cthm}[Theorem 24.3]
+  The uniform limit of continuous functions is continuous. In other words, let $f_n \to f$ be uniformly convergent on $S \subseteq \R$ where $f$ is a function on $S$. If each $f_n$ is continuous at $x_0 \in S$, then $f$ is continuous at $x_0$.
+\end{cthm}
+\begin{proof}
+  We want $\abs{f(x) - f(x_0)}$ small when $x$ is near $x_0$. Since $f_n \to f$ uniformly, can make $\abs{f_n(x) - f(x)}$ and $\abs{f_n(x_0) - f(x_0)}$ small for large enough $n$. Since each $f_n$ is continuous, $\abs{f_n(x) - f_n(x_0)}$ is small provided $x$ close to $x_0$.
+
+  Have
+  \begin{align*}
+    \abs{f(x) - f(x_0)} &= \abs{f(x) - f_n(x) + f_n(x) - f_n(x_0) + f_n(x_0) - f(x_0)}\\
+    &\leq \abs{f(x) - f_n(x)} + \abs{f_n(x) - f_n(x_0)} + \abs{f_n(x_0) - f(x_0)}\\
+  \end{align*}
+
+  Let $\ep > 0$ be given. Since $f_n$ converges uniformly to $f$, $\exists N$ such that $\forall x \in S$, including $x_0$, $n > N \implies \abs{f_n(x) - f(x)} < \frac{\ep}{3}$. In particular,
+  \begin{equation}
+    \abs{f_{N+1}(x) - f(x)} < \frac{\ep}{3}
+  \end{equation}
+
+  Since $f_{N+1}$ is continuous at $x_0$, $\exists \delta > 0$ such that $x \in S$ and
+  \begin{equation}
+    \abs{x - x_0} < \delta \implies \abs{f_{N+1}(x) - f_{N+1}(x_0)} < \frac{\ep}{3}
+  \end{equation}
+
+  Thus $x \in S$ and $\abs{x-x_0} < \delta \implies$
+  \begin{align*}
+    \abs{f(x) - f(x_0)} &= \abs{f(x) - f_{N+1}(x)} + \abs{f_{N+1}(x) - f_{N+1}(x_0)} + \abs{f_{N+1}(x_0) - f(x_0)}\\
+    &< \frac{\ep}{3} + \frac{\ep}{3} + \frac{\ep}{3} \tag{From 1 and 2 above}\\
+    &= \ep
+  \end{align*}
+\end{proof}
+\begin{corollary}
+  If $f$ is discontinuous, and $f_n$ is continuous, then $f_n$ does not uniformly converge.
+\end{corollary}
+\begin{example}
+  Let $f_n = (1 - \abs{x})^n$ on $(-1, 1)$.\
+
+  If $x = 0$, then $(1 - \abs{x}) = 1$ and so $f_n = 1^n = 1$ as $n \to \infty$.
+
+  If $x \neq 0$, then $(1 - \abs{x}) < 1$ and so $f_n = 0$ as $n \to \infty$.
+
+  Thus, $f_n \to f$ where $f(x) =
+  \begin{cases}
+    0 & x \neq 0\\
+    1 & x = 0\\
+  \end{cases}$
+
+  Since $f$ is not continuous, it does not uniformly converge.
+\end{example}
+\begin{example}
+  Consider $f_n(x) = x^n$ on $[0, 1)$.
+
+  The pointwise limit is $f(x) = 0$ which is continuous.
+
+  However, this does not imply that $f_n$ converges uniformly.
+
+  This is the same example as before.
+\end{example}
+\begin{example}
+  Let $0 < b < 1$ be fixed and consider $f_n = x^n$ on $[0, b]$. Then $f_n \to 0$ uniformly.
+
+  Let $\ep > 0$ be given. Find $N$ first.
+
+  Have
+  \begin{align*}
+    \abs{x^n - 0} &= x^n\\
+    &< b^n \tag{We want $b^n < \ep$}\\
+    &< \ep
+  \end{align*}
+
+  Then
+  \begin{align*}
+    b^n &< \ep\\
+    n \ln b < \ln \ep\\
+    n > \frac{\ln \ep}{\ln b} \tag{$\ln b < 0$ since $b < 1 < e$}\\
+  \end{align*}
+
+  Let $\ep > 0$ be given. Take $N = \frac{\ln \ep}{\ln b}$. Then $\forall x \in [0, b]$, $n > N \implies$
+  \begin{align*}
+    \abs{x^n - 0} &= x^n\\
+    &\leq b^n\\
+    &< b^N \tag{$b < 1$, so lower powers are higher}\\
+    &= b^{\frac{\ln \ep}{\ln b}}\\
+    &= e^{\ln \ep}\\
+    &= \ep
+  \end{align*}
+
+  Thus, let $f_n(x) = x^n$, so $f(x) =
+  \begin{cases}
+    0 & x \neq 1\\
+    1 & x = 1\\
+  \end{cases}$
+
+  On $[0, 1]$, $f_n \to f$ pointwise only.
+
+  On $[0, 1)$, $f_n \to f$ pointwise only.
+
+  On $[0, b]$, where $b < 1$, $f_n \to f$ pointwise uniformly.
+\end{example}
+\begin{cthm}[Theorem 25.2]
+  Let $(f_n)$ be a sequence of continuous functions on $[a, b]$ that converges uniformly to $f$ on $[a, b]$. Then $\lim_{n\to\infty} \int_a^b f_n(x) \; dx = \int_a^b f(x) \; dx$
+\end{cthm}
+\begin{proof}
+  Theorem 24.3 implies that $f$ is continuous. Thus $f_n \to f$ is continuous and integrable on $[a, b]$ for all $n$.
+
+  Let $\ep > 0$ be given. Since $f_n \to f$ uniformly on $[a, b]$, then $\exists N, \forall x \in [a, b], n > N \implies \abs{f_n(x) - f(x)} < \frac{\ep}{b-a}$.
+
+  Thus, have
+  \begin{align*}
+    \abs{\int_a^b f_n(x) \; dx - \int_a^b f(x) \; dx} &= \abs{\int_a^b f_n(x) - f(x) \; dx}\\
+    &\leq \int_a^b \abs{f_n(x) - f(x)} \; dx\\
+    &< \int_a^b \frac{\ep}{b-a} \; dx\\
+    &= \frac{\ep}{b-a} \int_a^b 1 \; dx\\
+    &= \frac{\ep}{b-a}b-a\\
+    &= \ep
+  \end{align*}
+\end{proof}
+\begin{example}
+  Consider $f_n(x) = x^n$ on $[0, b]$ for $b < 1$. By 25.2,
+  \begin{align*}
+    \lim_{n\to\infty} \int_0^b f_n(x) \; dx &= \int_0^b f(x) \; dx\\
+    &= \int_0^b 0 \; dx\\
+    &= 0
+  \end{align*}
+
+  Let's check.
+  \begin{align*}
+    \lim_{n\to\infty} \int_0^b f_n(x) \; dx &= \lim_{n\to\infty} \frac{1}{n+1} x^{n+1}\Big|_0^b\\
+    &= \lim_{n\to\infty} \frac{b^{n+1}}{n+1}\\
+    &= 0 \tag{$0 < b < 1$}
+  \end{align*}
+\end{example}
+\subsection{Cauchy Convergence}
+\begin{definition}
+  Let $(f_n)$ be a sequence of functions $S \subseteq \R$. The sequence is \textbf{uniformly Cauchy} on $S$ if \[
+    \forall \ep > 0, \exists N, \forall x \in S, m, n > N \implies \abs{f_n(x) - f_m(x)} < \ep
+  \]
+\end{definition}
+\begin{theorem}
+  Suppose $f_n \to f$ uniformly on $S$. Then $f_n$ is uniformly Cauchy on $S$.
+\end{theorem}
+\begin{proof}
+  Let $\ep > 0$ be given. Then $\exists N, x \in S, n > N \implies \abs{f_n(x) - f(x)} < \frac{\ep}{2}$.
+
+  Then $m, n > N$ implies
+  \begin{align*}
+    \abs{f_n(x) - f_m(x)} &= \abs{f_n(x) - f(x) + f(x) - f_m(x)}\\
+    &\leq \abs{f_n(x) - f(x)} + \abs{f(x) - f_m(x)}\\
+    &\leq \abs{f_n(x) - f(x)} + \abs{f_m(x) - f(x)}\\
+    &< \frac{\ep}{2} + \frac{\ep}{2}\\
+    &= \ep
+  \end{align*}
+\end{proof}
+\begin{cthm}[Theorem 25.4]
+  Let $(f_n)$ be a uniformly convergent sequence of functions on $S \subseteq \R$, then $\exists f$ on $S$ such that $f_n \to f$ uniformly.
+\end{cthm}
+\begin{proof}
+  We must first find $f$. Since $(f_n)$ is uniformly Cauchy, given $\ep > 0$, have $\exists N, \forall x \in S, m, n > N \implies \abs{f_n(x) - f_m(x)} < \ep$.
+
+  Fix $x_0 \in S$. Then the above for $x = x_0$, the sequence $(f_n(x_0))$ is a Cauchy sequence of numbers that converge. Thus $\exists \lim_{n\to\infty} f_n(x_0)$. We define $f(x) = \lim_{n\to\infty} f_n(x)$ for each $x \in S$. Thus, $f_n \to f$ converges pointwise. We now show that $f_n \to f$ uniformly on $S$. Let $\ep > 0$ be given. Since $(f_n)$ is uniformly Cauchy, $\exists N, \forall x \in S, m, n > N \implies \abs{f_n(x) - f_m(x)} < \frac{\ep}{2}$. Let $n > N$ and $x \in S$, the above implies \[
+    f_n(x) - \frac{\ep}{2} < f_m(x) < f_n(x) + \frac{\ep}{2}
+  \] for all $m > N$ and \[
+    f_n(x) - \frac{\ep}{2} < f(x) < f_n(x) + \frac{\ep}{2}
+  \] since $\lim_{m\to\infty} f_m(x) = f$.
+  Thus, have $\abs{f(x) - f_n(x)} \leq \frac{\ep}{2} < \ep$ for all $x \in S$ and $n > N$. Thus, it converges uniformly.
+\end{proof}
+\subsection{Series of Functions}
+\begin{definition}
+  We say that the series of functions $\sum_{k = 0}^\infty g_k(x)$ converges to a function $g$ if and only if $\lim_{n\to\infty} \sum_{k=0}^n g_k(x) = g$.
+
+  If the sequence of partial sums converges uniformly on $S$, then we say the series converges uniformly on $S$. If the sequence of partial sums diverges to $\pm \infty$, then we say the series diverges to $\pm \infty$. Otherwise the series has no meaning.
+\end{definition}
+\begin{remark}
+  A power series $\sum_{k=0}^\infty a_kx^k$ is a series of functions with $g_k(x) = a_kx^k$.
+
+  $\sum_{k=0}^\infty \frac{x^k}{1+x^k}$ is a series of functions that is not a power series as written.
+\end{remark}
+\begin{cthm}[Theorem 25.5]
+  Let $\sum_{k=0}^\infty g_k(x)$ be a series on $S \subseteq \R$. If then $g_k(x)$ is continuous on $S$ and the series converges uniformly on $S$, then $\sum_{k=0}^\infty g_k(x)$ is continuous on $S$.
+\end{cthm}
+\begin{proof}
+  The partial sum $\sum_{k=0}^n g_k(x)$ is a finite sum of continuous functions and are continuous. Thus the sequence of partial sums is a uniformly convergent sequence of continuous functions. Then 24.3 implies that the limit $\sum_{k=0}^\infty g_k(x)$ is continuous.
+\end{proof}
+\begin{corollary}
+  Let's write the Cauchy criterion for the sequence of partial sums of the series $\sum_{k=0}^\infty g_k(x)$ is uniformly convergent on $S$ if and only if $\forall \ep > 0, \exists N, \forall x \in S, n \geq m > N$ (WLOG) $\implies \abs{\sum_{k=m}^n g_k(x)} < \ep$.
+\end{corollary}
+\begin{cthm}[Weierstrass M-test for uniform convergence]
+  Let $(M_k)$ be a sequence of non-negative numbers with $\sum M_k < \infty$. If $\abs{g_k(x)} \leq M_k \forall x \in S$, then $\sum g_k(x)$ converges uniformly on $S$.
+\end{cthm}
+\begin{proof}
+  Let $\ep > 0$ be given. Since $\sum M_k$ converges, the sequence of partial sums $\sum_{k=0}^n M_k$ is Cauchy. Then, $\exists N$ such that $n \geq m > N \implies \sum_{k=m}^n M_k < \ep$. Thus, if $n \geq m > N$ and $x \in S$, have \[
+    \abs{\sum_{k=m}^n g_k(x)} \leq \sum_{k=m}^n\abs{g_k(x)} \leq \sum_{k=m}^n M_k < \ep
+  \]
+  Thus $\sum g_k$ is Cauchy and thus uniformly convergent on $S$.
+\end{proof}
+\begin{lemma}
+  If $\sum g_k(x)$ converges uniformly on $S$, then $\lim_{n\to\infty} \sup_{x \in S} \{\abs{g_n(x)} \mid x \in S\} = 0$
+\end{lemma}
+\begin{proof}
+  Let $\ep > 0$ be given. Since $\sum g_k(x)$ is Cauchy, $\exists N$ such that $\forall x \in S, n \geq m \implies \abs{\sum_{k=m}^n g_k(x)} < \frac{\ep}{2}$. Let $m = n$, have that $\forall x \in S$, $n > N \implies \abs{g_n(x)} < \frac{\ep}{2}$. Then $n > N \implies \sup_{x\in S} \{\abs{g_n(x)}\mid x \in S\} \leq \frac{\ep}{2}$. Since $\forall \ep > 0, \exists N$ such that $n > N \implies 0 \leq \sup_{x \in S} \{\abs{g_n(x)} \mid x \in s\} \leq \frac{\ep}{2} < \ep$, and so $\lim_{n\to\infty} (\sup_{x\in S} \{ \abs{g_n(x)} \mid x \in S\}$.
+  \end{proof}
+  \begin{example}
+    Consider $\sum_{n=0}^\infty 3^{-n}x^n$. Have $R = \lim_{n\to\infty} \abs{\frac{3^{-n}}{3^{-(n+1)}}} = 3$. At $x = \pm 3$, the series diverges by $n$-th term test. Thus, the interval of pointwise convergence is $(-3, 3)$.
+
+    Let $0 < b < 3$. For $x \in [-b, b]$, we have $\abs{3^{-n}x^n} \leq 3^{-n}b^n  = \left(\frac{b}{3}\right)^n$. Note that $\sum \left(\frac{b}{3}\right)$ converges since it is a geometric series with $\abs{\frac{b}{3}} < \frac{3}{3} < 1$. Thus, the Weierstrass M-test implies $\sum_{n=0}^\infty 3^{-n}x^n$ converges uniformly on $[-b, b]$. By Theorem 25.5, since $3^{-n}x^n$ is continuous on all $x$ for each $n$, the sum is continuous on $[-b, b]$. Since this holds for all $b < 3$, given any $-3 < x_0 < 3$ we can find $b$ with $x_0 < b < 3$ and so $x_0 \in [-b, b]$. Thus, the sum is continuous on $(-3, 3)$.
+
+    However, we note that $\sup_{x \in (-3, 3)} \{\abs{3^{-n}x^n} \mid x \in (-3, 3)\} = 1 \forall n$. Thus $\lim_{n\to\infty} (\sup_{x \in (-3, 3)} \{\abs{3^{-n}x^n} \mid x \in (-3, 3)\} = 1 \neq 0$. By previous lemma, the power series does not converge uniformly on $(-3, 3)$. In summary, $\sum_{n=0}^\infty 3^{-n}x^n$ converge pointwise $(-3, 3)$ to a continuous function. It converges uniformly on $[-b, b]$ for any $0 < b < 3$, but does not converge uniformly on $(-3, 3)$. In fact, since we know that $\sum_{n=0}^\infty x^n = \frac{1}{1-x}$ for $\abs{x} < 1$, we can replace $x$ with $\frac{x}{3}$ to get $\sum_{n=0}^\infty 3^{-n}x^n = \sum_{n=0}^\infty \left(\frac{x}{3}\right)^n = \frac{1}{1-\frac{x}{3}} = \frac{3}{3 - x}$ for $\abs{\frac{x}{3}} < 1$.
+    \end{example}
+    \begin{cthm}[Theorem 26.1 + Corollary 26.2]
+      Let $\sum_{n=0}^n a_nx^n$ be a power series with $R > 0$ (possibly $\infty$). If $0 < R_1 < R$, then the power series converges uniformly on $[-R_1, R_1]$ and converges to a continuous function on $(-R, R)$.
+    \end{cthm}
+    \begin{proof}
+      The series $\sum a_nx^n$ and $\sum \abs{a_n}x^n$ have the same $R$ of convergence (23.1). Since $\abs{R_1} < R$, $R_1$ is in the interval of convergence and so $\sum \abs{a_n}R_1^n < \infty$.
+
+      Since $\forall x \in [-R_1, R_1]$, we have $\abs{a_nx^n} \leq \abs{a_n}R_1^n$, the W-M test implies $\sum a_nx^n$ converges uniformly on $[-R_1, R_1]$ By 25.5, the limit function is continuous on this interval. If $x_0 \in (-R, R)$, then $x_0 \in [-R_1, R_1]$ for some $R_1 < R$. Thus, the above implies the limit function is continuous at $x_0$.
+    \end{proof}
+    \begin{clemma}[Lemma 26.3]
+      If $\sum_{n=0}^\infty a_nx^n$ has radius of convergence $R$, then $\sum_{n=1}^\infty na_nx^{n-1}$ and $\sum_{n=\infty}^\infty \frac{a_n}{n+1}x^{n+1}$ also have radius of convergence $R$.
+
+      Note that the interval of convergence may change.
+    \end{clemma}
+    \begin{proof}
+      Note that $\sum na_nx^{n-1}$ and $\sum na_nx^n$ have the same $R$ as do $\sum \frac{a_n}{n+1}x^{n+1}$ and $\sum \frac{a_n}{n+1} x^n$.
+
+      We have
+      \begin{align*}
+        \lim_{n\to\infty} \abs{\frac{na_n}{(n+1)(a_{n+1}}} &= \left(\lim_{n\to\infty} \frac{n}{n+1}\right)\left(\lim_{n\to\infty} \abs{\frac{a_n}{a_{n+1}}}\right)\\
+          `       &= 1 \cdot R\\
+        \end{align*} and \[
+          \lim_{n\to\infty} \abs{\frac{\frac{a_n}{n+1}}{\frac{a_{n+1}}{n+2}}} = \left(\lim_{n\to\infty} \frac{n+2}{n+1}\right)\left(\lim_{n\to\infty}\abs{\frac{a_n}{a_{n+1}}}\right) = 1(R)
+        \]
+        Note if $\lim_{n\to\infty} \frac{a_n}{a_{n+1}}$ does not exist, the ratio test can be used to complete the proof.
+      \end{proof}
+      \begin{cthm}[Theorem 26.4]
+        Suppose $f(x) = \sum_{n=0}^\infty a_nx^n$ has radius of convergence $R > 0$. Then \[
+          \int_0^x f(t) \; dt = \sum_{n=0}^\infty \frac{a_n}{n+1}x^{n+1}
+        \]
+      \end{cthm}
+      \begin{proof}
+        Fix $\abs{x} < R$. We prove the case where $x > 0$.
+        By 26.1, $\sum_{n=0}^\infty a_nt^n$ converges uniformly to $f(t)$ on $[0, x]$ and so the sequence of partial sums $\sum_{k=0}^n a_kt^k$ with $t \in [0, x]$ converges uniformly to $f(t)$. Thus
+        \begin{align*}
+          \int_0^x f(t) \; dt &= \lim_{n\to\infty}\int_0^x \sum_{k=0}^n a_kt^k\\
+          &= \lim_{n\to\infty} \sum_{n=0}^n a_k\int_0^x t_k \; dt \tag{33.3}\\
+          &= \lim_{n\to\infty}\sum_{k=0}^n a_k\left(\frac{x^{k+1} - 0^{k+1}}{k+1}\right)\\
+          &= \lim_{n\to\infty} \sum_{k=0}^n \frac{a_k}{k+1}x^{k+1}\\
+          &= \sum_{k=0}^\infty \frac{a_k}{k+1} x^{k+1}
+        \end{align*}
+      \end{proof}
+      \begin{example}
+        $\sum_{n=0}^\infty x^n = \frac{1}{1-x}$ for $\abs{x} < R$. Integrate term by term from $0 \to x$.
+        \begin{align*}
+          \sum_{n=0}^\infty \frac{1}{n+1}x^{n+1} &= \int_0^x \frac{1}{1-t} \; dt\\
+          &= -\ln \abs{1-t}\Big|_0^x\\
+          &= -\ln\abs{1-x}-(-\ln\abs{1})\\
+          &= -\ln(1-x) \tag{Since $-1 < x < 1$}\\
+        \end{align*}
+        Thus, $\sum_{n=1}^\infty \frac{x^n}{n} = -\ln(1-x)$ for $\abs{x}<1$. If we let $x = \frac{1}{2}$, we get $\sum_{n=1}^\infty \frac{1}{n2^n} = \ln 2$.
+      \end{example}
+      \begin{remark}
+        We can integrate term-by-term, but can we also differentiate?
+
+        E.g.,
+        \[
+          \frac{d}{dx} \frac{1}{n}\sin(nx) = \cos(nx)
+        \]
+        The first function converges but the second one does not.
+      \end{remark}
+      \begin{cthm}[Theorem 26.5]
+        Suppose $f(x) = \sum_{n=0}^\infty a_nx^n$ has radius of convergence $R > 0$. Then $f$ is differentiable on $(-R, R)$ with $f'(x) = \sum_{n=1}^\infty na_nx^{n-1}$
+      \end{cthm}
+      \begin{proof}
+        Consider $g(x) = \sum_{n=1}^\infty na_nx^{n-1}$ which will converge for $\abs{x} < R$ (Lemma 26.5). By 26.4, can integrate $G$ term by term. $\int_0^x g(t) \; dt = \sum_{n=1}^\infty a_nx^n = f(x) - a_0$ for $\abs{x} < R$. For $R_1$ with $0 < R_1 < R$, we have
+        \begin{align*}
+          \int_{-R_1}^x g(t) \; dt &= \int_{-R_1}^0 g(t) \; dt + \int_0^x g(t) \; dt\\
+          &= \int_{-R_1}^0 g(t) \; dt + f(x) - a_0
+        \end{align*}
+        These are both constants, so $f(x) = \int_{-R_1}^x g(t) \; dt + k$. By 26.1, $g(x) = \sum_{n=1}^n na_nx^{n-1}$ is continuous. $f$ is differentiable on $(-R_1, R_1)$ with $f'(x) = g(x)$. Since $R_1 < R$ is arbitrary, $f'(x) = \sum_{n=1}^n na_nx^{n-1}$ for $\abs{x} < R$.
+      \end{proof}
+      \begin{cthm}[Theorem 26.6 - Abel's Theorem]
+        Let $f$ be a power series $f(x) = \sum_{n=0}^\infty a_nx^n$ with radius of convergence $R < \infty$. If the series converges at $x = \pm R$, then $f$ is continuous there.
+      \end{cthm}
+      \begin{example}
+        We saw that $\sum_{n=0}^\infty x^n = \frac{1}{1-x}$ for $\abs{x} < 1$. Differentiating yields
+        \begin{align*}
+          \sum_{n=1}^\infty nx^{n-1} = -\frac{1}{(1-x)^2}
+        \end{align*} for the same $R$. Differentiating again, \[
+          \sum_{n=2}^\infty n(n-1)x^{n-2} = \frac{2}{(1-x)^3} = \sum_{n=0}(n+1)(n+2)x^n
+        \]
+        We can multiply the first equation by $x$, \[
+          \sum_{n=1}^\infty nx^n = \frac{x}{(1-x)^2}
+        \] for $\abs{x} < 1$.
+
+        Let $x = \frac{1}{2}$. Then $\sum_{n=1}^\infty \frac{n}{2^n} = \frac{\frac{1}{2}}{\left(1-\frac{1}{2}\right)^2} = 2$.
+
+        Now we integrate the series term by term\[
+          \sum_{n=0}^\infty \frac{1}{n+1}x^{n+1} = \int_0^x \frac{1}{t} \; dt = -\ln\abs{1-x}
+        \]
+        Hence, $\ln(1-x) = -\sum_{n=1}^\infty \frac{x^n}{n}$. $R$ is still $1$, but now the series converges at $x=-1$. By Abel's Theorem, $-\sum_{n=1}^\infty \frac{x^n}{n}$ is continuous at $x=-1$, as is $\ln (1-x)$. Thus they must be equal at $x=-1$.
+
+        That is, \[
+          \ln (1 -(-1)) = \ln 2 = -\sum_{n=1}^\infty \frac{(-1)^n}{n}
+        \] and so \[
+          \sum_{n=1}\infty \frac{(-1)^{n+1}}{n} = \ln 2
+        \]
+      \end{example}
+      \begin{example}
+        Consider $f(x) = \sum_{n=0}^\infty \frac{1}{n!}x^n$. This converges $\forall x$.
+        Thus,
+        \begin{align*}
+          f'(x) &= \sum_{n=1}^\infty \frac{n}{n!}x^{n-1}\\
+          &= \sum_{n=1}^\infty \frac{1}{(n-1)!}x^{n-1}\\
+          &= \sum_{n=0}^\infty \frac{1}{n!}x^n\\
+          &= f(x)
+        \end{align*}
+        We have $f'(x) = f(x)$! This can only happen if $f(x) = ce^x$. Letting $x = 0$ yields $\frac{1}{0!} = ce^0 \implies c = 1$. Thus, \[
+          \sum_{n=0}^\infty \frac{1}{n!}x^n = e^x
+        \]
+        For example, when $x=1$, $\sum_{n=0}^\infty \frac{1}{n!} = e$.
+      \end{example}
+      \begin{example}
+        Consider the Fibonacci numbers $F_1 = 1, F_2 = 1, F_n = F_{n-1} + F_{n-2}$ for $n \geq 3$. Let's form the power series with coefficents $F_n$, called a generating series for $F_n$. \[
+          g(x) = \sum_{n=1}^\infty F_nx^n
+        \]
+        We have
+        \begin{align*}
+          g(x) &= F_1x + F_2x^2 + \sum_{n=3}^\infty (F_{n-1} + F_{n-2})x^n\\
+          &= x + x^2 + x\sum_{n=3}^\infty F_{n-1}x^{n-1} + x^2\sum{n=3}^\infty F_{n-2}x^{n-2}\\
+          &= x + x\sum_{n=2}^\infty F_nx^n + x^2\sum{n=3}^\infty F_nx^n\\
+          &= x + x\sum_{n=1}^\infty F_nx^n + x^2\sum{n=3}^\infty F_nx^n\\
+          &= x + xg(x) = x^2g(x)
+        \end{align*}
+        So \[
+          g(x) = \frac{x}{1-x-x^2} = \frac{-x}{x^2-x-1}
+        \]
+
+        Thus,
+        \begin{align*}
+          \frac{-x}{x^2-x-1} &= \frac{-x}{(x+r_1)(x+r_2)}\\
+          &= \frac{A}{x+r_1} + \frac{B}{x+r_2}\\
+          \implies A &= -\frac{r_1}{\sqrt{5}}, B = \frac{r_2}{\sqrt{5}}
+        \end{align*} where $r_1 = \frac{1+\sqrt{5}}{2}$ and $r_2 = \frac{1-\sqrt{5}}{2}$.
+
+        Thus,
+        \begin{align*}
+          g(x) &= \frac{1}{\sqrt{5}}\left(\frac{r_2}{x+r_2} - \frac{r_1}{x+r_1}\right)\\
+          &= \frac{1}{\sqrt{5}}\left(\frac{1}{1+\frac{x}{r_2}} - \frac{1}{1+\frac{x}{r_1}}\right)\\
+          &= \frac{1}{\sqrt{5}}\left(\frac{1}{1-r_1x} - \frac{1}{1-r_2x}\right) \tag{Using $r_1r_2 = -1$}\\
+          &= \frac{1}{\sqrt{5}}\left(\sum_{n=0}^n (r_1x)^n - \sum_{n=0}^n (r_2x)^n\right)\\
+          &= \frac{1}{\sqrt{5}}\left(\sum_{n=0}^n (r_1^n - r_2^n)x^n\right)\\
+        \end{align*}
+
+        Since $g(x) = \sum_{n=1}^\infty F_nx^n$, we have \[
+          F_n = \frac{1}{\sqrt{5}} \left(\left(\frac{1+\sqrt{5}}{2}\right)^n - \left(\frac{1-\sqrt{5}}{2}\right)^n\right)\\
+        \]
+      \end{example}
+      \subsection{Taylor Series}
+      \begin{remark}
+        Suppose have power series centered at $c$. $\sum_{n=0}^\infty a_n(x-c)^n$ for $\abs{x-c} < R$.
+
+        We have
+        \begin{align*}
+          f(x) &= a_0 + a_1(x-c) + a_2(x-c)^2 + a_3(x-c)^3 + \dots &&= \sum_{n=0}^\infty a_n(x-c)^n\\
+          f'(x) &= a_1 + 2a_2(x-c) + 3a_3(x-c)^2 + \dots &&= \sum_{n=1}^\infty na_n(x-c)^{n-1}\\
+          f''(x) &= 2a_2 + 6a_3(x-c) + \dots &&= \sum_{n=2}^\infty n(n-1)a_n(x-c)^{n-2}\\
+          f'''(x) &= 6a_3 + \dots &&= \sum_{n=3}^\infty n(n-1)(n-2)a_n(x-c)^{n-3}\\
+        \end{align*}
+
+        Let $x=c$. Then,
+        \begin{align*}
+          f(c) &= a_0\\
+          f'(c) &= a_1\\
+          f''(c) &= 2a_2\\
+          f'''(c) &= 6a_3\\
+        \end{align*}
+
+        Thus starting with the power series, there is a formula for its coefficients $a_n = \frac{f^{(n)}(c)}{n!}$.
+
+        What if we start with $f(x)$, not necessarily a power series and form the power series $\sum a_n(x-c)^n$ with $a_n = \frac{f^{(n}(c)}{n!}$. Will it converge to $f$?
+        \end{remark}
+        \begin{definition}
+          Let $f$ be defined on $(a, b)$ with $c \in (a, b)$ and suppose all order of derivatives of $f$ exist at $c$. Then the series \[
+            \sum_{k=0}^\infty \frac{f^{(k)}(c)}{k!}(x-c)^k
+          \] is the \textbf{Taylor Series} for $f$ centered at $c$.
+
+          A Taylor Series centered at $0$ is called a \textbf{Maclaurin Series}.
+
+          For $n \geq 1$, the remainder is $R_n(x) = f(x) - \sum_{k=0}^n-1 \frac{f^{(k)}(c)}{k!}(x-c)^n$.
+
+          Thus, $f(x) = \sum_{k=0}^\infty \frac{f^{(k)}(c)}{k!}(x-c)^k \iff \lim_{n\to\infty} R_n = 0$.
+        \end{definition}
+        \begin{example}
+          Find the Taylor Series of $\sin x$ centered at $0$.
+          \begin{align*}
+            f(x) &= \sin x &&\implies f(0) &&&= 0\\
+            f'(x) &= \cos x &&\implies f'(0) &&&= 1\\
+            f''(x) &= -\sin x &&\implies f''(0) &&&= 0\\
+            f'''(x) &= -\cos x &&\implies f'''(0) &&&= -1\\
+          \end{align*}
+          and this pattern repeats.
+
+          Thus, \[
+            f^{(k)} =
+            \begin{cases}
+              0 & $k=2n$\\
+              1 & $k = 4n+1$\\
+              -1 & $k = 4n+3$\\
+            \end{cases}
+          \]
+          Thus, the Taylor series centered at $0$ is \[
+            \sum_{k=0}^n \frac{f^{(k)}(0)}{k!} x^k = \sum_{n=0}^\infty \frac{f^{(2n+1)}(c)}{(2n+1)!}
+          \] where $n = 2k+1$.
+
+          We then have \[
+            f^{(2n+1)}(0) =
+            \begin{cases}
+              1 & $n$ \text{ is even}\\
+              -1 & $n$ \text{ is odd}\\
+            \end{cases} = (-1)^n
+          \]
+          Thus the series becomes \[
+            \sum_{n=0}^\infty \frac{(-1)^n}{(2n+1)!} = x - \frac{x^3}{3!} + \frac{x^5}{5!} - \frac{x^7}{7!} + \dots
+          \]
+
+          Let's find the radius of convergence. We have
+          \begin{align*}
+            \lim_{n\to\infty} \abs{\frac{\frac{(-1)^{n+1}}{(2n+3)!}x^{2n+3}}{\frac{(-1)^n}{(2n+1)!}x^{2n+1}}} &= x^2\lim_{n\to\infty}\abs{\frac{(2n+1)!}{(2n+3)!}}\\
+            &= x^2 \lim_{n\to\infty} \abs{\frac{1}{(2n+2)(2n+3)}}\\
+            &= 0\\
+          \end{align*}
+          This converges for all $x$.
+        \end{example}
+        \begin{remark}
+          If we know that a function $f$ is equal to a power series, then we saw that $a_n = \frac{f^{(n)}}{n!}$ and so that power series is the Taylor Series centered at $c$.
+        \end{remark}
+        \begin{example}
+          We saw that $e^x = \sum_{n=0}^\infty \frac{x^n}{n!}$ on $\R$ so the Taylor series for $e^x$ centered at $0$ is $\sum_{n=0}^\infty \frac{x^n}{n!}$ and converges.
+
+          Find the Taylor series for $e^{-x^2}$ centered at $0$ and for $e^x$ centered at $2$.
+
+          By above, we have $e^{-x^2} = \sum_{n=0}^\infty \frac{(-x^2)^n}{n!} = \sum_{n=0}^\infty \frac{(-1)^n}{n!}x^{2n}$. Also, $e^{x-2} = \sum_{n=0}^\infty \frac{1}{n!}(x-2)^n = e^xe^{-2}$. So $e^x = \sum_{n=0}^\infty \frac{e^2}{n!}(x-2)^n$.
+        \end{example}
+        \begin{cthm}[Taylor's Theorem (31.3)]
+          If $f$ is defined in $(a, b)$ with $a < c < b$ not necessarily finite. Suppose the $n$th derivative $f^{(n)}(x)$ exists on the interval. Then $\forall x \in (a, b) \neq c$, there is some $y$ in between $c$ and $x$ such that $R_n(x) = \frac{f^{(n)}(y)}{n!} (x-c)^n$.
+        \end{cthm}
+        \begin{lemma}
+          Let $b > 0$ be constant. Then \[
+            \lim_{n\to\infty} \frac{b^n}{n!} = 0
+          \]
+        \end{lemma}
+        \begin{corollary}
+          Let $f$ be defined on $(a, b)$ with $a < c < b$. If all derivatives $f^{(n)}(x)$ exist on $(a, b)$ and are bounded by a single constant $B$, then \[
+            \
+            \lim_{n\to\infty} R_n(x) = 0
+          \] for all $x \in (a, b)$ where $R_n$ is the remainder for the Taylor Series centered at $c$.
+        \end{corollary}
+        \begin{example}
+          Recall that we found the Taylor series for $\sin x$ which converges everywhere. Since all derivatives of $\sin x$ are bounded by $1 \in \R$, by corollary $R_n \to 0$ as $n \to \infty$. Thus, the Taylor series converges to $\sin x$ on $\R$.
+        \end{example}
+        \begin{example}
+          Find the Taylor series for $\cos x$ centered at $0$.
+
+          We can use the same technique for $\sin$, but we can just differentiate instead.
+
+          \[
+            \cos x = \sum_{n\to\infty} \frac{(-1)^n}{(2n)!}x^{2n}
+          \]
+        \end{example}
+        \begin{example}
+          Show that the Taylor series for $e^x$ converges to $e^x$ (centered at $0$).
+
+          We have $f(x) = e^x \implies f^{(n)}(x) = e^x \implies f^{(n)}(0) = e^0 = 1$. Thus, the Taylor series is $\sum_{n=0}^\infty \frac{1}{n!}x^n$. By usual formula for $R$, we have $R = \infty$. On $(-b, b), \abs{f^{(n)}(x)} < e^b$ so by corollary, the Taylor series converges to $e^x$ on $(-b, b)$. Since $b$ is arbitrary in $\R$, it converges pointwise to $e^x$ for all $x$.
+        \end{example}
+        \begin{example}
+          This example is of a Taylor series for a function $f$ centered at $0$ that does not converge to $f$ on any interval $(-b, b)$.
+
+          Let $f(x) =
+          \begin{cases}
+            e^{\frac{1}{x}} & x > 0\\
+            0 & x \leq 0
+          \end{cases}$
+
+          We will show that $f^{(n)}(0) = 0 \forall n \in \Z^+$.
+          This implies that the Taylor series for $f$ centered at $0$ is $\sum \frac{f^{(n)}(0)}{n!}x^n = 0$. However, in any interval $(-b, b)$, $\exists x$ for $f(x) \neq 0$. It is clear that $f$ has derivatives of all orders for $x \neq 0$, namely
+          \[
+            f'(x) = e^{-\frac{1}{x}} \frac{1}{x^2}
+          \] and \[f''(x) = e^{-\frac{1}{x}} \left(\frac{1}{x^4} - \frac{2}{x^3}\right)\]
+          We claim that for each $n$, there is a polynominal $P_n$ of degree $2n$ such that $f^{(n)}(x) = e^{-\frac{1}{x}}P_n(\frac{1}{x})$. For example, $P_1(t)m = t^2$ and $P_2(t) = t^4 - 2t^3$. Suppose for $x > 0$, the $n$-th derivative of $f$ is $f^{(n)}(x) = e^{-\frac{1}{x}}P_n(\frac{1}{x})$ where $P_n(t) = a_0 + a_1t + \dots + a_{2n}t^{2n}$ and $a_{2n} \neq 0$. Then, $f^{(n)}(x) = e^{-\frac{1}{x}}\sum_{k=0}^2n a_k \cdot \frac{1}{x^k}$. Differentiating, $f^{(n+1)}(x) = e^{-\frac{1}{x}}\cdot -\frac{1}{x^2}\sum_{k=0}^2n \frac{a_k}{x^k} + e^{-\frac{1}{x}}\sum_{k=0}^2n \frac{-ka_k}{x^{k+1}}$ so $p_{n+1} = t^{-2}\sum_{k=0}^{2n} a_kt_k - \sum_{k=0}^{2n} ka_kt^{k+1}$.
+
+          We now show that $f^{(n)}(0)$. Suppose $f^{(n)}(0)$. Want to prove $f^{(n+1)}(0) = 0$. Have
+          \begin{align*}
+            f^{(n+1)}(0) &= \lim_{x\to0} \frac{f^{(n)}(x) - f^{(n)}(0)}{x-0}\\
+            &= \lim_{x\to0}\frac{f^{(n)}(x)}{x}\\
+            &= 0\\
+          \end{align*}
+          We also show that $\lim_{x\to0} e^{-\frac{1}{x}}q(\frac{1}{x}) = 0$ for all polynomials $q$. Since $f^{(n+1)}(x) = \lim_{x\to0} e^{-\frac{1}{x}}p(\frac{1}{x})$. This is a polynominal evaluated at $\frac{1}{x}$. This implies $\lim_{x\to0}\frac{f^{(n)}(0)}{x}(0) = 0$. Since $q(\frac{1}{x})$ is finite sum of form $\frac{b_k}{x^k}$. We show $lim_{x\to0} \frac{e^{-\frac{1}{x}}}{x^k} = 0$. Let $g = \frac{1}{x}$ As $x \to 0, g \to \infty$. Thus $\lim_{x\to0^+} = \frac{e^{-\frac{1}{x}}}{x^k} = \lim_{g\to\infty} g^ke^{-g} = \lim_{g\to\infty} \frac{g^k}{e^g}$. Apply L'Hopital's rule $k$ times to get $0$.
+        \end{example}
+        \end{document}

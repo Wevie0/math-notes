@@ -1,0 +1,264 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\input{preamble.tex}
+
+\begin{document}
+\title{MATH 226 Formulae}
+\date{Winter Term 1 2023}
+\maketitle
+
+\begin{tcolorbox}[title=, fonttitle=\huge\sffamily\bfseries\selectfont,interior style={left color=contcol1!40!white,right color=contcol2!40!white},frame style={left color=contcol1!80!white,right color=contcol2!80!white},coltitle=black,top=2mm,bottom=2mm,left=2mm,right=2mm,drop fuzzy shadow,enhanced,breakable]
+  \tableofcontents
+\end{tcolorbox}
+
+\newpage
+\section{Vectors}
+\subsection{Projection}
+\begin{definition}
+  The vector projection of $\textbf{u}$ onto $\textbf{v}$ is
+  \[
+    \textbf{u}_\textbf{v} = \frac{\textbf{u} \cdot \textbf{v}}{\norm{\textbf{v}}^2}\textbf{v}
+  \] and the scalar projection is \[
+    s = \frac{\textbf{u} \cdot \textbf{v}}{\norm{\textbf{v}}}
+  \]
+\end{definition}
+\subsection{Lines and Planes}
+\begin{proposition}
+  The equation of a plane containing a point $(x_0, y_0, z_0)$ and perpendicular to a vector $(A, B, C)$ can be written as \[
+    A(x-x_0) + B(y-y_0) + C(z-z_0) = 0
+  \]
+\end{proposition}
+\begin{proposition}
+  The equation of a line containing a point $(x_0, y_0, z_0)$ and with direction vector $(a, b, c)$ can be written as \[
+    (x - x_0, y-y_0, z-z_0) = t(a, b, c)
+  \]
+\end{proposition}
+\begin{corollary}
+  The above is equivalent to the system of equations \[
+    \begin{cases}
+      x &= x_0 + at\\
+      y &= y_0 + at\\
+      z &= z_0 + at\\
+    \end{cases}
+  \] or
+  \[
+    (x, y, z) = (a_0, b_0, c_0) + t(a, b, c)
+  \]
+\end{corollary}
+
+\section{Differentiation}
+\subsection{Limits}
+\begin{definition}
+  If $L \in \R$ and $(a, b)$ is a point in $\R^2$, then $f$ has \textbf{limit} L at $(a, b)$ written as $\lim_{(x, y) \to (a, b)} f(x, y) = L$ if
+  \[\forall \ep > 0, \exists \delta > 0, \sqrt{(x-a)^2 + (y-b)^2} < \delta \implies \abs{f(x, y) - L} < \ep\]
+\end{definition}
+\begin{theorem}
+  If the limits along different paths approaching $(a, b)$ are different, then $f$ does not have a limit there.
+\end{theorem}
+\subsection{Partial Derivatives}
+\begin{definition}
+  The partial derivative $f$ wrt $x_j$ is the function $f_j$ defined by \[
+    f_j(\textbf{x}) = \lim_{h\to0} \frac{1}{h} \left(f(x_1, \dots, x_j + h, \dots, x_n) - f(\textbf{x})\right)
+  \]
+\end{definition}
+\begin{example}
+  For 2 variables, the partials are \[
+    f_1(x, y) = \lim_{h\to0} \frac{1}{h}(f(x+h,y) - f(x, y))
+  \] and \[
+    f_2(x, y) = \lim_{h\to0} \frac{1}{h}(f(x,y+h) - f(x, y))
+  \]
+\end{example}
+\subsection{Differentiability}
+\begin{definition}
+  A function $f(x, y)$ is \textbf{differentiable} if \[
+    \lim_{(x, y) \to (a, b)} \frac{\abs{f(x, y) - L(x, y)}}{\sqrt{(x-a)^2+(y-b)^2}} = 0
+  \] where \[
+    L(x, y) = f(a, b) + f_x(a, b)(x-a) + f_y(a, b)(y-b)
+  \]
+\end{definition}
+\begin{theorem}
+  If $f(x, y)$ is $C^1$ on a neighbourhood of $(a, b)$, it is differentiable at $(a, b)$.
+\end{theorem}
+\begin{theorem}
+  If $f$ is differentiable at $(a, b)$, then both $f_x, f_y$ exist at $(a, b)$ and $f$ is continuous at $(a, b)$.
+\end{theorem}
+\begin{corollary}
+  If $f_x, f_y$ exist at $(a, b)$ or $f$ is continuous at $(a, b)$, then $f(x, b)$ is continuous at $x=a$ and $f(a, y)$ is continuous at $y=b$.
+\end{corollary}
+\subsection{Tangent Planes}
+\begin{theorem}
+  The normal vector to the tangent plane is \[
+    -f_x(a, b)\textbf{i} - f_y(a, b)j + k
+  \]
+\end{theorem}
+\begin{theorem}
+  The equation of the tangent plane is \[
+    z = f(a, b) + f_x(a, b)(x-a) + f_y(a, b)(y-b)
+  \]
+\end{theorem}
+\begin{proposition}
+  The linearization of a function at a point is the same equation as for the tangent plane.
+\end{proposition}
+\subsection{Directional Derivatives}
+\begin{definition}
+  The \textbf{directional derivative} of a function in the direction of a unit vector $\textbf{u}$ is defined as \[
+    D_\textbf{u}f(a, b) = \lim_{h\to0}\frac{1}{h} (f(a + hu_1, b+hu_2) - f(a, b))
+  \]
+\end{definition}
+\begin{theorem}
+  \[D_\textbf{u}f(a, b) = \nabla f(a, b) \cdot \textbf{u} = \abs{\nabla f(a, b)}\cos\theta\]
+\end{theorem}
+\begin{corollary}
+  The direction of steepest ascent is $\textbf{u} = \frac{\nabla f}{\abs{\nabla f}}$, and similarly, the direction of steepest descent is $\textbf{u} = -\frac{\nabla f}{\abs{\nabla f}}$
+\end{corollary}
+\subsection{Implicit Functions}
+\begin{theorem}
+  If $F(x, y) = 0$, then if $y = y(x)$, we can use chain rule to yield \[
+    0 = \frac{d}{dx} F(x, y(x)) = F_1(x, y(x)) + F_2(x, y(x))\frac{dy}{dx}
+  \] so that $\frac{dy}{dx} = -\frac{F_1}{F_2}$. Similarly for $3$ variables, $\frac{\partial z}{\partial x} = -\frac{F_1}{F_3}$ and $\frac{\partial z}{\partial y} = -\frac{F_2}{F_3}$.
+\end{theorem}
+\begin{theorem}
+  If we have the system of equations $u = f(x, y)$ and $v = g(x, y)$, and $x = x(u, v), y=y(u,v)$, we can take the derivative wrt $u$ yielding \[
+    1 = f_1(x, y) \cdot \frac{\partial x}{\partial u} + f_2(x, y) \cdot \frac{\partial y}{\partial u}
+  \] and \[
+    0 = g_1(x, y) \cdot \frac{\partial x}{\partial u} + g_2(x, y) \cdot \frac{\partial y}{\partial u}
+  \]
+  We can then solve for $\frac{\partial x}{\partial u}$ and $\frac{\partial y}{\partial u}$.
+\end{theorem}
+\subsection{Minimum and Maximum}
+\begin{cthm}[Conditions for a local min/max]
+  We must have at least one of
+  \begin{enumerate}
+    \item $\nabla f(a, b)= 0$
+    \item $\nabla f(a, b)$ DNE
+    \item $(a, b)$ is a boundary point of the domain $D$
+  \end{enumerate}
+\end{cthm}
+\begin{definition}[Taylor Polynominals]
+  We have \[
+    f(\textbf{x}) \approx f(\textbf{a}) + \nabla f(\textbf{a}) \cdot (\textbf{x}-\textbf{a}) + \frac{1}{2} (\textbf{x}-\textbf{a}) \cdot \mathscr{H}_{f(\textbf{a})}(\textbf{x}-\textbf{a})^t
+  \] where \[
+    \mathscr{H} =
+    \begin{pmatrix}
+      f_{11} & f_{12} & \dots & f_{1n}\\
+      \vdots & \vdots & \vdots & \vdots\\
+      f_{n1} & f_{n2} & \dots & f_{nn}\\
+    \end{pmatrix}
+  \]
+\end{definition}
+\begin{example}
+  For a polynominal in 2 variables, \[
+    p_2(x, y) = f(a, b) + f_1(a, b)(x-a) + f_2(a, b)(y-b) + \frac{1}{2}f_{11}(a, b)^2 + f_{12}(a, b)(x-a)(y-b) + \frac{1}{2}f_{22}(a, b)(y-b)^2
+  \]
+
+\end{example}
+\begin{cthm}[Classifying Critical Points with the Second Derivative Test]
+  We consider the behaviour of the \textbf{principal minors} of $\mathscr{H}$ evaluated at $\textbf{a}$.
+  We have \[
+    D_1 = f_{11}, D_{2} =
+    \begin{vmatrix}
+      f_{11} & f_{12}\\
+      f_{21} & f_{22}
+    \end{vmatrix}, D_3 =
+    \begin{vmatrix}
+      f_{11} & f_{12} & f_{13}\\
+      f_{21} & f_{22} & f_{23}\\
+      f_{31} & f_{32} & f_{33}
+    \end{vmatrix}
+  \]
+
+  \begin{enumerate}
+    \item If all $D_i > 0$, then $\mathscr{H}$ is positive definite and so $f$ has a \textbf{local minimum} at $\textbf{a}$
+    \item If $D_i < 0$ when $i$ is even and $D_i > 0$ when $i$ odd, then $\mathscr{H}$ is negative definite and so $f$ has a \textbf{local maximum} at $\textbf{a}$
+    \item If $D_n = \det(\mathscr{H}) \neq 0$ (the largest one) but the sign is not all positive or alternating with negative first, then $\mathscr{H}$ is indefinite and so $f$ has a \textbf{saddle point} at \textbf{a}
+    \item If $D_n = 0$, then the test is inconclusive
+  \end{enumerate}
+\end{cthm}
+\begin{definition}
+  A domain $X \subset \R^n$ is \textbf{compact} if it is bounded and closed.
+\end{definition}
+\begin{cthm}[Procedure for finding Global Extrema on Compact Domains]
+  If $X$ is compact and $f$ cts., then it must attain a global min/max on $X$.
+  \\
+  If a point is a global minimum, it has to be a local one as well or on the boundary, thus we can follow a similar process as before.
+
+  \begin{enumerate}
+    \item Find all critical/singular points inside $X$ of the function $f$
+    \item Determine the min/max values of $f$ on the boundary of $X$ and note the points where these min/max values are attained
+    \item Compute $f(\textbf{a})$ at all the points found, and pick the biggest and smallest
+  \end{enumerate}
+
+  Easier to just compute and not use 2nd derivative test.
+\end{cthm}
+\subsection{Lagrange Multipliers}
+\begin{remark}
+  We want to determine the extreme values of $f$ subject to a constraint $g(\textbf{x}) = c$. We want $\nabla f$ parallel to $\nabla g$.
+\end{remark}
+\begin{theorem}
+  Want to find all points where
+  \begin{itemize}
+    \item $\nabla f(x, y) = \lambda \nabla g(x, y)$ for some $\lambda \in \R$
+    \item $\nabla g(x, y) = 0$
+    \item $\nabla f(x, y)$ or $\nabla g(x, y)$ DNE
+  \end{itemize}
+\end{theorem}
+\section{Integration}
+\begin{cthm}[Determining Convergence of Improper Integrals]
+  Let $D \subset \R^2$ be a region.
+  \begin{itemize}
+    \item If $f \geq g \geq 0$ on D, then $
+      \iint_D g(x, y) dA = \infty \implies \iint_D f(x, y) = \infty$.
+    \item If $0 \leq f \leq g$ on D, then $
+      \iint_D g(x, y) < \infty \implies \iint_D f(x, y) < \infty$.
+  \end{itemize}
+\end{cthm}
+\begin{proposition}
+  A double integral over a region $D$ can be interpreted as \[
+    \iint_D f(x, y) dA = \text{volume under the graph of } z = f(x, y) \text{ above }D
+  \]
+\end{proposition}
+\begin{theorem}
+  The average value of $f(x, y)$ on $F$ is \[
+    \frac{\iint_D f(x,y) dA}{\iint_D 1 dA}
+  \] since $\iint_D 1 dA$ is the area of $D$.
+\end{theorem}
+\begin{definition}
+  The \textbf{centroid} of $D$ is the point $(\overline{x}, \overline{y})$ where \[
+    \overline{x} = \frac{\iint_D x dA}{\iint_D 1 dA}
+  \] and similarly for $\overline{y}$.
+\end{definition}
+\subsection{Cylindrical Coordinates}
+\begin{definition}
+  Cylindrical coordinates are obtained by the change of variables $(x, y) \to (r, \theta)$, where \[
+    x = r\cos\theta, y=r\sin\theta
+  \] and \[
+    dV = dxdydz = rdrd\theta dz
+  \]
+\end{definition}
+\subsection{Spherical Coordinates}
+\begin{definition}
+  Consider a point $P$. Then $P$ can be represented uniquely by
+  \begin{itemize}
+    \item $R$ is the radius of the sphere
+    \item $0 \leq \theta \leq 2\pi$ is the projection of the point onto the $xy$-axis and taking the angle from the $x$ axis to $P'$.
+    \item $0 \leq \phi \leq \pi$ is the angle made by $P$ and the $z$-axis.
+  \end{itemize}
+\end{definition}
+\subsection{Change of Variables}
+\begin{theorem}
+  The conversion for area is \[
+    dA = \abs{\frac{\partial(x, y)}{\partial(u, v)}} =
+    \begin{vmatrix}
+      x_u & x_v\\
+      y_u & v_v\\
+    \end{vmatrix}
+  \]
+
+  It is also equivalent to \[
+    \left(\frac{\partial(u, v)}{\partial(x, y)}\right)^{-1}
+  \]
+\end{theorem}
+\begin{remark}
+  Remember to flip and take the absolute value!!!
+\end{remark}
+\end{document}

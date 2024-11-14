@@ -1,0 +1,3371 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\input{preamble.tex}
+\DeclareMathOperator{\nullity}{nullity}
+\DeclareMathOperator{\spn}{span}
+\DeclareMathOperator{\colspace}{colspace}
+\DeclareMathOperator{\rowspace}{rowspace}
+\DeclareMathOperator{\proj}{proj}
+\DeclarePairedDelimiterX{\inner}[2]{\langle}{\rangle}{#1, #2}
+\newcommand{\F}{\mathbb{F}}
+\begin{document}
+\title{MATH 1152 Notes}
+\date{Winter Term 1 2022}
+\maketitle
+
+\begin{tcolorbox}[title=, fonttitle=\huge\sffamily\bfseries\selectfont,interior style={left color=contcol1!40!white,right color=contcol2!40!white},frame style={left color=contcol1!80!white,right color=contcol2!80!white},coltitle=black,top=2mm,bottom=2mm,left=2mm,right=2mm,drop fuzzy shadow,enhanced,breakable]
+  \tableofcontents
+\end{tcolorbox}
+\newpage
+\section{Matrices}
+\subsection{Linear Combinations}
+\begin{definition}
+  Let $V$ be a vector space over a field $F$. A vector $v$ is a \textbf{linear combination} of vectors $u_1, \ldots, u_n \in V$ if there exist scalars $c_1, \ldots, c_n \in F$ with
+  \begin{align*}
+    v &= c_1u_1 + \dots + c_nu_n\\
+    &= \sum_{i=1}^n c_iu_i
+  \end{align*}
+  For example, since
+  \[
+    2
+    \begin{bmatrix}
+      1\\
+      1\\
+      0\\
+    \end{bmatrix}
+    -3
+    \begin{bmatrix}
+      0\\
+      1\\
+      1\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      2\\
+      -1\\
+      -3\\
+    \end{bmatrix}
+  \]
+  the vector $(2, -1, -3)$ is a linear combination of $(1, 1, 0)$ and $(0, 1, 1)$ in $\R^3$.
+
+  As another example, since
+  $2(x^2+x) - 3(x+1) = 2x^2-x-3$, $2x^2-x-3$ is a linear combination of $x^2+x$ and $x+1$ in $P_2(\R)$.
+\end{definition}
+\begin{examples}
+  \textbf{Example 1:}\newline
+  Working in $\R^3$ over $\R$, write $v = (1, 1, 1)$ as a linear combination of $u_1 = (1, 2, 3)$, $u_2 = (2, 3, 4)$, and $u_3 = (3, 4, 5)$, if possible.
+  We must find $x, y, z \in \R$ with
+  \[
+    x
+    \begin{bmatrix}
+      1\\
+      2\\
+      3\\
+    \end{bmatrix}
+    +y
+    \begin{bmatrix}
+      2\\
+      3\\
+      4\\
+    \end{bmatrix}
+    +z
+    \begin{bmatrix}
+      3\\
+      4\\
+      5\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      1\\
+      1\\
+      1\\
+    \end{bmatrix}
+  \]
+  However, we have
+  \[
+    x
+    \begin{bmatrix}
+      1\\
+      2\\
+      3\\
+    \end{bmatrix}
+    +y
+    \begin{bmatrix}
+      2\\
+      3\\
+      4\\
+    \end{bmatrix}
+    +z
+    \begin{bmatrix}
+      3\\
+      4\\
+      5\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      x\\
+      2x\\
+      3x\\
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+      2y\\
+      3y\\
+      4y\\
+    \end{bmatrix}+
+    \begin{bmatrix}
+      3z\\
+      4z\\
+      5z\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      x + 2y + 3z\\
+      2x + 3y + 4z\\
+      3z + 4y + 5z\\
+  \end{bmatrix}\]
+  Therefore, we must find $x, y, z$ where \[
+    \begin{bmatrix}
+      x + 2y + 3z\\
+      2x + 3y + 4z\\
+      3z + 4y + 5z\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      1\\
+      1\\
+      1\\
+  \end{bmatrix}\]
+  We must solve this linear system, so we write down the augmented matrix and row reduce.
+  \[
+    \begin{bmatrix}
+      1 & 2 & 3 & 1\\
+      2 & 3 & 4 & 1\\
+      3 & 4 & 5 & 1\\
+    \end{bmatrix}
+    \implies
+    \begin{bmatrix}
+      1 & 0 & -1 & -1\\
+      0 & 1 & 2 & 1\\
+      0 & 0 & 0 & 0\\
+    \end{bmatrix}
+  \]
+  Since $z$ is free, we set $z = t$. Then $x = t-1$ and $y = -2t + 1$. We have found infinitely many ways to form this linear combination. We have \[
+    v = (t-1)u_1 + (2t+1)u_2 + tu_3
+  \]
+  for any $t \in \R$. Note that in the augmented matrix, the columns are the vectors $u_1$ to $u_3$, and the last column is the vector $v$.\newline
+  \textbf{Example 2:}\newline
+  Consider the following system of linear equations over $\R$:
+  \begin{align*}
+    x - 2y + 3z &= 2\\
+    x + y + 2z &= 4\\
+    3x + 2y + z &= 6\\
+  \end{align*}
+  We can write the system using matricies:
+  \[
+    \begin{bmatrix}
+      x - 2y + 3z\\
+      x + y + 2z\\
+      3x + 2y + z\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      2\\
+      4\\
+      6\\
+    \end{bmatrix}
+  \]
+  However, we have
+  \[
+    \begin{bmatrix}
+      x - 2y + 3z\\
+      x + y + 2z\\
+      3x + 2y + z\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      x\\
+      x\\
+      3x\\
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+      -2y\\
+      y\\
+      2x\\
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+      3z\\
+      2z\\
+      z\\
+    \end{bmatrix}
+    =x
+    \begin{bmatrix}
+      1\\
+      1\\
+      3\\
+    \end{bmatrix}
+    +y
+    \begin{bmatrix}
+      -2\\
+      1\\
+      2\\
+    \end{bmatrix}
+    +z
+    \begin{bmatrix}
+      3\\
+      2\\
+      1\\
+    \end{bmatrix}
+  \]
+  Thus, the problem of solving the linear system has been transformed into finding $x, y, z$ with
+  \[
+    x
+    \begin{bmatrix}
+      1\\
+      1\\
+      3\\
+    \end{bmatrix}
+    +y
+    \begin{bmatrix}
+      -2\\
+      1\\
+      2\\
+    \end{bmatrix}
+    +z
+    \begin{bmatrix}
+      3\\
+      2\\
+      1\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      2\\
+      4\\
+      6\\
+    \end{bmatrix}
+  \]
+  Solving this system yields the unique solution $x = y = z = 1$. These are the coefficients in the linear combination above, $(1, 1, 3) + (-2, 1, 2) + (3, 2, 1) = (2, 4, 6)$.
+
+  In the above example, solving a linear system of equations over $F$ can be transformed into the problem of writing a vector of $F^n$ as a linear combination of other vectors.
+\end{examples}
+\begin{theorem}
+  Consider the system of $m$ linear equations over a field $F$ with $n$ unknowns given by
+  \[
+    a_{i1}x_1 + \dots + a_{in}x_n = c_i\\
+  \]
+  for $1 \leq i \leq m$. Let $A$ be the coefficient matrix, such that $[A]_{ij} = a_{ij}$. Let $c$ be the $m \times 1$ vector of constants, such that $[c]_{i1} = c_i$. Let $v_j$ be the jth column of $A$, such that $[v_j]_{i1} = a_{ij}$. Then the $n \times 1$ vector
+  \[
+    x =
+    \begin{bmatrix}
+      b_1\\
+      \vdots\\
+      b_n\\
+    \end{bmatrix}
+  \]
+  is a solution to the system if and only if
+  \[b_1v_1 + \dots + b_nv_n = c\]
+\end{theorem}
+\begin{proof}
+  We note that the ith entry of the vector $b_1v_1 + \dots +b_nv_n$ is
+  \begin{align*}
+    \left[ \sum_{j=1}^n b_jv_j\right]_{i1} &= \sum_{j=1}^n [b_jv_j]_{i1} \tag{def. of vector add}\\
+    &= \sum_{j=1}^n b_j[v_j]_{i1} \tag{def. of scalar mul.}\\
+    &= \sum_{j=1}^n a_{ij}b_j
+  \end{align*}
+  We prove the forward direction. Suppose $(b_1, \ldots, b_n)$ is a solution to the system, so that it satisfies \[
+    a_{i1}x_1 + \dots + a_{in}x_n = c_i\\
+  \]
+  Then for each $i$, we have
+  \begin{align*}
+    [c]_{i1} &= c_i\\
+    &= \sum_{j=1}^n a_{ij}b_j\\
+    &= \left[ \sum_{j=1}^n b_jv_j\right]_{i1}
+  \end{align*}
+  Thus, we have $\sum_{j=1}^n a_{ij}b_j = c$, as required.
+
+  We now show the reverse.
+  Suppose $b_1v_1 + \dots + b_nv_n = c$.
+  Then for each $i$, we have
+  \begin{align*}
+    c_i &= [c]_{i1}\\
+    &= \left[ \sum_{j=1}^n b_jv_j\right]_{i1} \tag{By assumption}\\
+    &= \sum_{j=1}^n a_{ij}b_j\\
+  \end{align*}
+  Thus, $(b_1, \ldots, b_n)$ is a solution to each equation $a_{i1}x_1 + \dots + a_{in}x_n = c_i$.
+\end{proof}
+\subsection{Matrix-Vector Products}
+\begin{proposition}
+  If $v_1, \ldots, v_n \in F^m$, then we write $A =[v_1, \ldots, v_n]$ to denote the $m \times n$ matrix $A$ with $j$th column equal to $v_j$.
+\end{proposition}
+\begin{definition}
+  Let $F$ be a field, and let $v_1, \ldots, v_n \in F^m$, and let $A = [v_1, \ldots, v_n]$. Suppose \[
+    c_1v_1 + \dots + c_nv_n = b
+  \]
+  for $c_i \in F$ and $b \in F^m$. We define the \textbf{matrix-vector product} by \[
+    A
+    \begin{bmatrix}
+      c_1\\
+      \vdots\\
+      c_n
+    \end{bmatrix}
+    = b
+  \]
+\end{definition}
+\begin{remark}
+  Thus, a matrix-vector product is a new way to write a linear combination of vectors.The vectors in the linear combination are stored as a column of $A$, the coefficents are stored in the vector multiplied by $A$, and the resulting vector from the linear combination is equal to the product.
+
+  We note that $A$ is $m \times n$, the coefficient vector is $n \times 1$, and $b$ is $m \times 1$. That is, the product of a $m \times n$ matrix with a $n \times 1$ vector results in a $m \times 1$ vector. In a matrix-vector product, the number of columns in $A$ must be equal to the encumber of rows of the coefficient matrix.
+\end{remark}
+\begin{examples}
+  \textbf{Example 1:}\newline
+  Rewrite the linear combination
+  \[
+    2
+    \begin{bmatrix}
+      1\\
+      2\\
+      3\\
+      1\\
+    \end{bmatrix}
+    -3
+    \begin{bmatrix}
+      1\\
+      0\\
+      1\\
+      2\\
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+      2\\
+      1\\
+      0\\
+      3\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      1\\
+      5\\
+      3\\
+      -1\\
+    \end{bmatrix}
+  \] using a matrix-vector product.
+
+  We can write
+  \[
+    \begin{bmatrix}
+      1 & 1 & 2\\
+      2 & 0 & 1\\
+      3 & 1 & 0\\
+      1 & 2 & 3\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      2\\
+      -3\\
+      1\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      1\\
+      5\\
+      3\\
+      -1\\
+    \end{bmatrix}
+  \]
+  The three vectors that are used in the linear combination are the columns of the matrix. The coefficients used in the linear combination make up the entries of the vector, and the matrix-vector product is equal to the resulting vector in the linear combination.
+
+  \textbf{Example 2:}\newline
+  Compute the following product:
+  \[
+    \begin{bmatrix}
+      1 & 2 & 1 & 1\\
+      2 & 1 & 2 & 1\\
+      0 & 4 & -3 & 1\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      2\\
+      -1\\
+      3\\
+      -5\\
+    \end{bmatrix}
+  \]
+  The matrix-vector product is equal to the linear combinations of vectors formed by columns of the matrix, using the entries in the vector as coefficients. Thus,
+  \begin{align*}
+    \begin{bmatrix}
+      1 & 2 & 1 & 1\\
+      2 & 1 & 2 & 1\\
+      0 & 4 & -3 & 1\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      2\\
+      -1\\
+      3\\
+      -5\\
+    \end{bmatrix} &= 2
+    \begin{bmatrix}
+      1\\
+      2\\
+      0\\
+    \end{bmatrix} -
+    \begin{bmatrix}
+      2\\
+      1\\
+      4\\
+    \end{bmatrix} + 3
+    \begin{bmatrix}
+      1\\
+      2\\
+      -3\\
+    \end{bmatrix}-5
+    \begin{bmatrix}
+      1\\
+      1\\
+      1\\
+    \end{bmatrix}\\
+    &=
+    \begin{bmatrix}
+      -2\\
+      4\\
+      -18\\
+    \end{bmatrix}
+  \end{align*}
+\end{examples}
+\begin{theorem}
+  Consider the system of linear equations with $m \times n$ coefficient matrix $A$ and constant column vector $b$. Let
+  \[ x =
+    \begin{bmatrix}
+      x_1\\
+      \vdots\\
+      x_n\\
+  \end{bmatrix}\]
+  Then the system may be written as $Ax = b$. Conversely, $Ax = b$ yields a system of linear equations $x_1, \ldots, x_n$ with coefficient matrix $A$ and constant column vector $b$.
+\end{theorem}
+\begin{proof}
+  Let $v_j$ be the $j$th column of $A$. Then by the definition of the matrix vector product, we have
+  \[Ax = x_1v_1 + \dots + x_nv_n\]
+  Thus, $Ax = b$ if and only if
+  \[x_1v_1 + \dots + x_nv_n = b\]
+  By our theorem on linear equations and combinations, this linear combination is equivalent to the described system of linear equations having $x$ as a solution.
+\end{proof}
+\begin{example}
+  The system
+  \begin{align*}
+    2x - 3y + 7z &= 1\\
+    x - 2y -z &= 0\\
+    3x + y +5z &= -2\\
+  \end{align*}
+  may be written as
+  \[
+    \begin{bmatrix}
+      2 & -3 & 7\\
+      1 & -2 & -1\\
+      3 & 1 & 5\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      x\\
+      y\\
+      z\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      1\\
+      0\\
+      -2\\
+    \end{bmatrix}
+  \]
+\end{example}
+\subsection{Matrix Multiplication}
+\begin{definition}
+  Let $F$ be a field. Let $v_1, \ldots, v_n \in F^m$, and let
+  \[A = [v_1, \ldots, v_n]\]
+  Suppose
+  \begin{align*}
+    c_{11}v_1 + \dots + c_{n1}v_n &= b_1\\
+    \vdots\\
+    c_{1r}v_1 + \dots + c_{nr}v_n &= b_r\\
+  \end{align*}
+  for $c_{ij} \in \F$ and $b_k \in F^m$. We define the matrix product by
+  \[A
+    \begin{bmatrix}
+      c_{11} & c_{12} & \dots & c_{1r}\\
+      c_{21} & c_{22} & \dots & c_{2r}\\
+      \vdots & \vdots & \vdots& \vdots\\
+      c_{n1} & c_{n2} & \dots & c_{nr}\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      b_1 & b_2 & \dots & b_r\\
+  \end{bmatrix}\]
+\end{definition}
+\begin{remark}
+  A matrix product is simply a new way to write down multiple linear combinations of a collection of vectors.
+
+  The vectors in the linear combinations are stored as columns of $A$, as in the matrix-vector product. The coefficients for the $k$th linear combination are stored in the $k$th column of the second matrix, and the resulting vector from the $k$th linear combination is equal to the $k$th column of the resulting matrix.
+
+  We note that $A$ is $m \times n$, the second matrix is $n \times r$, and the resulting matrix is $m \times r$. In a matrix product, the number of columns in the first must be equal to the number of rows in the second.
+
+  Note that in the case in which the second matrix in the product is a vector, we get the matrix-vector product.
+\end{remark}
+\begin{examples}
+  \textbf{Example 1:}\newline
+  Rewrite the following linear combinations with a matrix product:
+  \begin{align*}
+    2
+    \begin{bmatrix}
+      1\\
+      2\\
+      3\\
+    \end{bmatrix}-3
+    \begin{bmatrix}
+      1\\
+      0\\
+      1\\
+    \end{bmatrix} +
+    \begin{bmatrix}
+      2\\
+      1\\
+      0\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      1\\
+      5\\
+      3\\
+    \end{bmatrix}\\
+    -
+    \begin{bmatrix}
+      1\\
+      2\\
+      3\\
+    \end{bmatrix}
+    + 2
+    \begin{bmatrix}
+      1\\
+      0\\
+      1\\
+    \end{bmatrix} + 3
+    \begin{bmatrix}
+      2\\
+      1\\
+      0\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      5\\
+      1\\
+      -1\\
+    \end{bmatrix}
+  \end{align*}
+  We have
+  \[
+    \begin{bmatrix}
+      1 & 1 & 2\\
+      2 & 0 & 1\\
+      3 & 1 & 0\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      2 & -1\\
+      -3 & 2\\
+      1 & 3\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      1 & 5\\
+      5 & 1\\
+      3 & -1\\
+    \end{bmatrix}
+  \]
+  The vectors form the columns of the first matrix in the product. The coefficients in the first combination form the first column of the second matrix, and the coefficients in the second combination form the second column of the second matrix. The product is equal to the matrix with columns equal to the resulting vectors.
+
+  \textbf{Example 2:}
+  Compute the following product:
+  \[
+    \begin{bmatrix}
+      1 & 2 & 3 & -1\\
+      2 & -1 & 1 & 1\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      2 & 1 & 0\\
+      0 & 1 & 3\\
+      1 & 0 & 1\\
+      1 & -2 & 1\\
+    \end{bmatrix}
+  \]
+  Let $A$ be the first matrix, and $B$ the second. Note that $A$ is $2 \times 4$, and $B$ is $4 \times 3$, so the product $AB$ should be $2 \times 3$.
+  The first column of $AB$ is equal to the linear combination of the columns of $A$ using the entries in the first column of $B$ as coefficients. It is
+  \[2
+    \begin{bmatrix}
+      1\\
+      2\\
+    \end{bmatrix}
+    + 0
+    \begin{bmatrix}
+      2\\
+      -1\\
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+      3\\
+      1\\
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+      -1\\
+      1\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      4\\
+      6\\
+    \end{bmatrix}
+  \]
+  The second column of the product is equal to a linear combination of the same vectors, but with the entries in the second column of $B$ as the coefficients. It is
+  \[
+    \begin{bmatrix}
+      1\\
+      2\\
+    \end{bmatrix} +
+    \begin{bmatrix}
+      2\\
+      -1\\
+    \end{bmatrix} + 0
+    \begin{bmatrix}
+      3\\
+      1\\
+    \end{bmatrix} - 2
+    \begin{bmatrix}
+      -1\\
+      1\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      5\\
+      1\\
+    \end{bmatrix}
+  \]
+  The third column of the product is equal to a linear combination of the same vectors, but with the entries in the third column of $B$ as the coefficients. It is
+  \[
+    0
+    \begin{bmatrix}
+      1\\
+      2\\
+    \end{bmatrix} + 3
+    \begin{bmatrix}
+      2\\
+      -1\\
+    \end{bmatrix} +
+    \begin{bmatrix}
+      3\\
+      1\\
+    \end{bmatrix} +
+    \begin{bmatrix}
+      -1\\
+      1\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      8\\
+      -1\\
+    \end{bmatrix}
+  \]
+  Thus,
+  \[ AB =
+    \begin{bmatrix}
+      4 & 5 & 8\\
+      6 & - 1 & -1\\
+  \end{bmatrix}\]
+\end{examples}
+\begin{remark}
+  It is tedious to use linear combinations of vectors when evaluating matrix products. Let's search for a more convenient method. Let $A$ be $m \times n$ and $B$ be $n \times r$, so that $C = AB$ is an $m \times r$ matrix. Let's determine a formula for $[C]_{ij}$, the $ij$th entry of $C$.
+  This will allow us to compute matrix products one entry at a time, rather than a whole column at once.
+
+  We let $a_i$ be the $i$th column of $A$, $c_j$ be the $j$th column of $C$, and let $b_{ij}$ be the $ij$th entry of $B$. Then, $A =
+  \begin{bmatrix}
+    a_1 & \dots & a_n
+  \end{bmatrix}$, $C =
+  \begin{bmatrix}
+    c_1 & \dots & c_r
+  \end{bmatrix}$, and $b_{ij} = [B]_{ij}$. Since $C = AB$, by definition of matrix product, we have
+  \[c_j = b_{1j}a_1 + b_{2j}a_2 + \dots + b_{nj}a_n\]
+  Thus,
+  \begin{align*}
+    [AB]_{ij} &= [C]_ij\\
+    &= [c_j]_{i1}\\
+    &= [b_{1j}a_1 + b_{2j}a_2 + \dots + b_{nj}a_n]_{i1}\\
+    &= b_{1j}[a_1]_{i1} + b_{2j}[a_2]_{i1} + \dots + b_{nj}[a_n]_{i1}\\
+    &= [a_1]_{i1}b_{1j} + [a_2]_{i1}b_{2j} + \dots + [a_n]_{i1}b_{nj}\\
+    &= [A]_{i1}[B]_{1j} + [A]_{i1}[B]_{2j} + \dots + [A]_{i1}[B]_{nj}\\
+    &= \sum_{k=1}^n [A]_{ik}[B]_{kj}
+  \end{align*}
+  That is, to find the $ij$th entry of $AB$, we travel along the $i$th row of $A$ and the $j$th column of $B$, multiply the resulting entries together and sum them.
+\end{remark}
+\begin{theorem}
+  Let $A$ be a $m \times n$ matrix and $B$ be an $n \times r$ matrix. Then, the $ij$th entry of $AB$ is given by
+  \[[AB]_{ij} = \sum_{k=1}^n [A]_{ik}[B]_{kj}\]
+\end{theorem}
+\begin{examples}
+  Let
+  \[A =
+    \begin{bmatrix}
+      1 & -2 & 3\\
+      7 & -1 & 0\\
+      5 & 1 & 1\\
+  \end{bmatrix}\]
+  and \[
+    B=
+    \begin{bmatrix}
+      2 & -1\\
+      1 & 4\\
+      0 & 3\\
+    \end{bmatrix}
+  \]
+  Find $AB$ and $BA$, when defined.
+  We can use the above method to compute $AB$, which is a $3 \times 2$ matrix. To find the entry in the top left position, we use the first row of $A$ and the first column of $B$, and multiply the corresponding entries and add. $(1)(2) + (-2)(1) + (3)(0) = 0$. For the first row and second column, we use the first row of $A$ and the second column of $B$. $(1)(-1) + (-2)(4) + 3(3) = 0$. To find the entry in the second row, first column, we use the second row of $A$ and the first column of $B$. $(7)(2) + (-1)(1) + (0)(0) = 13$. Continuing in this way, we have
+  \[AB =
+    \begin{bmatrix}
+      0 & 0\\
+      13 & -11\\
+      11 & 2\\
+  \end{bmatrix}\]
+  As for $BA$, since $B$ has 2 columns but $A$ has 3 rows it is not defined.
+
+  \textbf{Example 2:}\newline
+  Let
+  \[A =
+    \begin{bmatrix}
+      1 & 2 & 3\\
+  \end{bmatrix}\]
+  and \[B =
+    \begin{bmatrix}
+      1\\
+      2\\
+      3\\
+    \end{bmatrix}
+  \]
+  Find $AB$ and $BA$, when defined.
+
+  Note that $AB$ is a $1 \times 1$ matrix. To find the entry, we use the first row of $A$ and the first column of $B$. $(1)(1) + (2)(2) + (3)(3) = 14$. Thus, \[
+    AB =
+    \begin{bmatrix}
+      14
+  \end{bmatrix}\]
+  Since $B$ has as many columns as $A$ has rows, $BA$ is defined, but it is a $3 \times 3$ matrix. To find the first entry, we use the first row of $B$ and the first column of $A$. $(1)(1) = 1$. To find the entry in the first row, second column, we use the first row of $B$ and the second column of $A$. $(1)(2) = 2$. Continuing, we have \[
+    BA =
+    \begin{bmatrix}
+      1 & 2 & 3\\
+      2 & 4 & 6\\
+      3 & 6 & 9\\
+    \end{bmatrix}
+  \]
+\end{examples}
+\begin{remark}
+  We note the product of 2 matrices may be denied in one order, but not the other. The above example shows that even if $AB$ and $BA$ are defined, they may not equal each other or be different sizes. However, if $A$ and $B$ are both $n \times n$ matrices, then so are $AB$ and $BA$.
+\end{remark}
+\begin{example}
+  Let
+  \[A =
+    \begin{bmatrix}
+      2 & 1\\
+      -4 & -2\\
+  \end{bmatrix}\]
+  and \[B =
+    \begin{bmatrix}
+      1 & 2\\
+      2 &1\\
+  \end{bmatrix}\]
+  Find $AB$, $BA$, and $A^2 = AA$.
+  Solving, we have
+  \[
+    AB =
+    \begin{bmatrix}
+      4 & 5\\
+      -8 & -10\\
+    \end{bmatrix}, BA =
+    \begin{bmatrix}
+      -6 & -3\\
+      0 & 0\\
+    \end{bmatrix}, A^2 =
+    \begin{bmatrix}
+      0 & 0\\
+      0 & 0\\
+    \end{bmatrix}
+  \]
+\end{example}
+\begin{remark}
+  The previous example shows that even if $AB$ and $BA$ are the same size, they may still be different. Thus, matrix multiplication is not commutative.
+
+  Also, there exist $0$ divisors. $A$ is not the zero matrix, yet $A^2$ is.
+  Recall that this can not happen in fields, if $ab = 0$, then $a = 0$ or $b = 0$.
+  Thus, we must be careful working with matrices.
+\end{remark}
+\begin{example}
+  Recall that the $n \times n$ identity matrix $I_n$ has main diagonal entries equal to $1$, and all others $0$. We give a few matrix products that involve these matricies. We have
+  \[
+    \begin{bmatrix}
+      2 & 3\\
+      5 & - 7\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      1 & 0\\
+      0 & 1\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      2 & 3\\
+      5 & - 7\\
+    \end{bmatrix}
+  \]
+  and \[
+    \begin{bmatrix}
+      1 & 0\\
+      0 & 1\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      2 & 3\\
+      5 & - 7\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      2 & 3\\
+      5 & - 7\\
+    \end{bmatrix}
+  \]
+  This still holds for non-square matrices.
+  \[
+    \begin{bmatrix}
+      1 & 2 & 3\\
+      5 & 6 & 7\\
+    \end{bmatrix}
+    \mqty[\imat{3}]
+    =
+    \begin{bmatrix}
+      1 & 2 & 3\\
+      5 & 6 & 7\\
+    \end{bmatrix}
+  \] and \[
+    \mqty[\imat{2}]
+    \begin{bmatrix}
+      1 & 2 & 3\\
+      5 & 6 & 7\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      1 & 2 & 3\\
+      5 & 6 & 7\\
+    \end{bmatrix}
+  \]
+\end{example}
+\subsubsection{Properties of Matrix Multiplication}
+\begin{definition}
+  Let $O_{mn}$ be the $m \times n$ matrix with $[O_{mn}]_{ij} = 0$ for all $i, j$. $O_{mn}$ is called a \textbf{zero matrix}.
+\end{definition}
+\begin{theorem}
+  Let $A$ be an $m \times n$ matrix, $B$ and $C$ both $n \times r$ matrices, and $D$ an $r \times P$ matrix, all with entries in a field $F$. Let $\alpha$ be a scalar in $F$. The following hold:
+  \begin{enumerate}
+    \item $AO_{nr} = O_{mr}$ and $O_{rm}A = O_{rn}$
+    \item $AI_n = A$ and $I_mA = A$
+    \item $A(B+C) = AB + AC$ and $(B+C)D + BD + CD$
+    \item $\alpha(AB) = (\alpha A)B = A(\alpha B)$
+    \item $A(BD) = (AB)D$
+  \end{enumerate}
+
+\end{theorem}
+\subsection{Results on the Null Space and Non-singular Matrices}
+\begin{theorem}
+  Let $A$ be a $m \times n$ matrix. The solution set to the homogeneous system $Ax = 0$ is a subspace of $F^n$. That is, $N(A)$ is a subspace of $F^n$.
+\end{theorem}
+\begin{proof}
+  We use the subspace theorem. Suppose $u, v \in N(A)$, and $c \in F$. We need to prove
+  \begin{enumerate}
+    \item $N(A)$ is non-empty
+    \item $u + v \in N(A)$
+    \item $cu \in N(A)$
+  \end{enumerate}
+  For 1, we have $x = 0$ is a solution to the system, so $0 \in N(A)$.
+
+  For 2, we have $Au = 0$ and $Av = 0$, so $Au + Av = 0$ or $A(u+v) = 0$.
+
+  For 3, we have $Au = 0$, so $cAu = 0$ or $A(cu) = 0$.
+
+  Thus, $u + v$ and $cu$ are in the solution set.
+\end{proof}
+\begin{remark}
+  Consider the solution set to a consistent non-homogeneous system $Ax = b$ with $b \not = 0$. Since $A0 = 0$, but $b \not = 0$, $0$ is not in the solution set. Thus, the solution set to a consistent non-homogeneous system is not a subspace of $F^n$. However, the solution set looks like a subspace that has been shifted from the origin by a vector. When we solved non-homogeneous systems of $2$ or $3$ variables, solution sets were lines or planes that did not pass through the origin. All lines and planes through the origin are subspaces of $\R^n$.
+\end{remark}
+\begin{theorem}
+  Consider a consistent non-homogeneous system $Ax = b$ with $b \not = 0$. Let $w$ be a solution to the system. Then $y$ is a solution to $Ax = b$ iff $y = w + z$ for some $z$ satisfying $Az = 0$.
+\end{theorem}
+\begin{proof}
+  We note that $Aw = b$.
+  Suppose that $y$ is a solution to the non-homogeneous system, so that $Ay = b$. We set $z = y - w$ so that $y = w + z$. We must show that $z$ is a solution to the homogeneous system $Ax - 0$. We have
+  \begin{align*}
+    Az &= A(y-w)\\
+    &= Ay - Aw\\
+    &= b - b\\
+    &= 0\\
+  \end{align*}
+  as required.
+
+  For the reverse direction, suppose there is a $z$ such that $y = w+z$ for $Az = 0$. We must show $y$ is a solution to the system $Ax =b$. We have
+  \begin{align*}
+    Ay = A(w+z)\\
+    &= Aw + Az\\
+    &= b + 0\\
+    &= b\\
+  \end{align*} as required.
+
+  Thus, the solution set to a non-homogeneous system is equal to a particular solution to the system, plus the solution set to a homogeneous system.
+\end{proof}
+\begin{definition}
+  If $Ax = b$ is a non-homogeneous system, then the homogeneous system $Ax = 0$ is called the \textbf{associated homogeneous system}.
+\end{definition}
+\begin{example}
+  Solve the system
+  \begin{align*}
+    x_1 + 2x_2 - x_4 &= 2\\
+    2x_1 + 4x_2 +x_3 -5x_4 &= 5\\`
+  \end{align*}
+  over $\R$, and observe the solution is in the form given by previous theorem.
+
+  We solve the system by row reducing over the augmented matrix.
+  \[
+    \begin{bmatrix}
+      1 & 2 & 0 & -1 & 2\\
+      2 & 4 & 1 & -5 & 5\\
+    \end{bmatrix} \to
+    \begin{bmatrix}
+      1 & 2 & 0 & -1 & 2\\
+      0 & 0 & 1 & -3 & 1\\
+    \end{bmatrix}
+  \]
+  Since $x_2$, $x_4$ are free, set $x_2 = s$ and $x_4 = t$. Then, $x_1 = -2s+t+2$ and $x_3 = 3t+1$\\
+  The solution set consists of the vectors
+  \begin{align*}
+    \begin{bmatrix}
+      x_1\\
+      x_2\\
+      x_3\\
+      x_4\\
+    \end{bmatrix}
+    &=
+    \begin{bmatrix}
+      -2s + t + 2\\
+      s\\
+      3t+1\\
+      t\\
+    \end{bmatrix}\\
+    &=
+    \begin{bmatrix}
+      2\\
+      0\\
+      1\\
+      0\\
+    \end{bmatrix} +
+    \begin{bmatrix}
+      -2s\\
+      s\\
+      0\\
+      0\\
+    \end{bmatrix} +
+    \begin{bmatrix}
+      t\\
+      0\\
+      3t\\
+      t\\
+    \end{bmatrix}\\
+    &=
+    \begin{bmatrix}
+      2\\
+      0\\
+      1\\
+      0\\
+    \end{bmatrix} + s
+    \begin{bmatrix}
+      -2\\
+      1\\
+      0\\
+      0\\
+    \end{bmatrix} + t
+    \begin{bmatrix}
+      1\\
+      0\\
+      3\\
+      1\\
+    \end{bmatrix}
+  \end{align*}
+  for some $s, t \in \R$. We note that the vector $(2, 0, 1, 0)$ is a solution to the system, and that \[
+    s
+    \begin{bmatrix}
+      -2\\
+      1\\
+      0\\
+      0\\
+    \end{bmatrix} + t
+    \begin{bmatrix}
+      1\\
+      0\\
+      3\\
+      1\\
+  \end{bmatrix}\] is the solution set to the associated homogeneous system
+  \begin{align*}
+    x_1 + 2x_2 - x_4 &= 0\\
+    2x_1 + 4x_2 + x_3 - 5x_4\\
+  \end{align*}
+\end{example}
+\begin{remark}
+  Recall that a square matrix $A$ with $N(A) = \{0\}$ is called a non-singular matrix. You can think of a singular matrix as a matrix multiplication equivalent of a number being $0$. We know that a product of numbers is non-zero iff each number is non-zero. There is a similar theorem for matrices.
+\end{remark}
+\begin{theorem}
+  Let $A$ and $B$ be square matrices of the same size. Then $AB$ is non-singular iff $A$ and $B$ are both non-singular.
+\end{theorem}
+\begin{proof}
+  We show the forward direction by proving that $A$ singular or $B$ singular implies $AB$ singular. We have 2 cases:
+
+  Assume $B$ is singular, then there exists a non-trivial solution to the homogeneous system with coefficient matrix $B$. That is, there exists $v \not = 0$ with $Bv = 0$. Then,
+  \begin{align*}
+    (AB)v &= A(Bv)\\
+    &= A0\\
+    &= 0\\
+  \end{align*}
+  Since $v \not = 0$, the homogeneous system with coefficient matrix $AB$ has a non-trivial solution, and so $AB$ is singular.
+
+  In the second case, we have $B$ non-singular and $A$ singular. Since $A$ is singular. Since $A$ is singular, there exists $v \not = 0$ with $Av = 0$. Since $B$ is non-singular, the system $Bv$ has a unique solution $x=u$. If $u = 0$, then $v = B0 = 0$, which is not the case. Thus $u \not = 0$. We have
+  \begin{align*}
+    (AB)u &= A(Bu)\\
+    &= Av\\
+    &= 0\\
+  \end{align*}
+  for $u \not = 0$. Since the homogeneous system with coefficient matrix $AB$ has a non-trivial solution, namely $u$, $AB$ is singular.
+
+  We now show the reverse direction. Suppose $A$ and $B$ are non-singular. Consider the homogeneous system $(AB)x=0$, which can be rewritten as $A(Bx) = 0$, and so for any solution $x$ to the homogeneous system $(AB)x = 0$, $Bx$ is a solution to the homogeneous system with coefficient matrix $A$. Since $A$ is non-singular, this implies $Bx = 0$. Since $B$ is non-singular, we can conclude $x = 0$. Thus the homogeneous system with coefficient matrix $AB$ has only the trivial solution, which shows that $AB$ is non-singular.
+\end{proof}
+\subsection{Elementary Matrices}
+\begin{definition}
+  An \textbf{elementary matrix} is the matrix obtained by preforming a single elementary row operation on an identity matrix.
+\end{definition}
+\begin{theorem}
+  Let $A$ be an $m \times n$ matrix with entries in a field $F$, and let $E$ be an $m \times n$ elementary matrix for a row operation. Then $EA$ is the matrix obtained by preforming that row operation on $A$.
+\end{theorem}
+\begin{example}
+  \[
+    \begin{bmatrix}
+      1 & 0 & 0\\
+      0 & 1 & 0\\
+      2 & 0 & 1\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      1 & 2\\
+      1& 3\\
+      2 & 1\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      1 & 2\\
+      1& 3\\
+      4 & 5\\
+    \end{bmatrix}
+  \]
+  This is the same row operation as preforming R3 + 2R1.
+\end{example}
+\begin{proof}
+  Proof is omitted for brevity.
+\end{proof}
+\subsection{Matrix Inverses}
+\begin{theorem}
+  Let $A$ be a $n\times n$ matrix. Then $A$ is non-singular iff there exists an $n \times n$ matrix with $BA = I_n$.
+\end{theorem}
+\begin{proof}
+  We show the forwards direction. Suppose $A$ is non-singular. By the Non-singularity theorem, there is a sequence of elementary row operations that bring $A$ to $I_n$. Thus, there are elementary matrices $E_1, \ldots, E_k$ with
+  \[
+    E_k\dots E_1A = I_n
+  \]
+  Letting $B = E_k\dots E_1$ completes this direction.
+
+  We now show the reverse.
+  Suppose $BA = I_n$ but $A$ is singular. By the Non-singularity theorem, there then exists $v \not = 0$ with $Av = 0$. Hence,
+  \[
+    v = I_nv = BA(v) = B(Av) = B0 = 0
+  \]
+  which is a contradiction.
+\end{proof}
+\begin{theorem}
+  We now show that left inverses are the same as right inverses.
+  Suppose $A$ and $B$ are $n \times n$ matrices with $BA = I_n$. Then $AB = I_n$.
+\end{theorem}
+\begin{proof}
+  Suppose $BA = I_n$. Since $I_n$ is non-singular, we have that $BA$ is non-singular. By previous theorem, it follows that $B$ is non-singular. Since $B$ is non-singular, there exists an $n \times n$ matrix $C$ with $CB = I_n$. Then,
+  \[
+    AB = I_n(AB) = (CB)(AB) = C(BA)B = CI_nB = CB = I
+  \]
+\end{proof}
+\begin{definition}
+  Let $A$ be an $n \times n$ matrix. If there exists an $n \times n$ matrix $A^{-1}$ with \[
+    AA^{-1} = I_n = A^{-1}A
+  \]
+  Then $A$ is \textbf{invertible} and $A^{-1}$ is called the \textbf{inverse} of $A$.
+\end{definition}
+\begin{theorem}
+  A $n \times n$ matrix $A$ is invertible iff it is non-singular. Furthermore, if $A$ is invertible then $A^{-1}$ can be found by applying the EROs that bring $A$ to $I_n$ to the matrix $I_n$.
+\end{theorem}
+\begin{proof}
+  Suppose $A$ is non-singular. Then by previous theorems, it is invertible.
+
+  Suppose $A$ is invertible. Then by previous theorems, $A$ is non-singular.
+
+  Now, in the proof of the left inverse theorem, there exist elementary matrices with $E_k\dots E_1A = I_n$
+  where $E_1 \dots E_k$ represent the row operations to bring $A$ to $I_n$. Thus, \[
+    A^{-1} = E_k\dots E_1 = E_k\dots E_1 I_n
+  \]
+  That is, preforming the same row operations to $I_n$ yields $A^{-1}$.
+\end{proof}
+\begin{remark}
+  This theorem gives us an algorithm for finding the inverse of a square matrix. We row reduce $A$. Then if the RREF is not $I_n$, then $A$ is not invertible. If it is $I_n$, then $A$ is invertible and the inverse can be found.
+
+  In practice, we can save time by appending the matrix $I_n$ to the end of $A$. Then we only do one row reduction instead of two. Hence, $A$ is reduced to $I_n$ and $I_n$ is reduced to $A^{-1}$.
+
+  We often draw a vertical line to show these are two matrices appended together.
+  We can write
+  \[
+    \left[
+      \begin{array}{c|c}
+        A &  I_n\\
+      \end{array}
+    \right]
+    \to
+    \left[
+      \begin{array}{c|c}
+        I_n &  A^{-1}\\
+      \end{array}
+    \right]
+  \]
+\end{remark}
+\begin{example}
+  Let
+  \[
+    A =
+    \begin{bmatrix}
+      1 & 2\\
+      2 & 3\\
+    \end{bmatrix}
+    B =
+    \begin{bmatrix}
+      1 & 2\\
+      2 & 4\\
+    \end{bmatrix}
+  \]
+  Find $A^{-1}$ and $B^{-1}$.
+
+  Start with $A$. We append the $2 \times 2$ identity and row reduce.
+
+  \begin{align*}
+    \left[
+      \begin{array}{cc|cc}
+        1 & 2 & 1 & 0\\
+        2 & 3 & 0 & 1\\
+      \end{array}
+    \right]
+    &\to
+    \left[
+      \begin{array}{cc|cc}
+        1 & 2 & 1 & 0\\
+        0 & -1 & -2 & 1\\
+      \end{array}
+    \right]
+    \begin{matrix}
+      \\
+      R2 - 2R1\\
+    \end{matrix}
+    \\
+    &\to
+    \left[
+      \begin{array}{cc|cc}
+        1 & 2 & 1 & 0\\
+        0 & 1 & 2 & -1\\
+      \end{array}
+    \right]
+    \begin{matrix}
+      \\
+      -R2\\
+    \end{matrix}
+    \\
+    &\to
+    \left[
+      \begin{array}{cc|cc}
+        1 & 0 &  -3 & 2\\
+        0 & 1 & 2 & -1\\
+      \end{array}
+    \right]
+    \begin{matrix}
+      R1 - 2R2\\
+      \\
+    \end{matrix}
+    \\
+  \end{align*}
+  Since the RREF form of $A$ is $I_2$, $A^{-1}$ exists. Thus, \[
+    A^{-1} =
+    \begin{bmatrix}
+      -3 & 2\\
+      2 & -1\\
+    \end{bmatrix}
+  \]
+
+  As for $B$, twice the first column yields the second column. I.e.,
+  \[
+    \begin{bmatrix}
+      1 & 2\\
+      2 & 4\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      2\\
+      -1\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      0\\
+      0\\
+    \end{bmatrix}
+  \]
+  Thus the homogeneous system $Bx = 0$ has a non-trivial solution. Thus, $B$ is singular and hence not invertible.
+
+  Suppose we tried to find $B^{-1}$ anyways.
+  \[
+    \left[
+      \begin{array}{cc|cc}
+        1 & 2 & 1 & 0\\
+        2 & 4 & 0 & 1\\
+      \end{array}
+    \right]
+    \to
+    \left[
+      \begin{array}{cc|cc}
+        1 & 2 & 1 & 0\\
+        0 & 0 & -2 & 1\\
+      \end{array}
+    \right]
+    \begin{matrix}
+      \\
+      R2 - 2R1\\
+    \end{matrix}
+    \\
+  \]
+  It is impossible to create the identity, thus $B$ is not invertible.
+\end{example}
+\subsubsection{Properties of the Matrix Inverse}
+\begin{theorem}
+  Let $A$ and $B$ be non-singular matrices of the same size with entries from a field $F$, so that $A^{-1}$ and $B^{-1}$ both exist. Let $\alpha \in F$ with $\alpha \not = 0$. The following hold:
+  \begin{enumerate}
+    \item $A^{-1}$ is unique.
+    \item $AB$ is invertible with $(AB)^{-1} = B^{-1}A^{-1}$.
+    \item $A^{-1}$ is invertible with $(A^{-1})^{-1} = A$.
+    \item $\alpha A$ is invertible with $(\alpha A)^{-1} = \alpha^{-1} A^{-1}$.
+    \item The solution to the system $Ax = b$ is $x = A^{-1}b$.
+  \end{enumerate}
+\end{theorem}
+\begin{proof}
+  Let $I$ be the identity matrix that is the same size as $A$ and $B$. For part 1, suppose $A^{-1}A = I = AA^{-1}$ and $CA = I = AC$. Then,
+  \[
+    C = CI = C(AA^{-1}) = (CA)A^{-1} = IA^{-1} = A^{-1}
+  \]
+
+  We now show that $AB$ is invertible with $(AB)^{-1} = B^{-1}A^{-1}$. Since $A$ and $B$ are non-singular, it follows that $AB$ is non-singular, and hence $AB$ is invertible. We have
+  \begin{align*}
+    (B^{-1}A^{-1})(AB) &= B^{-1}(A^{-1}A)B\\
+    &= B^{-1}IB\\
+    &=B^{-1}B\\
+    &= I\\
+  \end{align*}
+  Thus, we have $(AB)^{-1} = B^{-1}A^{-1}$.
+
+  We now show that $A^{-1}$ is invertible with $(A^{-1})^{-1} = A$. Since $A^{-1}$ is the inverse of $A$, we have $A^{-1}A = I$ and $AA^{-1} = I$. Then $(A^{-1})^{-1}A^{-1} = I$.
+
+  We now show for $\alpha \not = 0$, $\alpha A$ is invertible with $(\alpha A)^{-1} = \alpha^{-1}A^{-1}$.
+  We have
+  \begin{align*}
+    (\alpha^{-1}A^{-1})(\alpha A) &= (\alpha^{-1}\alpha)(A^{-1}A)\\
+    &= I\\
+  \end{align*}
+  Finally, we show that the solution to $Ax = b$ is $x = A^{-1}b$. Suppose we have $Ax = b$. Since $A$ is non-singular, it follows that this has a unique solution.
+
+  We have
+  \begin{align*}
+    A^{-1}b = A^{-1}(Ax)\\
+    &= (A^{-1}A)x\\
+    &= x\\
+  \end{align*}
+\end{proof}
+\begin{example}
+  Solve the system
+  \begin{align*}
+    x + 2y &= 5\\
+    2x + 3y &= 3\\
+  \end{align*}
+  This system can be written as
+  \[
+    \begin{bmatrix}
+      1 & 2\\
+      2 & 3\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      x\\
+      y\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      5\\
+      3\\
+    \end{bmatrix}
+  \]
+  We have already computed the inverse above. We multiply both sides on the left.
+  \[
+    \begin{bmatrix}
+      -3 & 2\\
+      2 & -1\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      1 & 2\\
+      2 & 3\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      x\\
+      y\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      -3 & 2\\
+      2 & -1\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      5\\
+      3\\
+    \end{bmatrix}
+  \]
+  Computing the product,
+  \[
+    \begin{bmatrix}
+      x\\
+      y\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      -9\\
+      7\\
+    \end{bmatrix}
+  \]
+\end{example}
+\begin{proposition}
+  Let \[
+    A =
+    \begin{bmatrix}
+      a & b\\
+      c & d\\
+    \end{bmatrix}
+  \]
+
+  We find the inverse of $A$, when it exists.
+
+  We have
+  \begin{align*}
+    \left[
+      \begin{array}{cc|cc}
+        a & b & 1 & 0\\
+        c & d & 0 & 1\\
+      \end{array}
+    \right]
+    &\to
+    \left[
+      \begin{array}{cc|cc}
+        ac & bc & c & 0\\
+        ac & ad & 0 & a\\
+      \end{array}
+    \right]
+    \begin{matrix}
+      cR1\\
+      aR2\\
+    \end{matrix}
+    \\
+    &\to
+    \left[
+      \begin{array}{cc|cc}
+        ac & bc & c & 0\\
+        0 & ad - bc & -c & a\\
+      \end{array}
+    \right]
+    \begin{matrix}
+      \\
+      R2 - R1\\
+    \end{matrix}
+    \\
+    &\to
+    \left[
+      \begin{array}{cc|cc}
+        1 & \frac{b}{a} & \frac{1}{a} & 0\\
+        0 & 1 & -\frac{c}{ad-bc} & \frac{a}{ad-bc}\\
+      \end{array}
+    \right]
+    \begin{matrix}
+      \frac{1}{ac}R1\\
+      \frac{1}{ad-bc}R2\\
+    \end{matrix}
+    \\
+    &\to
+    \left[
+      \begin{array}{cc|cc}
+        1 & 0 & \frac{d}{ad-bc} & -\frac{b}{ad-bc}\\
+        0 & 1 & -\frac{c}{ad-bc} & \frac{a}{ad-bc}\\
+      \end{array}
+    \right]
+    \begin{matrix}
+      R1 - \frac{b}{a} R2\\
+      \\
+    \end{matrix}
+    \\
+  \end{align*}
+  Thus if $ad - bc \not = 0$, then \[
+    A^{-1} = \frac{1}{ad-bc}
+    \begin{bmatrix}
+      d & -b\\
+      -c & a\\
+    \end{bmatrix}
+  \]
+  Thus $A$ is invertible iff $ad-bc\not = 0$.
+\end{proposition}
+\section{Span}
+\begin{definition}
+  Let $V$ be a vector space over a field $F$. The \textbf{span} of vectors $u_1, \ldots, u_n \in V$ is the set of all linear combinations of the vectors $u_1, \ldots, u_n$. That is, if $S = \{u_1, \ldots, u_n\}$, then
+  \[
+    \spn S = \{c_1u_1 + \dots + c_nu_n \mid c_i \in F\}
+  \]
+  If $S = \emptyset$, then $\spn S = \{0\}$.
+\end{definition}
+\begin{example}
+  \[
+    \spn \left\{
+      \begin{bmatrix}
+        1\\
+        2\\
+        3\\
+    \end{bmatrix}\right\} = \left\{ c
+      \begin{bmatrix}
+        1\\
+        2\\
+        3\\
+    \end{bmatrix} \mid c \in \R \right\}
+  \]
+  Similarly,
+  \[
+    \spn \left\{
+      \begin{bmatrix}
+        1\\ 2\\ 3\\
+      \end{bmatrix},
+      \begin{bmatrix}
+        1 \\ 1 \\ 1\\
+      \end{bmatrix}
+    \right\} = \left\{ c_1
+      \begin{bmatrix}
+        1\\ 2\\ 3\\
+      \end{bmatrix} +
+      c_2
+      \begin{bmatrix}
+        1 \\ 1 \\ 1\\
+    \end{bmatrix} \mid c_1, c_2 \in \R \right\}
+  \]
+
+  As another example, consider $\mathcal{F}_\R (\R)$, the vector space consisting of all functions that map to $\R \to \R$. Then, for example,
+  \[
+    \spn \{\sin x, e^x\} = \{c_1 \sin x + c_2 e^x \mid c_1, c_2 \in \R \}
+  \]
+  The functions $2e^x$, $\pi \sin x - \sqrt{2}e^x$, and $O(x)$ (the constant $0$ function) are elements of this set.
+\end{example}
+\begin{theorem}
+  Let $V$ be a vector space over a field $F$. Let $S = \{u_1, \ldots, u_n\}$ for $u_1 \in V$. Then $\spn S$ is a subspace of $V$.
+\end{theorem}
+\begin{proof}
+  We use the subspace theorem. Since
+  \[
+    0 = 0u_1 + \dots + 0u_n
+  \]
+  we have $0 \in \spn S$. Suppose $w, v \in \spn S$. Then $\exists b_i, c_i \in \F$ with \[
+    w = b_1u_1 + \dots + b_nu_n \text{ and } v = c_1u_1 + \dots + c_nu_n
+  \]
+  Then \[
+    w+v = (b_1+c_1)u_1 + \dots + (b_n + c_n)u_n
+  \]
+  and for $a \in \F$
+  \[
+    av = (ac_1)u_1 + \dots + (ac_n)u_n
+  \]
+  Then $w+v \in \spn S$ and $av \in \spn S$.
+\end{proof}
+\begin{example}
+  Consider \[
+    V = \left\{
+      \begin{bmatrix}
+        a & b\\
+        c & d\\
+      \end{bmatrix} \mid 4a + 4b + 2c + d = 0
+    \right\}
+  \]
+  Note that $d = -4a - 4b - 3c$.
+  Thus,
+  \begin{align*}
+    V &= \left\{
+      \begin{bmatrix}
+        a & b\\
+        c & -4a - 3b -2c\\
+    \end{bmatrix} \mid a, b, c \in \R \right\}\\
+    &= \left\{
+      a
+      \begin{bmatrix}
+        1 & 0\\
+        0 & -4\\
+      \end{bmatrix}
+      +    b
+      \begin{bmatrix}
+        0 & 1\\
+        0 & -3\\
+      \end{bmatrix}
+      + c
+      \begin{bmatrix}
+        0 & 0\\
+        1 & -2\\
+      \end{bmatrix}
+      \mid a, b, c \in \R
+    \right\}\\
+    &= \spn \left\{
+      \begin{bmatrix}
+        1 & 0\\
+        0 & -4\\
+      \end{bmatrix}
+      ,
+      \begin{bmatrix}
+        0 & 1\\
+        0 & -3\\
+      \end{bmatrix}
+      ,
+      \begin{bmatrix}
+        0 & 0\\
+        1 & -2\\
+    \end{bmatrix}\right\}
+  \end{align*}
+  Since $V$ is the span of elements, it is a subspace of $M_{22}(\R)$.
+\end{example}
+\subsection{Spanning Sets}
+\begin{definition}
+  Let $V$ be a vector space, and let $u_1, \ldots, u_n \in V$. If $\spn\{u_1, \ldots, u_v\}=V$, then we say that $u_1, \ldots, u_n$ span $V$, or that they form a \textbf{spanning set} for $V$.
+\end{definition}
+\begin{remark}
+  Consider $\R^2$ over $\R$. We know the span of a set of vectors is a subspace. Thus,
+  \[
+    \spn\{(1, 0), (0, 1)\} = \{x(1, 0) + y(0, 1) \mid x, y \in \R\}
+  \]
+  Note that this is equal to $\R^2$. Even though there are infinitely many vectors, each of them can be written as a linear combination of just these two.
+\end{remark}
+\begin{example}
+  Show that \[
+    \begin{bmatrix}
+      1 \\ 1\\ 1\\
+    \end{bmatrix},
+    \begin{bmatrix}
+      1\\2\\3\\
+    \end{bmatrix},
+    \begin{bmatrix}
+      1\\0\\1\\
+    \end{bmatrix}
+  \]
+
+  To do thus, we must show that any vector $
+  \begin{bmatrix}
+    a\\b\\c\\
+  \end{bmatrix}$ can be written as a linear combination of these three vectors. Let's find $x, y, z$ such that
+  \[
+    x
+    \begin{bmatrix}
+      1 \\ 1\\ 1\\
+    \end{bmatrix}+
+    y
+    \begin{bmatrix}
+      1\\2\\3\\
+    \end{bmatrix}+z
+    \begin{bmatrix}
+      1\\0\\1\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      a\\b\\c\\
+    \end{bmatrix}
+  \]
+
+  We form the augmented matrix for the system and row reduce
+  \[
+    \begin{bmatrix}
+      1 & 1 & 1\\
+      1 & 2 & 0\\
+      1 & 3 & 1\\
+    \end{bmatrix}
+    \to
+    \begin{bmatrix}
+      1 & 0 & 0 & a + b - c\\
+      0 & 1 & 0 & \frac{c-a}{2}\\
+      0 & 0 & 1 & \frac{a - 2b + c}{2}\\
+    \end{bmatrix}
+  \]
+  For any $a, b, c$ we have solutions for $x, y$ and $z$, which can be explicitly written in terms of $a, b$ and $c$. Thus, any vector can be written as a linear combination.
+\end{example}
+\begin{example}
+  Determine if the vectors
+  \[
+    \begin{bmatrix}
+      1\\ 1\\ 1\\
+    \end{bmatrix},
+    \begin{bmatrix}
+      1\\ 2\\ 3\\
+    \end{bmatrix},
+    \begin{bmatrix}
+      1\\ 3\\ 5\\
+    \end{bmatrix},
+    \begin{bmatrix}
+      2\\ 3\\ 4\\
+    \end{bmatrix}
+  \]
+  span $\R^3$.
+
+  For any fixed $a, b, c$ we must determine if there are $w, x, y, z$ with
+  \[
+    w
+    \begin{bmatrix}
+      1\\ 1\\ 1\\
+    \end{bmatrix}+
+    x
+    \begin{bmatrix}
+      1\\ 2\\ 3\\
+    \end{bmatrix}+
+    y
+    \begin{bmatrix}
+      1\\ 3\\ 5\\
+    \end{bmatrix}+z
+    \begin{bmatrix}
+      2\\ 3\\ 4\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      a\\b\\c\\
+    \end{bmatrix}
+  \]
+
+  We row reduce.
+
+  \[
+    \begin{bmatrix}
+      1 & 1 & 1 & 2 & a\\
+      1 & 2 & 3 & 3 & b\\
+      1 & 3 & 5 & 4 & c\\
+    \end{bmatrix}
+    \to
+    \begin{bmatrix}
+      1 & 0 & -1 & 1 & 2a + b\\
+      0 & 1 & 2 & 1 & b-a\\
+      0 & 0 & 0 & 0 & a-2b+c\\
+    \end{bmatrix}
+  \]
+  Note if $a - 2b + c \neq 0$, this system has no solution, thus not every vector can be written as a linear combination.
+
+  In fact, we can find which elements can be written as a linear combination.
+  If $a -2b + c = 0$, then there are solutions.
+  Set $b = s$ and $c = t$, then $a = 2s - t$.
+  \[
+    \begin{bmatrix}
+      2s - t\\ s\\ t\\
+    \end{bmatrix}
+    =s
+    \begin{bmatrix}
+      2\\1\\0\\
+    \end{bmatrix}
+    +t
+    \begin{bmatrix}
+      -1\\
+      0\\
+      1\\
+    \end{bmatrix}
+  \]
+  That is, \[
+    \spn \left\{
+      \begin{bmatrix}
+        1\\ 1\\ 1\\
+      \end{bmatrix},
+      \begin{bmatrix}
+        1\\ 2\\ 3\\
+      \end{bmatrix},
+      \begin{bmatrix}
+        1\\ 3\\ 5\\
+      \end{bmatrix},
+      \begin{bmatrix}
+        2\\ 3\\ 4\\
+    \end{bmatrix}\right\}
+    = \spn \left\{
+      \begin{bmatrix}
+        2\\1\\0\\
+      \end{bmatrix},
+      \begin{bmatrix}
+        -1\\
+        0\\
+        1\\
+      \end{bmatrix}
+    \right\}
+  \]
+  This forms a plane through the origin.
+\end{example}
+\begin{example}
+  Let
+  \[
+    A =
+    \begin{bmatrix}
+      1 & 1 & -3 & -2\\
+      2 & 1 & -5 & 1\\
+      3 & 1 & -7 & 4\\
+      1 & 2 & -4 & -7\\
+    \end{bmatrix}
+  \]
+  Express the null space of $A$ as the span of a set of vectors.
+  Let's find the null space.
+  \[
+    \begin{bmatrix}
+      1 & 1 & -3 & -2\\
+      2 & 1 & -5 & 1\\
+      3 & 1 & -7 & 4\\
+      1 & 2 & -4 & -7\\
+    \end{bmatrix}
+    \to
+    \begin{bmatrix}
+      1 & 0 & -2 & 3\\
+      0 & 1 & -1 & -5\\
+      0 & 0 & 0 & 0\\
+      0 & 0 & 0 & 0\\
+    \end{bmatrix}
+  \]
+  Set $x_3 = s$ and $x_4 = t$ for parameters $s, t$. Then $x_1 = 2s - 3t$ and $x_2 = s + 5t$. The solution set is
+  \[
+    \begin{bmatrix}
+      2s - 3t\\
+      s + 5t\\
+      s\\
+      t\\
+    \end{bmatrix}
+    = s
+    \begin{bmatrix}
+      2\\ 1\\ 1\\ 0\\
+    \end{bmatrix}
+    +t
+    \begin{bmatrix}
+      -3 \\ 5 \\ 0 \\ 1\\
+    \end{bmatrix}
+  \]
+  That is, \[
+    N(A) = \spn\left\{
+      \begin{bmatrix}
+        2\\ 1\\ 1\\ 0\\
+      \end{bmatrix}
+      ,
+      \begin{bmatrix}
+        -3 \\ 5 \\ 0 \\ 1\\
+    \end{bmatrix} \right\}
+  \]
+\end{example}
+\begin{example}
+  Consider the vector space $F^n$ over $F$. For $1 \leq i \leq n$, let $e_i$ be the vector with $i$th entry equal to $1$ and all other entries equal to $0$. show that $e_1, \ldots, e_n$ span $F^n$.
+
+  Let \[
+    v =
+    \begin{bmatrix}
+      x_1\\x_2\\\vdots\\x_n\\
+    \end{bmatrix} \in F^n
+  \]
+  Then, \[
+    v = x_1
+    \begin{bmatrix}
+      1\\0\\\vdots\\0
+    \end{bmatrix} + \dots + x_n
+    \begin{bmatrix}
+      0\\ 0\\ \vdots \\ 1\\
+    \end{bmatrix}
+  \]
+  Thus $F^n = \spn \{e_1, \ldots, e_n\}$.
+\end{example}
+\begin{example}
+  Consider the vector space $P_1(\R)$ over $\R$. This vector space consists of all polynomials of the form $ax + b$, for $a, b \in \R$. Show that $p(x) = 2x+1$ and $q(x) = x+ 1$ span $P_1(\R)$.
+
+  Let $ax + b$ be an arbitrary element. We must show we can find $c_1, c_2$ with
+  \begin{align*}
+    ax + b &= c_1(2x+1) + c_2(x+1)\\
+    &= (2c_1 + c_2)x + (c_1 + c_2)\\
+  \end{align*}
+  Hence, we solve
+  \begin{align*}
+    2c_1 + c_2 &= a\\
+    c_1 + c_2 &= b\\
+  \end{align*}
+  We form the augmented matrix and row reduce:
+  \[
+    \begin{bmatrix}
+      2 & 1 & a\\
+      1 & 1 & b\\
+    \end{bmatrix}
+    \to
+    \begin{bmatrix}
+      1 & 0 & a - b\\
+      0 & 1 & 2b - a\\
+    \end{bmatrix}
+  \]
+  This solution has solutions for $c_1$ and $c_2$, so the polynomials do span $P_1(\R)$.
+  Every polynomial of at most degree one can be written as:
+  \[
+    ax + b = (a-b)p(x) + (2b - a)q(x)
+  \]
+
+  \[
+    5x+ 3 = (5-3)(2x+1) + (6 - 5)(x+1) = 2(2x+1) + (x + 1) = 4x+ 2 + x + 1 = 5x + 3
+  \]
+\end{example}
+\subsection{Finite and Infinite Dimensional Vector Spaces}
+\begin{theorem}
+  Let $V$ be a vector space, $u_1, \ldots, u_n \in V$, and $U = \spn\{u_1, \ldots, u_n\}$. If $W$ is a subspace of $V$ with each $u_i \in W$, then $U \subseteq W$. That is, $U$ is the smallest subspace of $V$ that contains $u_1, \ldots, u_n$.
+\end{theorem}
+\begin{proof}
+  Since
+  \[
+    u_i = \sum_{j=1}^n c_ju_j
+  \]
+  for $c_i = 1, c_j = 0$ if $j \neq i$, we have $u_i \in U$ for each $i$. Now suppose $W$ is a subspace of $V$ with each $u_i \in W$. Then any linear combination of the $u_i$ are in $W$ and so $W$ contains all elements of $U$.
+\end{proof}
+\begin{definition}
+  If $V = \spn \{u_1, \ldots, u_n\}$ for some vectors $u_1, \ldots, u_n$, then $V$ is \textbf{finite dimensional}, otherwise $V$ is \textbf{infinite dimensional}.
+\end{definition}
+\begin{example}
+  Since we have seen that the vectors $e_1, \ldots, e_n$ span $F^n$, then $F^n$ over $F$ is finite dimensional.
+\end{example}
+\begin{example}
+  Show that $P_n(F)$ is a finite dimensional vector space.
+
+  Let $p(x) = a_0 + a_1x + \dots + a_nx^n$ be an arbitrary element of $P_n(F)$. Since \[
+    p(x) = a_0(1) + a_1(x) + \dots + a_n(x^n)
+  \]
+  we see that $p(x) \in \spn\{1, x, \ldots, x^n\}$. Thus $P_n(F)$ is finite dimensional.
+\end{example}
+\begin{example}
+  Show that $P(F)$ is an infinite dimensional vector space. Suppose $p_1(x), \ldots, p_m(x) \in P(F)$. Let $n$ be the maximum degree. Then any span has degree at most $n$, and so there are elements of $P(F)$ that are not in the span of these polynomials. e.g. $x^{n+1}$. Thus it is infinite dimensional.
+\end{example}
+\begin{proposition}
+  $\R^1$ over $R$ is finite dimensional, since $\R = \spn\{1\}$.
+
+  No finite collection of real numbers will form a spanning set for $\R$ over $\Q$, since $\R$ is uncountable and $\Q$ is countable. e.g. $\spn\{1, \sqrt{2}\} = \{c_1 + c_2\sqrt{2} \mid c_1, c_2 \in \Q\}$ is missing many numbers, such as $\pi$.
+
+  $\C$ over $\R$ is also finite dimensional, since $\spn\{1, i\} = \{a + bi \mid a, b \in \R\} = C$.
+\end{proposition}
+\subsection{Linear Dependence and Independence}
+\begin{remark}
+  Let $V$ be a vector space over $F$ and let $v_1, \ldots, v_n \in V$. Suppose $v \in \spn\{v_1, \ldots, v_n\}$. Then there exist $c_i \in F$ with
+  \[
+    v = c_1v_1 + \dots + c_nv_n
+  \]
+  Under what conditions is the choice of scalars unique?
+  Suppose in addition to above holding, we also have
+  \[
+    v = b_1v_1 + \dots + b_nv_n
+  \]
+  for $b_i \in F$. Subtracting
+  \[
+    0 = (c_1 - b_1)v_1 + \dots + (c_n - b_n)v_n
+  \]
+  Suppose it was the case that the only way to write $0$ as a linear combination of $v_1, \ldots, v_n$ is with the trivial linear combination (all coefficients as 0). This implies that $c_i = b_i$ for each $i$. That is, under this assumption the choice of scalars when writing $v$ as a linear combination of the $v_i$ would be unique.
+\end{remark}
+\begin{definition}
+  Let $V$ be a vector space over $F$. The vectors $v_i, \ldots, v_n \in V$ are \textbf{linearly independent} over $F$ if
+  \[
+    c_1v_1 + \dots + c_nv_n = 0
+  \]
+  for $c_i \in F$ implies $c_i = 0$. Otherwise, the vectors are \textbf{linearly dependent} over $F$.
+\end{definition}
+\begin{example}
+  Determine if the vectors are linearly independent or dependent (in $\R^3 over \R$):
+  \[
+    \begin{bmatrix}
+      1\\2\\3\\
+    \end{bmatrix},
+    \begin{bmatrix}
+      2\\-1\\2\\
+    \end{bmatrix},
+    \begin{bmatrix}
+      1\\-3\\-1\\
+    \end{bmatrix}
+  \]
+  We consider the linear combination
+  \[
+    c_1
+    \begin{bmatrix}
+      1\\2\\3\\
+    \end{bmatrix} + c_2
+    \begin{bmatrix}
+      2\\-1\\2
+    \end{bmatrix} + c_3
+    \begin{bmatrix}
+      1\\-3\\-1\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      0\\0\\0\\
+    \end{bmatrix}
+  \]
+  This yields a homogeneous system of linear equations. We know such a system has always the trivial solution. We must determine if this is the only possible solution (linear independent) or if there are non-trivial solutions (linear dependent). We have
+  \[
+    \begin{bmatrix}
+      1 & 2 & 1\\
+      2 & -1 & -3\\
+      3 & 2 & 1\\
+    \end{bmatrix}\to
+    \begin{bmatrix}
+      1 & 0 & -1\\
+      0 & 1 & 1\\
+      0 & 0 & 0\\
+    \end{bmatrix}
+  \]
+  We have a free variable, which yields a non trivial solution. Thus, the vectors are linearly dependent. In particular, solving the system we see that we have $c_1 = t, c_2 = -t, and c_3 = t$ for any $t \in \R$. Thus,
+  \[
+    t
+    \begin{bmatrix}
+      1\\2\\3\\
+    \end{bmatrix} -t
+    \begin{bmatrix}
+      2\\-1\\2
+    \end{bmatrix} + t
+    \begin{bmatrix}
+      1\\-3\\-1\\
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+      0\\0\\0\\
+    \end{bmatrix}
+  \]
+\end{example}
+\begin{example}
+  In the vector space $\R^2$ over $\R$, determine whether the vectors \[
+    \begin{bmatrix}
+      1\\1\\
+    \end{bmatrix},
+    \begin{bmatrix}
+      1\\2\\
+    \end{bmatrix}
+  \]
+  are linearly independent or dependent.
+  We consider the linear combination
+  \[
+    c_1
+    \begin{bmatrix}
+      1\\1\\
+    \end{bmatrix} +
+    \begin{bmatrix}
+      1\\2\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      0\\0\\
+    \end{bmatrix}
+  \]
+  We form the coefficient matrix and row reduce. \[
+    \begin{bmatrix}
+      1 & 1\\
+      1 & 2\\
+    \end{bmatrix} \to
+    \begin{bmatrix}
+      \imat{2}
+    \end{bmatrix}
+  \]
+  The only solution is $c_1 = c_2 = 0$, thus the vectors are linearly independent.
+\end{example}
+\begin{example}
+  Consider the vector space $F^n$ over $F$. For $1 \leq i \leq n$, let $e_i$ be the vector with the $i$th entry equal to $1$, and all others as $0$. Show that $e_i$ are linearly independent.
+  Suppose \[
+    C_1e_1 + \dots + c_ne_n = 0
+  \]
+  Then,
+  \[
+    \begin{bmatrix}
+      0\\ 0\\ \vdots \\ 0\\
+    \end{bmatrix}
+    = c_1
+    \begin{bmatrix}
+      1\\ 0\\ \vdots \\ 0\\
+    \end{bmatrix} + c_2
+    \begin{bmatrix}
+      0\\ 1\\ \vdots \\ 0\\
+    \end{bmatrix} + \dots + c_n
+    \begin{bmatrix}
+      0\\ 0\\ \vdots \\ 1\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      c_1\\ c_2\\ \vdots \\ c_n\\
+    \end{bmatrix}
+  \]
+  Thus, $c_i = 0$.
+\end{example}
+\begin{remark}
+  In the case of two vectors, things are simple. We note that two vectors $v_1, v_2$ are linearly dependent if and only if \[
+    c_1v_1 + c_2v_2 = 0
+  \]
+  is satisfied for at least one $c_i \neq 0$. WLOG, assume $c_2 \neq 0$. Then this is equivalent to \[
+    v_2 = (-c_1c_2^{-1})v_1
+  \]
+  That is, two vectors are linearly dependent if and only if one of the vectors is a scalar multiple of the other.
+\end{remark}
+\begin{remark}
+  Let's look at just one vector $v$. Suppose $v \neq 0$. Since $cv = 0$ implies $c = 0$ or $v = 0$, we must have $c=0$. Thus a single non-zero vector is linearly independent.
+
+  However, if $v = 0$, then the equation $c0 = 0$ holds for any $c \in F$. Thus the zero vector is linearly dependent.
+\end{remark}
+\begin{proposition}
+  If a set of vectors includes the zero vector, then the set of vectors are linearly dependent.
+
+  Since \[
+    c_1v_1 + \dots + c_nv_n + c_{n+1}0 = 0
+  \]
+  holds for $c_1 = \dots = c_n = 0$, but $c_{n+1} = 1$ (for example), the vectors are linearly dependent.
+\end{proposition}
+\begin{theorem}
+  Let $V$ be a vector space over $F$ and let $v_1, \ldots, v_n \in V$. Then these vectors are linearly dependent if and only if some $v_i$ can be written as a linear combination of the others.
+\end{theorem}
+\begin{proof}
+  We show the forward direction. Suppose the vectors are linearly dependent. Then \[
+    c_1v_1 + \dots + c_nv_n = 0
+  \]
+  for $c_i \in F$ with $c_k \neq 0$ for some $k$.
+  Then, \[
+    c_kv_k = \sum_{i=1}^n -c_iv_i
+  \]
+  for some $i \neq k$
+  and so \[
+    v_k = \sum_{i=1}^n -c_ic_k^{-1}v_i
+  \]
+  for some $i \neq k$.
+
+  For the reverse direction, suppose $v_k$ can be written as a linear combination of the others. Then \[
+    v_k = \sum_{i=1}^n c_iv_i
+  \]
+  for some $c_i \in F$ and $i \neq k$. Setting $c_k = -1$, we have $\sum_{i=1}^n c_iv_i = 0$. Since not all $c_i$ are $0$, the vectors are linearly dependent.
+\end{proof}
+\subsection{The Bound Theorem}
+\begin{theorem}
+  Let $V$ be a vector space over $F$. Suppose $v_1, \ldots, v_m \in V$ are linearly dependent. Then there exists an integer $j$ with $1 \leq j \leq m$ such that
+  \begin{enumerate}
+    \item $v_j \in \spn\{v_1, \ldots, v_{j-1}\}$
+    \item $\spn\{v_1, \ldots, v_{j-1}, v_{j+1}, \ldots, v_m = \spn\{v_1, \ldots, v_m\}$
+    \end{enumerate}
+  \end{theorem}
+  \begin{proof}
+    Since $v_1, \ldots, v_m \in V$ are linearly dependent, there are $c_i \in F$ not all $0$ with
+    \[
+      c_1v_1 + \dots + c_nv_n = 0
+    \]
+    Let $j$ be the largest index with $c_j \neq 0$. Then
+    \begin{equation}\label{eq:1}
+      v_j = -c_1c_j^{-1}v_i - \dots - c_{j-1}c_{j}^{-1}v_{j-1}
+    \end{equation}
+    Thus $v_j \in \spn\{v_1, \ldots, v_{j-1}\}$, proving the first condition.
+
+    Clearly we have \[
+      \spn\{v_1, \ldots, v_{j-1}, v_{j+1}, \ldots, v_m\} \subseteq \spn\{v_1, \ldots, v_m\}
+    \]
+    Let $u \in \spn\{v_1, \ldots, v_m\}$. Then there exist $a_i \in F$ with
+    \[
+      u = a_1v_1 + \dots + a_mv_m
+    \]
+    We can use \eqref{eq:1} to replace $v_j$ in this, resulting in $u$ written as a linear combination of the $v_i$ with $i \neq j$. Thus
+    \[
+      \spn\{v_1, \ldots, v_m\} \subseteq \{v_1, \ldots, v_{j-1}, v_{j+1}, \ldots, v_m\}
+    \]
+    and so the second condition holds.
+  \end{proof}
+  \begin{theorem}
+    Let $V$ be a finite dimensional vector space, if $u_1, \ldots, u_m \in V$ are linearly independent, and $V = \spn\{w_1, \ldots, w_n\}$, then $m \leq n$.
+  \end{theorem}
+  \begin{proof}
+    Let $S_u = \{u_1, \ldots, u_m\}$ and $S_w = \{w_1, \ldots, w_n\}$. Suppose the vectors $w_1, \ldots, w_n$ span $V$. We will modify this collection of vectors in a way that leaves us with another spanning set. WE note that adding any vector of $V$ to this collection will yield a linearly dependent collection of vectors since this new vector can be written as a linear combination of the $w_i$. Furthermore, adding an element of $V$ to our vectors will not change that the vectors span $V$. Thus
+    \[
+      u_1, w_1, \ldots, w_n
+    \]
+    is a linearly dependent collection of vectors that span $V$. By the Linear Dependence Theorem, one of these vectors can be written as a linear combination of the previous vectors. This vector cannot be $u_1$, and so must be one of the $w_i$.
+
+    By the Linear Dependence Theorem, this vector can be removed from the collection and the remaining vectors will still span $V$. Our spanning set now consists of $u_1$ and $n-1$ of the vectors from $S_w$.
+
+    We now add $u_2$ to our collection, and place it before all of the remaining $w_i$. That is, our collection now consists of $u_1, u_2$ and $n-1$ of the vectors from $S_w$, and these vectors still span $V$. Since our previous collection of vectors spanned $V$, $u_2$ can be written as a linear combination of these vectors, and so the new collection is linearly dependent. By the Linear Dependence Theorem, one of these vectors in this new collection is a linear combination of the others. Thus, one of the remaining $w_i$ in our collection is a linear combination of the previous vectors, and hence by the Linear Dependence Theorem, it can be removed from the collection and the remaining vectors will still span $V$. Our spanning set now consists of $u_1, u_2$, and $n-2$ of the vectors from $S_w$.
+
+    We repeat this process. In step $j$ for $j \geq 2$, we add the vector $u_j$ to our collection and place it before all of the remaining $w_i$. That is, our collection now consists of $u_1, \ldots, u_j$ and some remaining vectors from $S_w$, and this collection will span $V$. Since $u_j$ was in the span of our previous collection of vectors, this new collection is linearly dependent. By the Linear Dependence Theorem, one of the vectors in this collection is a linear combination of the previous vectors. It cannot be any of the $u_i$, since they are linearly independent, and thus one of the remaining $w_i$ is a linear combination o the previous vectors. By the Linear Dependence Theorem, this vector can be removed from the collection and the remaining ones will still span $V$. Our spanning set now consists of $u_1, \ldots, u_j$ and $n-j$ of the vectors from $S_w$.
+
+    Note for each step $j$, we are adding a vector from $S_u$ to our collection and removing one from $S_w$.
+
+    Now suppose $n < m$. Then there are fewer vectors in $S_w$ than there are in $S_u$. Thus for some $j$, we will have removed the final vector from $S_w$ and still have remaining vectors from $s_u$ to add. As before, we add this to our collection, resulting in a linearly dependent set of vectors that span $V$. However, this time the vectors consist entirely of vectors from $S_u$, and so there is a dependence relation among the $u_i$, which contradicts the fact they are independent. Thus we must have $n \geq m$.
+  \end{proof}
+  \begin{example}
+    Consider $\frac{\R^3}{\R}$. The vectors
+    \[
+      e_1 =
+      \begin{bmatrix}
+        1\\0\\0\\
+      \end{bmatrix}, e_2 =
+      \begin{bmatrix}
+        0\\1\\0\\
+      \end{bmatrix}, e_3 =
+      \begin{bmatrix}
+        0\\0\\1\\
+      \end{bmatrix}
+    \]
+    span $\R^3$. Thus by the Bound Theorem, if vectors $u_1, \ldots, u_m \in \R^3$ are linearly independent, then we must have $m \leq 3$. That is, any set of $4$ or more vectors must be linearly dependent.
+  \end{example}
+  \begin{example}
+    Consider $\R^4$ over $\R$. The vectors
+    \[
+      e_1 =
+      \begin{bmatrix}
+        1\\0\\0\\0\\
+      \end{bmatrix}, e_2 =
+      \begin{bmatrix}
+        0\\1\\0\\0\\
+      \end{bmatrix}, e_3 =
+      \begin{bmatrix}
+        0\\0\\1\\0\\
+      \end{bmatrix}, e_4 =
+      \begin{bmatrix}
+        0\\0\\0\\1\\
+      \end{bmatrix}
+    \]
+    are linearly independent. Thus, by the Bound Theorem, if vectors $w_1, \ldots, w_n$ span $\R^4$, then we must have $n \geq 4$. That is, any set of $3$ or fewer vectors cannot span $R^4$.
+  \end{example}
+  \begin{theorem}
+    Let F be a field, and consider $F^n$ over $F$. Then
+    \begin{itemize}
+      \item a set of $n+1$ or more vectors in $F^n$ are linearly dependent.
+      \item a set of $n-1$ or less vectors in $F^n$ cannot span $F$.
+    \end{itemize}
+  \end{theorem}
+  \begin{corollary}
+    Consider $V = F^n$ where $F$ is a field. Then $\{e_1, \ldots, e_n\}$ is linearly independent and spans $F^n$.
+
+    Suppose $\{v_1, \ldots, v_m\} \in F^n$ span $F^n$. Then $m \geq n$.
+
+    Suppose $\{v_1, \ldots, v_m\} \in F^n$ are linearly independent in $F^n$. Then $n \geq m$.
+
+    The converse of the above is false.
+    i.e. Suppose we have $\{v_1, \ldots, v_m\} \in F^n$. Then if $m \geq n, \{v_1, \ldots, v_m\}$ span $F^n$.
+    Let $m = 3, n = 2$. Suppose $u = \spn\left\{
+      \begin{pmatrix}
+        2\\0\\
+      \end{pmatrix},
+      \begin{pmatrix}
+        5\\0\\
+      \end{pmatrix},
+      \begin{pmatrix}
+        0\\0\\
+    \end{pmatrix}\right\}$. Then $u =
+    \begin{pmatrix}2c_1 + 5c_2\\ 0\\
+    \end{pmatrix}$, which is not all vectors in $\R^2$.
+  \end{corollary}
+  \subsection{Bases}
+  \begin{definition}
+    Let $V$ be a vector space over a field $F$. If $v_1, \ldots, v_n$ are linearly independent and span $V$, then $v_1, \ldots, v_n$ form a \textbf{basis} of $V$.
+  \end{definition}
+  \begin{definition}
+    For $1 \leq i \leq n$. let $e^i$ be the vector of $F^n$ with the $i$th entry equal to $1$ and all others equal to $0$. Then the vectors $e_1, \ldots, e_n$ are called the \textbf{standard basis} of $F^n$.
+  \end{definition}
+  \begin{example}
+    Determine if the vectors $(1, 1)$ and $(1, 2)$ are a basis of $\R^2$.
+
+    Since the vectors are not multiples of each other, they are linearly independent.
+    We check if they span $\R^2$. Given $(a, b) \in \R^2$, we check if there are $x, y \in \R$ with
+    \[
+      x
+      \begin{bmatrix}
+        1\\1\\
+      \end{bmatrix} + y
+      \begin{bmatrix}
+        1\\2\\
+      \end{bmatrix} =
+      \begin{bmatrix}
+        a\\b\\
+      \end{bmatrix}
+    \]
+
+    We row reduce:
+    \[
+      \begin{bmatrix}
+        1 & 1 & a\\
+        1 & 2 & b\\
+      \end{bmatrix} \to
+      \begin{bmatrix}
+        1 & 0 & 2a - b\\
+        0 & 1 & b - a\\
+      \end{bmatrix}
+    \]
+    Since this system has a solution, these vectors span $\R^2$. Since they are also linearly independent, they form a basis of $\R^2$.
+  \end{example}
+  \begin{cthm}[The Basis Theorem]
+    Let $V$ be a vector space over $F$. Vectors $v_1, \ldots, v_n \in V$ are a basis of $V$ over $F$ iff every $v \in V$ can be written uniquely in the form \[
+      v = c_1v_1 + \dots + c_nv_n
+    \]
+    for $c_i \in F$.
+  \end{cthm}
+  \begin{proof}
+    We prove the forwards direction. Suppose $v_1, \ldots, v_n$ are a basis of $V$ and let $v \in V$. Suppose we have
+    \[
+      v = b_1v_1 + \dots + b_nv_n
+    \] and \[
+      v = c_1v_1 + \dots + c_nv_n
+    \]
+    for $b_i, c_i \in F$.
+    Then
+    \[
+      0 = (b_1 - c_1)v_1 + \dots + (b_n - c_n) v_n
+    \]
+    Since the $v_i$ are linearly independent, this implies $b_i = c_i$ for each $i$, which shows that the choice of coefficients used when writing $v$ as a linear combination is unique.
+
+    For the reverse direction, suppose every $v \in V$ can be written uniquely as \[
+      v = c_1v_1 + dots + c_nv_n
+    \]
+    for $c_i \in F$. This implies $v_1, \ldots, v_n$ span $V$. We must show that the $v_i$ are linearly independent. Suppose \[
+      c_1v_1 + \dots + c_nv_n = 0
+    \]
+    Clearly $c_1 = \dots = c_n = 0$ satisfies this equation. By uniqueness, these must be the only values of $c_i$ that satisfy this equation and so the $v_i$ are linearly independent.
+  \end{proof}
+  \begin{cthm}[Span to Basis Theorem]
+    Let $V$ be a vector space over $F$ and suppose $v_1, \ldots, v_n$ span $V$. Then there is a subset of these vectors that forms a basis for $V$.
+  \end{cthm}
+  \begin{proof}
+    We describe a process to (possibly) remove some of the $v_i$ without affecting their span, until we are left with a linearly independent collection of vectors.
+
+    If $v_1 = 0$, we remove it.
+
+    For $j$ running from $2$ to $n$, if $v_j$ is in $\spn \{v_1, \ldots, v_{j-1}\}$, the we remove $v_j$ from our collection. After doing this, the resulting collection of vector still spans $V$, since we have only removed vectors that were in the span of previous vectors. Since no vectors are now in the span of the previous vectors, it follows that the vectors are linearly independent.
+  \end{proof}
+  \begin{corollary}
+    Every finite dimensional vector space has a basis.
+  \end{corollary}
+  \begin{proof}
+    By definition, a finite dimensional vector space is the span of a finite set of vectors. By the Span to Basis Theorem, some subset of these vectors will form a basis of the vector space.
+  \end{proof}
+  \begin{cthm}[Linear Independence to Basis]
+    Let $V$ be a finite dimensional vector space over $F$, and let $v_1, \ldots, v_m \in V$ be a linearly independent collection of vectors. Then we can extend this collection to form a basis of $V$.
+  \end{cthm}
+  \begin{proof}
+    Since $V$ is finite dimensional, it has a basis $w_1, \ldots, w_n$. Note by the bound theorem, $m \leq n$. Since the $w_i$ form a basis of $V$, the vectors
+    \[
+      v_1, \ldots, v_m, w_1, \ldots, w_n
+    \]
+    span $V$. By applying the algorithm described in the proof of the bound theorem, we can remove vectors to form a basis of $V$. Since $v_i$ is linearly independent, none of them are in the span of the previous vectors, and hence no $v_i$ is removed. Thus the resulting basis contains all $v_i$.
+  \end{proof}
+  \subsection{Dimension}
+  \begin{theorem}
+    Any two bases of a finite dimensional space $V$ contain the same number of elements.
+  \end{theorem}
+  \begin{proof}
+    Let $V$ be finite dimensional, and let $\mathcal{B}_1$ and $\mathcal{B}_2$ be two bases with sizes $m$ and $n$ respectively. Since $\mathcal{B}_1$ is linearly independent and $\mathcal{B}_2$ spans $V$, the bound theorem implies $m \leq n$. Since $\mathcal{B}_2$ is linearly independent and $\mathcal{B}_1$ spans $V$, the bound theorem implies $n \leq m$.
+
+    Thus $m = n$.
+  \end{proof}
+  \begin{definition}
+    Let $V$ be a finite dimensional space over a field $F$. The \textbf{dimension} of $V$, denoted $\dim V$ is the number of elements in a basis of $V$.
+  \end{definition}
+  \begin{example}
+    Let $F$ be a field and consider $F^n$ over $F$. We found a basis $e_i$ of $F_n$. Thus $\dim F^n = n$.
+
+    Any basis of $F^n$ will contain $n$ vectors.
+  \end{example}
+  \begin{example}
+    Let $F$ be a field and consider $P_n(F)$ over $F$. This is the vector space consisting of polynomials of degree $n$ or less. We saw that $1, x, x^2, \ldots, x^n$ is a spanning set. It can be shown that these polynomials are linear independent. Thus they form a basis of $P_n(F)$. Therefore, $\dim P_n(F) = n + 1$.
+  \end{example}
+  \begin{example}
+    Let $F$ be a field and consider $M_{mn}(F)$, the vector space of $m \times n$ matrices with entries in $F$. For $1 \leq i \leq m$ and $1 \leq j \leq n$, define matrices $B_{ij}$ by \[
+      [B_{ij}]_{kl} =
+      \begin{cases}
+        1 &\text{if } k= i \text{ and } l = j\\
+        0 &\text{otherwise}
+      \end{cases}
+    \]
+    That is, $B_{ij}$ is the matrix with a $1$ in the $ij$th entry and all others equal to $0$. It can be shown that these matrices are a basis. Thus $\dim M_{mn}(F) = mn$.
+  \end{example}
+  \begin{example}
+    Consider the trivial vector space $V = \{0\}$. This vector space has an empty basis since the empty set is vacuously linearly independent and by definition we have $\spn \emptyset = \{0\}$. Thus $\dim V = 0$.
+  \end{example}
+  \begin{example}
+    Consider the vector space $\C^1$ over $\C$. This is a 1D vector space since the vector $1$ forms a basis.
+
+    What about $\C$ over $\R$?
+    We saw that $\spn \{1, i\} = \C$. Suppose \[
+      c_1(1) + c_2(1) = 0
+    \]
+    with $c_1, c_2 \in \R$. Then we must have $c_1 = c_2 = 0$ and so they are linearly independent. Thus $\{1, i\}$ are a basis of $\C$ over $\R$, and so $\dim \C$ over $\R = 2$.
+
+    In general, $\C^n$ over $\C$ is an $n$-dimensional space and $\C^n$ over $\R$ is a 2n dimensional vector space.
+  \end{example}
+  \begin{theorem}
+    Let $V$ be a vector space over $F$ with $\dim V = n \in \N$. If $v_1, \ldots, v_n$ are linearly independent, they form a basis of $V$.
+  \end{theorem}
+  \begin{proof}
+    Suppose the $v_i$ are linearly independent. By the Linear Independence Theorem, this can be extended to a basis of $V$. However, any basis of $V$ contains $n$ vectors, so no vectors are added. Thus the $v_i$ are a basis.
+  \end{proof}
+  \begin{theorem}
+    Let $V$ be a vector space over $F$ with $\dim V = n \in \N$. If $v_1, \ldots, v_n$ span $V$, they form a basis of $V$.
+  \end{theorem}
+  \begin{proof}
+    Suppose the $v_i$ span $V$. By the Span to Basis Theorem, a subset of this collection will form a basis of $V$. However, any basis of $V$ contains $n$ vectors, so this subset must consist of the entire set. Thus the $v_i$ are a basis.
+  \end{proof}
+  \begin{example}
+    Find a basis for
+    \[
+      V = \spn \left\{
+        \begin{bmatrix}
+          1\\2\\-3\\3\\
+        \end{bmatrix},
+        \begin{bmatrix}
+          1\\1\\-1\\2\\
+        \end{bmatrix},
+        \begin{bmatrix}
+          -3\\-4\\5\\7\\
+        \end{bmatrix},
+        \begin{bmatrix}
+          3\\1\\2\\4\\
+      \end{bmatrix}\right\}
+    \]
+    We are giving a spanning set for $V$. If these 4 vectors are linearly independent, they will form a basis for $V$. If they are not, some subset will form a basis.
+    Suppose \[
+      c_1
+      \begin{bmatrix}
+        1\\2\\-3\\3\\
+      \end{bmatrix} +c_2
+      \begin{bmatrix}
+        1\\1\\-1\\2\\
+      \end{bmatrix} +c_3
+      \begin{bmatrix}
+        -3\\-4\\5\\7\\
+      \end{bmatrix} +c_4
+      \begin{bmatrix}
+        3\\1\\2\\4\\
+      \end{bmatrix} =
+      \begin{bmatrix}
+        0\\0\\0\\0\\
+      \end{bmatrix}
+    \]
+    This yields a homogeneous system. We row reduce.
+    \begin{align*}
+      \begin{bmatrix}
+        1 & 1 & -3 & 3\\
+        2 & 1 & -4 & 1\\
+        -3 & -1 & 5& 2\\
+        3 & 2 & -7 & 4\\
+      \end{bmatrix} &\to
+      \begin{bmatrix}
+        1 & 0 & -1 & 0\\
+        0 & 1 & -2 & 0\\
+        0 & 0 & 0 & 1\\
+        0 & 0 & 0 & 0\\
+      \end{bmatrix}
+    \end{align*}
+    Since there is a free variable, there are non-trivial solutions. Hence the variables are linearly dependent and not a basis. Setting the free variable $c_3 = t$ for a parameter $t$, we have $c_1 = t$, $c_2 = 2t$, $c_4 = 0$ for any $t \in \R$.
+    Thus,
+    \[
+      t
+      \begin{bmatrix}
+        1\\2\\-3\\3\\
+      \end{bmatrix} +2t
+      \begin{bmatrix}
+        1\\1\\-1\\2\\
+      \end{bmatrix} +t
+      \begin{bmatrix}
+        -3\\-4\\5\\7\\
+      \end{bmatrix} +0
+      \begin{bmatrix}
+        3\\1\\2\\4\\
+      \end{bmatrix} =
+      \begin{bmatrix}
+        0\\0\\0\\0\\
+      \end{bmatrix}
+    \]
+    Setting $t = 1$ and rearranging,
+    \[
+      \begin{bmatrix}
+        -3\\-4\\5\\7\\
+      \end{bmatrix} = -
+      \begin{bmatrix}
+        1\\2\\-3\\3\\
+      \end{bmatrix}  - 2
+      \begin{bmatrix}
+        1\\1\\-1\\2\\
+      \end{bmatrix}
+    \]
+    That is, the 3rd column is equal to the negation of the first column minus twice the second column.
+
+    Note that the same relation is true in the RREF above.
+
+    In any case, it does not contribute to the span. Thus,
+    \[
+      V = \spn \left\{
+        \begin{bmatrix}
+          1\\2\\-3\\3\\
+        \end{bmatrix},
+        \begin{bmatrix}
+          1\\1\\-1\\2\\
+        \end{bmatrix},
+        \begin{bmatrix}
+          3\\1\\2\\4\\
+      \end{bmatrix}\right\}
+    \]
+    Are these 3 linearly independent? We repeat the same process as above. Thus we have \[
+      \begin{bmatrix}
+        1 & 1 & 3\\
+        2 & 1 & 1\\
+        -3 & -1 & 2\\
+        3 & 2 & 4\\
+      \end{bmatrix}
+      \to
+      \begin{bmatrix}
+        \imat{3}\\
+        0 & 0 & 0\\
+      \end{bmatrix}
+    \]
+    Thus the 3 vectors are independent.
+  \end{example}
+  \subsection{Column Space}
+  \begin{definition}
+    Let $A \in M_{mn}(F)$. Then the \textbf{column space} of A, denoted $\colspace A$ is the span of the columns of $A$. It is a subspace of $F^m$. The \textbf{row space} of A, denoted $\rowspace A$ is the span of the rows of $A$. It is a subspace of $F^n$.
+  \end{definition}
+  \begin{remark}
+    In an example at the end of the last section, we noticed that
+    dependence relations in the reduced row echelon form of a matrix $A$ also
+    existed in A itself. This is not an accident.
+  \end{remark}
+  \begin{theorem}
+    Let $F$ be a field and let $A \in M_{mn}(F)$. Then elementary row operations preserve linear dependence relations among the columns of $A$.
+  \end{theorem}
+  \begin{proof}
+    Let \[
+      A =
+      \begin{bmatrix}
+        v_1 & v_2 & \dots & v_n
+      \end{bmatrix}
+    \]
+    so that $v_i$ is the $i$th column of $A$. Suppose there is a linear dependence relation among the columns of $A$. Then, \[
+      c_1v_1 + \dots + c_nv_n = 0
+    \] for $c_i \in F$ with not all $c_i$ equal to $0$. Letting \[
+      v =
+      \begin{bmatrix}
+        c_1\\
+        \vdots\\
+        c_n\\
+      \end{bmatrix}
+    \]
+    We have $Av = 0$ for $v \neq 0$.
+    Suppose $B$ is obtained from $A$ via an ERO. Let $E$ be the elementary matrix corresponding to this row operation, so that $B = EA$. Then \[
+      Bv = EAv = E0 = 0
+    \]
+    We let \[
+      B =
+      \begin{bmatrix}
+        u_1 & u_2 & \dots & u_n
+      \end{bmatrix}
+    \]
+    The $Bv = 0$ implies \[
+      c_1u_1 + \dots + c_nu_n = 0
+    \]
+    Thus any dependence relations among the columns of $A$ also hold for the corresponding columns of $B$.
+
+    Since elementary row operations are reversible and $EA = B$, we have $A = E^{-1}B$ for $E^{-1}$ an elementary matrix. Thus the same argument above shows that any dependence relations among the columns of $B$ also hold for the corresponding columns of $A$.
+  \end{proof}
+  \begin{cthm}[A Basis for the Column Space]
+    Let $F$ be a field and let $A \in M_{mn}(F)$. Let $v_i$ be the ith column of $A$, and let $B$ be the RREF of $A$. Let $I$ contain the indices of the pivot columns of $B$. The the vectors $v_i$ for $i \in I$ form a basis of $\colspace A$.
+  \end{cthm}
+  \begin{proof}
+    In $B$, the pivot columns contain one entry equal to $1$ and all others equal to $0$. Two pivot columns cannot contain the same entry equal to $1$. These vectors are clearly linearly independent, so there are no dependence relations among them.
+
+    Any other column of $B$ contains a $0$ in the entry from a row with no leading $1$. Thus they can be written as linear combinations of the pivot columns.
+
+    Since EROs preserve dependence among columns, these statements about the dependence relations among the columns of $B$ also hold for $A$.
+
+    In particular, the columns of $A$ that correspond to the pivot columns of $B$ are linearly independent. Furthermore, all other columns of $A$ can be written as linear combination of these columns, which implies these columns span $\colspace A$. Thus these columns form a basis for $\colspace A$.
+  \end{proof}
+  \begin{example}
+    Find a basis for \[
+      V = \spn \left\{
+        \begin{bmatrix}
+          1\\2\\-3\\3\\
+        \end{bmatrix},
+        \begin{bmatrix}
+          1\\1\\-1\\2\\
+        \end{bmatrix},
+        \begin{bmatrix}
+          -3\\-4\\5\\7\\
+        \end{bmatrix},
+        \begin{bmatrix}
+          3\\1\\2\\4\\
+      \end{bmatrix}\right\}
+    \]
+    Letting \[
+      A =
+      \begin{bmatrix}
+        1 & 1 & 3\\
+        2 & 1 & 1\\
+        -3 & -1 & 2\\
+        3 & 2 & 4\\
+    \end{bmatrix}\]
+    we are being asked for a basis of $\colspace A$. We row reduce $A$.
+    \[
+      \to
+      \begin{bmatrix}
+        1 & 0 & -1 & 0\\
+        0 & 1 & -2 & 0\\
+        0 & 0 & 0 & 1\\
+        0 & 0 & 0 & 0\\
+      \end{bmatrix}
+    \]
+    Take the 1st, 2nd, 4th columns of $A$ as the basis.
+  \end{example}
+  \begin{example}
+    Below is a matrix $A$ and its RREF $B$.
+    \[
+      A =
+      \begin{bmatrix}
+        1 & 2 & 1 & 0 & 3 & -3\\
+        2 & 4 & 1 & 0 & 4 & -1\\
+        3 & 6 & 0 & 1 & 0 & 6\\
+        4 & 8 & 1 & 1 & 3 & 3\\
+        2 & 4 & 0 & 1 & -1 & 4\\
+      \end{bmatrix}, B=
+      \begin{bmatrix}
+        1 & 2 & 0 & 0 & 1 & 2\\
+        0 & 0 & 1 & 0 & 2 & -5\\
+        0 & 0 & 0 & 1 & -3 & 0\\
+        0 & 0 & 0 & 0 & 0 & 0\\
+        0 & 0 & 0 & 0 & 0 & 0\\
+      \end{bmatrix}
+    \]
+    Find a basis for $\colspace A$ and a basis for $N(A)$. State the dimension.
+
+    Let's find a basis for $\colspace A$. The first, third, fourth columns of $B$ are pivot columns, so the corresponding columns of $A$ form a basis for $\colspace A$. Thus a basis for $\colspace A$ is
+    \[
+      \begin{bmatrix}
+        1\\2\\3\\4\\2\\
+      \end{bmatrix},
+      \begin{bmatrix}
+        1\\1\\0\\1\\0\\
+      \end{bmatrix},
+      \begin{bmatrix}
+        0\\0\\1\\1\\1\\
+      \end{bmatrix}
+    \]
+    Thus, $\dim \colspace A = 3$.
+
+    Now let's find a basis for $N(A)$. Recall that the null space of $A$ is the solution set to the homogeneous system with coefficient matrix $A$. Using variables $x_1, \ldots, x_6$, we see that $x_2, x_5$ and $x_6$ are free. Setting $x_2 = r, x_5 = s, x_6 = t$, we have $x_1 = -2r - s - 2t, x_3 = -s + 5t, x_4 = 3s$. Thus the null space consists of the vectors \[
+      \begin{bmatrix}
+        -2r - s - 2t\\
+        r\\
+        -2s + 5t\\
+        3s\\
+        s\\
+        t\\
+      \end{bmatrix} = r
+      \begin{bmatrix}
+        -2\\
+        1\\
+        0\\0\\0\\0\\
+      \end{bmatrix} + s
+      \begin{bmatrix}
+        -1\\0\\-2\\3\\1\\0\\
+      \end{bmatrix} + t
+      \begin{bmatrix}
+        -2\\0\\5\\0\\0\\1\\
+      \end{bmatrix}
+    \]
+    for $r, s, t \in \R$. Thus $N(A)$ is the span of those 3.
+
+    Check if the vectors are linearly independent.
+    Setting this linear combination equal to $0$, the second row yields $r = 0$, the fifth row yields $s = 0$, and the sixth row yields $t = 0$. Thus it is a basis.
+  \end{example}
+  \section{The Rank-Nullity Theorem}
+  \begin{definition}
+    Let $F$ be a field and let $A \in M_{mn}(F)$. Then the \textbf{nullity} of $A$, denoted $\nullity A$, is the dimension of the null space of $A$.
+  \end{definition}
+  \begin{theorem}
+    Let $F$ be a field and let $A \in M_{mn}(F)$. Then $\nullity A$ is equal to the number of columns without a leading $1$ in the RREF of $A$.
+  \end{theorem}
+  \begin{proof}
+    Let $B$ be the RREF form of $A$. Since row operations preserve the solution set to a system of linear equations, the $v$ in $N(A)$ are those that satisfy $Bv = 0$. We describe our usual process for solving such a system in general. Say $c_1, \ldots, c_k$ are the indices of columns in $B$ that do not contain a leading $1$. Then $x_{c_1}, \ldots, x_{c_k}$ are free variables. and the remaining $x_j$ may be expressed in terms of these free variables. Let $x_{c_i} = t_i$ for parameters $t_i$.
+
+    We set\[
+      t_1
+      \begin{bmatrix}
+        \vdots\\
+        1\\
+        \vdots\\
+        0\\
+        \vdots\\
+        0\\
+        \vdots\\
+      \end{bmatrix} + t_2
+      \begin{bmatrix}
+        \vdots\\
+        0\\
+        \vdots\\
+        1\\
+        \vdots\\
+        0\\
+        \vdots\\
+      \end{bmatrix}+ \dots +  t_k
+      \begin{bmatrix}
+        \vdots\\
+        0\\
+        \vdots\\
+        0\\
+        \vdots\\
+        1\\
+        \vdots\\
+      \end{bmatrix}
+    \]
+    For each $i$, row $c_i$ (in which the entry for $v_i$ is $1$ and the entry for $v_j$ with $j \neq i$ is $0$) yields $t_i$ = 0. Thus $v_i, \ldots, v_k$ are linearly independent, and hence form a basis for $N(A)$. Then $\nullity A = k$, where $k$ is the number of columns of $B$ without a leading one.
+  \end{proof}
+  \begin{theorem}
+    Let $F$ be a field and let $A \in M_{mn}(F)$. Then
+    \[
+    \dim(\colspace A)) = \rank A
+  \]
+\end{theorem}
+\begin{proof}
+  By a previous theorem, the number of vectors in a basis for $\colspace A$ is equal to the number of leading ones in the RREF of $A$, which is equal to $\rank A$.
+\end{proof}
+\begin{cthm}[The Rank-Nullity Theorem]
+  Let $F$ be a field and let $A \in M_{mn}(F)$. Then \[
+    \rank A + \nullity A = n
+  \]
+\end{cthm}
+\begin{proof}
+  Let $B$ be the RREF of $A$. Then $\rank A$ is the number of columns of $B$ that contain leading ones. By a previous theorem, $\nullity A$ is equal to the number of columns of $B$ that do not contain a leading one. Thus the sum of $\rank A$ and $\nullity A$ is equal to the number of columns of $B$, which is equal to the number of columns of $A$.
+\end{proof}
+\subsection{Row Space}
+\begin{theorem}
+  Let $F$ be a field, let $A \in M_{mn}(F)$ and let $E$ be an $m \times m$ elementary matrix. Then,
+  \[
+    \rowspace EA = \rowspace A
+  \]
+\end{theorem}
+\begin{proof}
+  Proof is omitted for brevity.
+\end{proof}
+\begin{remark}
+  It is important to contrast our theorems on how elementary row operations
+  affect the column space and row space of a matrix. The latter tells us that
+  elementary row operations do not change the row space of a matrix, while
+  the former tells us that elementary row operations do not change linear
+  dependence relations among the columns of a matrix.
+  It is easy to get these two theorems mixed up. In general, elementary row
+  operations do change linear dependence relations among the rows of a
+  matrix, and also change the column space of a matrix. As a quick example,
+  consider the following matrix $A$ and its reduced row echelon form $B$:
+  \[
+    A =
+    \begin{bmatrix}
+      1 & 2\\
+      3 & 6\\
+    \end{bmatrix}, B =
+    \begin{bmatrix}
+      1 & 2\\
+      0 & 0\\
+    \end{bmatrix}
+  \]
+  Let’s consider the row space. Since the second row of $A$ is a multiple of
+  the first, the span of the rows of A is equal to the span of just the first row
+  $(1, 2)$. For $B$, the zero row does not contribute to the span of the rows,
+  and so the row space of $B$ is equal to the span of the first row $(1, 2)$. We
+  see that $A$ and $B$ have the same row space. However, dependence
+  relations among the rows have changed; in $A$, the second row is three
+  times the first, but this does not hold in $B$.
+
+  Now let’s consider the columns. In $A$, we see that the second column is twice the
+  first column, and this is also true in $B$. The dependence relations among the
+  columns have been preserved. However, since the second column of $A$ is a
+  multiple of the first, the column space of $A$ is equal to the span of the first column
+  $(1, 3)$, while the column space of $B$ consists of all vectors with second coordinate
+  equal to zero. The elementary row operations have changed the column space.
+  To summarize, elementary row operations preserve dependence relations among
+  the columns of a matrix, but can change the column space. Elementary row
+  operations preserve the row space of a matrix, but can change dependence
+  relations among the rows.
+
+  Our goal is to find a way to use the reduced row echelon form of a matrix to find
+  a basis for the row space. We now know that the row reduced echelon form will
+  have the same row space as the original matrix, and so our problem has been
+  transformed to that of finding a basis for the row space of a matrix in reduced
+  row echelon form.
+\end{remark}
+\begin{theorem}
+  The non-zero rows of a matrix in RREF form are linearly independent. Furthermore, if $B$ is the RREF
+  of a matrix $A \in M_{mn}(F)$, then the non-zero rows form a basis for $\rowspace A$.
+\end{theorem}
+\begin{proof}
+  Let $k$ be the number of non-zero rows. Let $r_i$ be the $i$th non-zero row of a matrix in RREF. Then $r_i$ contains a leading $1$, say in component $\ell_i$, and the $\ell_i$th component of every other row is equal to $0$. Suppose
+  \[
+    c_1r_1 + \dots + c_kr_k = 0
+  \]
+  for each $i$ from $1$ to $k$, the $\ell_i$th component yields $c_i = 0$. Thus the non-zero rows are linearly independent.
+
+  We now prove the second statement. Since EROs preserve row space, $\rowspace A = \rowspace B$. Thus by the first part of this theorem, the non-zero rows of $B$ are a basis for $\rowspace A$.
+\end{proof}
+\begin{example}
+  Below is a matrix $A$ and its RREF $B$:
+  \[
+    A =
+    \begin{bmatrix}
+      1 & 2 & 0 & -1 & 4 & 7\\
+      2 & 4 & -1 & 0 & 1 & 3\\
+      3 & 6 & -3 & -1 & -1 & -4\\
+      -1 & -2 & 0 & 0 & -2 & -5\\
+    \end{bmatrix}, B =
+    \begin{bmatrix}
+      1 & 2 & 0 & 0 & 2 & 5\\
+      0 & 0 & 1 & 0 & 3 & 7\\
+      0 & 0 & 0 & 1 & -2 & -2\\
+      0 & 0 & 0 & 0 & 0 & 0\\
+    \end{bmatrix}
+  \]
+  Find $\rank, \nullity, \rowspace, \colspace, N$ of $A$.
+
+  Since the rank is the number of leading ones, we have $\rank A = 3$. By Rank-Nullity, $\nullity A = 6 - 3 = 3$.
+
+  The non-zero rows of $B$ form a basis for $\rowspace A$. A basis is:
+  \[
+    (1, 2, 0, 0, 2 , 5), (0, 0, 1, 0, 3, 7), (0, 0, 0, 1, -2, -2)
+  \]
+  (written horizontally to save space)
+
+  In $B$, the leading $1$s are on the first, third, and fourth columns. Thus the corresponding columns of $A$ will form a basis:
+  \[
+    (1, 2, 3, -1), (0, -1, -3, 0), (-1, 0, -1, 0)
+  \]
+  We now find a basis for $N(A)$. Set $x_2 = r, x_5 = s, x_6 = t$. Then $x_1 = -2r - 2s - 5t, x_3 = -3s - 7t, x_4 = 2s + 2t$.
+  Then the solution to the homogeneous system is:
+  \[
+    \begin{bmatrix}
+      x_1\\x_2\\x_3\\x_4\\x_5\\x_6
+    \end{bmatrix} =
+    \begin{bmatrix}
+      -2r - 2s - 5t\\
+      r\\
+      -3s - 7t\\
+      2s + 2t\\
+      s\\
+      t\\
+    \end{bmatrix} = r
+    \begin{bmatrix}
+      -2\\
+      1\\
+      0\\0\\0\\0\\
+    \end{bmatrix} + s
+    \begin{bmatrix}
+      -2\\0\\-3\\2\\1\\0\\
+    \end{bmatrix} + t
+    \begin{bmatrix}
+      -5\\0\\7\\2\\0\\1\\
+    \end{bmatrix}
+  \] Thus a basis for $N(A)$ is the three vectors above.
+\end{example}
+\subsection{Connections between Row and Column Space}
+\begin{theorem}
+  Let $F$ be a field and let $A \in M_{mn}(F)$. Then, \[
+    \dim \rowspace A = \dim \colspace A
+  \]
+\end{theorem}
+\begin{proof}
+  Let $B$ be the RREF of $A$. By theorem on the basis of the column space, $\dim \colspace A$ is equal to the number of columns of $B$ that contain a leading one. Since each non-zero row of $B$ contains a leading one, this is equal to the number of non-zero rows of $B$. By theorem on basis of row space, this is equal to $\dim \rowspace A$.
+\end{proof}
+\begin{example}
+  If we write down a square matrix that has a dependence relation among the columns, it must also have one among the rows. For example,
+  \[
+    \begin{bmatrix}
+      5 & -7 & -2\\
+      -11 & 17 & 6\\
+      13 & -2 & 11\\
+    \end{bmatrix}
+  \]
+  In this matrix, the 3rd column is the sum of the first two. Since this is a square matrix with linear dependent columns, the rows must also be dependent. Let $r_i$ be the rows of the matrix. We can find the dependence relation by forming the matrix whose columns are equal to the rows and using the theorem on the basis of the column space. We would find
+  \[
+    199r_1 + 81r_2 = 8r_3
+  \]
+\end{example}
+\begin{definition}
+  Let $F$ be a field and let $A \in M_{mn}(F)$. The \textbf{transpose} of $A$ is the $n \times m$ matrix $A^t$ defined by $[A^t]_{ij} = [A]_{ji}$.
+\end{definition}
+\begin{theorem}
+  Let $F$ be a field and let $A \in M_{mn}(F)$. Then
+  \[
+    \rowspace A = \colspace A^t
+  \] and \[
+    \colspace A = \rowspace A^t
+  \]
+\end{theorem}
+\begin{proof}
+  This follows from the fact that the rows of $A^t$ are the same as the columns of $A$ and vice versa.
+\end{proof}
+\begin{theorem}
+  Let $F$ be a field and let $A \in M_{mn}(F)$. Then $\rank A = \rank A^t$.
+\end{theorem}
+\begin{proof}
+  \begin{align*}
+    \rank A &= \dim \colspace A\\
+    &= \dim \rowspace A\\
+    &= \dim \colspace A^t\\
+    &= \rank A^t
+  \end{align*}
+\end{proof}
+\section{Coordinate Vectors}
+\begin{definition}
+  Let $V$ be a finite dimensional vector space over a field $F$ with $\dim V = n$. Let $\mathcal{B} = \{v_1, \ldots, v_n\}$ be an ordered basis for $V$. Let $v \in V$. Then there exist unique $c_i \in F$ with \[
+    v = c_1v_1 + \dots + c_nv_n
+  \]
+  The \textbf{coordinate vector} for $v$ with respect to $\mathcal{B}$ is \[
+    [v]_\mathcal{B} = (c_1, \ldots, c_n)
+  \]
+  It is a vector in $F^n$.
+\end{definition}
+\begin{example}
+  Consider $P_2(\R)$ over $\R$. If we have $\mathcal{B}_1 = \{1, x, x^2\}$, then \[
+    [2x^2-3x+5]_{\mathcal{B}1} = (5, -3, 2)
+  \]
+  If instead we have $\mathcal{B}_2 = \{x^2, x, 1\}$, then \[
+    [2x^2 - 3x + 5]_{\mathcal{B}2} = (2, -3, 5)
+  \]
+  Another basis of $P_2(\R)$ is \[
+    \mathcal{B}_3 = \{x^2 + x + 1, x^2 + x - 1, x^2 + 2x + 1\}
+  \]
+  To find $[2x^2 - 3x + 5]_{\mathcal{B}2}$, we find $c_1, c_2, c_3 \in \R$ with \[
+    2x^2 -3x+5 = c_1(x^2 + x + 1) + c_2(x^2 + x - 1) + c_3(x^2 + 2x + 1)
+  \]
+  Rearranging, we have \[
+    (c_1 + c_2 + c_3)x^2 + (c_1 + c_2 + 2c_3)x + (c_1 - c_2 + c_3)
+  \]
+
+  Equating coefficients yields the system
+  \begin{align*}
+    c_1 + c_2 + c_3 &= 2\\
+    c_1 + c_2 + 2c_3 &= -3\\
+    c_1 - c_2 + c_3 &= 5\\
+  \end{align*}
+  Solving, we have $c_1 = \frac{17}{2}, c_2 = \frac{-3}{2}, c_3 = -5$. Thus \[
+    [2x^2 - 3x + 5]_{\mathcal{B}3} = (\frac{17}{2}, -\frac{3}{2}, -5)
+  \]
+\end{example}
+\begin{example}
+  Consider $\R^2$ over $\R$ and let $v = (1, 2)$.
+  For basis $\mathcal{B} = \{(1, 1), (1, -1)\}$, solving $(1, 2) = c_1(1, 1) + c_2(1, -1)$ yields $c_1 = \frac{3}{2}$ and $c_2 = \frac{-1}{2}$. Thus $[v]_\mathcal{B} = \left(\frac{3}{2}, \frac{-1}{2}\right)$
+\end{example}
+\begin{example}
+  Let \[
+    V = \{a_2x^2 + a_1x + a_0 \mid a_2 + a_1 + a_0 = 0\}
+  \]
+  Show that $V$ is a subspace of $P_2(\R)$. Then find a basis $\mathcal{B}$ for $V$ and use it to find $[3x^2 - 4x + 1]_\mathcal{B}$.
+
+  Since $a_2x^2 + a_1x + a_0 \in V$ iff $a_0 = -a_2 - a_1$, we have
+  \begin{align*}
+    V &= \{a_2x^2 + a_1x -a_2 - a_1 \mid a_1, a_2 \in \R\}\\
+    &= \{a_2(x^2 - 1) + a_1(x-1)\}
+    &= \spn \{x^2 - 1, x-1\}
+  \end{align*}
+  Since the span of a set of vectors always yields a subspace, $V$ is a subspace of $P_2(\R)$. Since the above vectors are not multiples of each other, they form a basis of $V$. Thus $\mathcal{B} = \{x^2-1, x-1\}$.
+
+  We find $c_1, c_2$ for which \[
+    3x^2 -4x + 1 = c_1(x^2 - 1) + c_2(x-1)
+  \]
+  By inspection, we much have $c_1 = 3$ and $c_2 = -4$. Thus we have \[
+    [3x^2 - 4x + 1]_\mathcal{B} = (3, -4)
+  \]
+\end{example}
+\subsection{Properties of Coordinate Vectors}
+\begin{theorem}
+  Let $V$ be a finite dimensional vector space over a field $F$ with $\dim V = n \in \N$. Let $\mathcal{B}$ be a basis for $V$. For all $u, v \in V$ and all $c \in F$, we have
+  \[
+    [u+v]_\mathcal{B} = [u]_\mathcal{B} + [v]_\mathcal{B}
+  \]
+  and \[
+    [cv]_\mathcal{B} = c[v]_\mathcal{B}
+  \]
+\end{theorem}
+\begin{proof}
+  Let $\mathcal{B} = \{w_1, \ldots, w_n\}$. Then there are $a_i, b_i \in F$ with \[
+    u = a_1w_1 + \dots + a_nw_n
+  \] and \[
+    v = b_1w_1 + \dots + b_nw_n
+  \]
+  Thus
+  \[
+    u+v = (a_1 + b_1)w_1 + \dots + (a_n + b_n)w_n
+  \]
+  and \[
+    cv = (cb_1)w_1 + \dots + (cb_n)w_n
+  \]
+  Hence,
+  \begin{align*}
+    [u+v]_\mathcal{B} &= (a_1 + b_1, \ldots, a_n+b_n)\\
+    &= (a_1, \ldots, a_n) + (b_1, \ldots, b_n)\\
+    &= [u]_\mathcal{B} + [v]_\mathcal{B}
+  \end{align*}
+  and
+  \begin{align*}
+    [cv]_\mathcal{B} &= (cb_1, \ldots, cb_n)\\
+    &= c(b_1, \ldots, b_n)\\
+    &= c[v]_\mathcal{B}
+  \end{align*}
+\end{proof}
+\begin{theorem}
+  Let $V$ be a finite dimensional vector space over a field $F$, and let $\mathcal{B}$ be a basis of $V$. Then
+  \[
+    [0]_\mathcal{B} = 0
+  \]
+  Also for any $u, v \in V$, we have
+  \[
+    [u]_\mathcal{B} = [v]_\mathcal{B}
+  \]
+  if and only if $u = v$.
+\end{theorem}
+\begin{theorem}
+  Let $V$ be a finite dimensional vector space over a field $F$ with $\dim V = n \in \N$ and let $\mathcal{B}$ be a basis of $V$. Let $v_1, \ldots, v_k \in V$. Then,
+  \begin{enumerate}
+    \item The vectors $v_1, \ldots, v_k$ are linearly independent in $V$ iff $[v_1]_\mathcal{B}, \ldots, [v_k]_\mathcal{B}$ are linearly independent in $F^n$.
+    \item The vectors $v_1, \ldots, v_k$ span $V$ iff $[v_1]_\mathcal{B}, \ldots, [v_k]_\mathcal{B}$ span $F^n$.
+  \end{enumerate}
+\end{theorem}
+\begin{proof}
+  Suppose the $v_i$ are linearly independent. Suppose \[
+    c_1[v_1]_\mathcal{B} + \dots + c_k[v_k]_\mathcal{B} = 0
+  \]
+  Then \[
+    c_1[v_1]_\mathcal{B} + \dots + c_k[v_k]_\mathcal{B} = [0]_\mathcal{B}
+  \]
+  Thus we must have \[
+    c_1v_1 + \dots + c_kv_k = 0
+  \]
+  since the $v_i$ are independent, this implies $c_i = 0$. Thus the $[v_1]_\mathcal{B}$ are linearly independent.
+
+  We show the forwards direction for part 2.
+  Suppose $v_1, \ldots, v_k$ span $V$. Let $u \in F^n$. Then $u = [v]_\mathcal{B}$ for some $v \in V$. Thus we have \[
+    v = c_1v_1 + \dots + c_kv_k
+  \]
+  for some $c_i \in F$. Then we have
+  \begin{align*}
+    u &= [v]_\mathcal{B}\\
+    &= [c_1v_1 + \dots + c_kv_k]_\mathcal{B}\\
+    &= c_1[v_1]_\mathcal{B} + \dots + c_k[v_k]_\mathcal{B}
+  \end{align*}
+  Since the arbitrary vector $u$ can be written as a linear combination of the $[v_i]_\mathcal{B}$, they span $F^n$.
+
+  Now for the reverse direction. Suppose $[v_1]_\mathcal{B}, \ldots, [v_k]_\mathcal{B}$ span $F^n$. Let $v \in V$. Then there exist $c_i \in F$ with
+  \begin{align*}
+    [v]_\mathcal{B} &= c_1[v_1]_\mathcal{B} + \dots + c_k[v_k]_\mathcal{B}\\
+    &= [c_1v-1 + \dots + c_kv_k]_\mathcal{B}\\
+  \end{align*}
+  It follows that \[
+    v = c_1v_1 + \dots + c_kv_k
+  \]
+  Thus the $v_i$ span $V$.
+\end{proof}
+\begin{example}
+  Let $p_1(x) = x^2 + 3x - 2, p_2(x) = 2x^2 + x + 1, p_3(x) = 3x^2 + 2x + 1$. Are these linearly independent?
+
+  We find a basis of $P_2(\R)$, we use $\mathcal{B} = \{1, x, x^2\}$ so that the coordinate vectors are $(1, 3, -2), (2, 1, 1), (3, 2, 1)$. We form the matrix and row reduce.
+  \[
+    \begin{bmatrix}
+      1 & 2 & 3\\
+      3 & 1 & 2\\
+      -2 & 1 & 1\\
+    \end{bmatrix} \to
+    \begin{bmatrix}
+      1 & 0 & \frac{1}{5}\\
+      0 & 1 & \frac{7}{5}\\
+      0 & 0 & 0\\
+    \end{bmatrix}
+  \]
+  There is a linear relation among the columns of the RREF, and so the polynomials are linearly dependent. Letting $v_1, v_2, v_3$ be coordinate vectors, we have
+  \[
+    v_3 = \frac{1}{5}v_1 + \frac{7}{5}v_2
+  \]
+  and the same holds for the polynomials
+  \[
+    p_3(x) = \frac{1}{5}p_1(x) + \frac{7}{5}p_2(x)
+  \]
+\end{example}
+\section{Linear Maps}
+\begin{definition}
+  Let $V, W$ be vector spaces over a field $F$. A \textbf{linear map} or \textbf{linear transformation} is a function $T: V \to W$ such that
+  \begin{enumerate}
+    \item for any $u, v \in V, T(u+v) = T(u) + T(v)$
+    \item for any $c \in F$ and $v \in V$, $T(cv) = vT(v)$
+  \end{enumerate}
+\end{definition}
+\begin{example}
+  The identity map $I: V \to V$ is given by $I(v) = v$ for all $v \in V$.
+  We show it is a linear map.
+
+  Since we have \[
+    I(u+v) = u + v = I(u) + I(v)
+  \]
+  and \[
+    I(cv) = cv = cI(v)
+  \]
+  it is linear.
+\end{example}
+\begin{example}
+  The zero map $O: V \to W$ is given by $O(v) = 0$ for all $v \in V$.
+  We show it is a linear map.
+
+  Since we have \[
+    O(u+v) = 0 = O(u) = O(v)
+  \]
+  and \[
+    O(cv) = 0 = cO(v)
+  \]
+  it is linear.
+\end{example}
+\begin{proposition}
+  Let $V$ be a finite dimensional vector space over $F$. Fix a basis $\mathcal{B}$ of $V$. Define $T: V \to F^n$ by $T(v) = [v]_\mathcal{B}$. That is, $T$ sends a vector to its coordinate vector. Show $T$ is a linear map.
+\end{proposition}
+\begin{proof}
+  Since $T(v) = [v]_\mathcal{B}$, we must show that $[u + v]_\mathcal{B} = [u]_\mathcal{B} + [v]_\mathcal{B}$ and $[cv]_\mathcal{B} = c[v]_\mathcal{B}$, which we already have shown.
+\end{proof}
+\begin{example}
+  Let $V$ be the set of differentiable functions mapping from $\R \to \R$. This is a subspace of $\mathcal{F}_\R(\R)$. consider the map $D: V \to \mathcal{F}_\R(\R)$ defined by $D(f) = f'$. We have \[
+    D(f+g) = (f+g)' = f' + g' = D(f) + D(g)
+  \] and \[
+    D(cf) = (cf)' = cf' = cD(f)
+  \]
+  and so differentiation is an example of a linear map.
+\end{example}
+\begin{example}
+  Define $T: P(\R) \to P(\R)$ by $T(p(x)) = xp(x)$. Show that $T$ is a linear map.
+  We have
+  \begin{align*}
+    T(p(x) + q(x)) &= x(p(x) + q(x))\\
+    &= xp(x) + xq(x)\\
+    &= T(p(x)) + T(q(x))
+  \end{align*}
+  and
+  \begin{align*}
+    T(cp(x)) &= x(cp(x))\\
+    &= cxp(x)\\
+    &= cT(p(x))\\
+  \end{align*}
+  Thus $T$ is a linear map.
+\end{example}
+\begin{example}
+  Define $T: \R^3 \to \R^2$ by \[
+    T(x, y, z) = (2x-3y+z, 5x+y - 2z)
+  \]
+
+  Let $u = (x_1,y_1,z_1)$ and $v = (x_2, y_2, z_2)$ and let $c \in \R$. Then
+  \begin{align*}
+    T(u+v) &= T(x_1 + x_2, y_1 + y_2, z_1 + z_2)\\
+    &= (2(x_1 + x_2) - 3(y_1 + y_2) + (z_1 + z_2), 5(x_1 + x_2) + (y_1 + y_2) - 2(z_1 + z_2))\\
+    &= (2x_1 - 3y_1 + z_1, 5x_1 = y_1 -2z_1) + (2x_2 - 3y_2 + z_2, 5x_2 + y_2 - 2z_2)\\
+    &= T(x_1, y_1, z_1) + T(x_2, y_2, z_2)\\
+    &= T(u) + T(v)
+  \end{align*}
+  and we also have
+  \begin{align*}
+    T(cu) &= T(cx_1, cy_2, cz_3)\\
+    &= (2cx_1 - 3cy_1 + cz_1, 5cx_1 + cy_1 -2cz_1)\\
+    &= c(2x_1 - 3y_1 + z_1, 5x_1 + y_1 - 2z_1)\\
+    &= cT(x_1, y_1, z_1)\\
+    &= cT(u)
+  \end{align*}
+
+  There is an alternative solution to this example. If we write the vectors as column matrices, we have
+  \begin{align*}
+    T
+    \begin{bmatrix}
+      x\\y\\z\\
+    \end{bmatrix} &=
+    \begin{bmatrix}
+      2x - 3y + z\\5x+y-2z\\
+    \end{bmatrix}\\
+    &= x
+    \begin{bmatrix}
+      2\\5\\
+    \end{bmatrix} + y
+    \begin{bmatrix}
+      -3\\1\\
+    \end{bmatrix} + z
+    \begin{bmatrix}
+      1\\-2\\
+    \end{bmatrix}\\
+    &=
+    \begin{bmatrix}
+      2 & -3 & 1\\
+      5 & 1 & 2\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      x\\y\\z\\
+    \end{bmatrix}
+  \end{align*}
+  Thus we have $T(v) = Av$ for \[
+    A =
+    \begin{bmatrix}2 & -3 & 1\\
+      5 & 1 & 2
+    \end{bmatrix}
+  \]
+  This map is given by matrix multiplication on $V$. We can show it is linear by using properties of matrix multiplication.
+\end{example}
+\begin{theorem}
+  Let $F$ be a field and let $A \in M_{mn}(F)$. Using properties of matrix multiplication, we have \[
+    T(u+v) = A(u+v) = Au + Av = T(u) + T(v)
+  \] and \[
+    T(cv) = cA(v) = cT(v)
+  \]
+  and so $T$ is linear.
+\end{theorem}
+\begin{theorem}
+  Let $V, W$ be vector spaces, and let $T: V \to W$ be a function. If $T(0) \neq 0$, then $T$ is not linear.
+\end{theorem}
+\begin{proof}
+  Suppose $T$ is a linear map. Then $T(cv) = cT(v) \forall c \in F$. Taking $c = 0$ yields $T(0) = 0$.
+\end{proof}
+\begin{example}
+  Let $T: \R^3 \to \R^3$ be defined by \[
+    T(x, y, z) = (x + y + 1, x-z, 2x-3y)
+  \]
+  This is not a linear map since $T(0, 0, 0) = (1, 0, 0)$
+\end{example}
+\begin{example}
+  Let $T: \R^2 \to \R$ be defined by \[
+    T(x, y) = xy
+  \]
+  This is not a linear map since $T(2, 2) = 4$ but $2T(1, 1) = 2$.
+\end{example}
+\subsection{Linear Maps and Bases}
+\begin{theorem}
+  Let $v_i, \ldots, v_n$ be a basis of a vector space $V$, and let $w_1, \ldots, w_n$ be any vectors in a vector space $W$. Then there exists a unique linear map $T: V \to W$ satisfying $T(v_i) = w_i$ for $1 \leq i \leq n$.
+\end{theorem}
+\begin{proof}
+  We first show there exists a linear map $T: V \to W$ with $T(v_i) = w_i$ for each $i$ and then we show this map is unique. Since the $v_i$ form a basis of $V$, for every $v \in V$ there exists unique $c_i \in F$ with $v = c_1v_1 + \dots + c_nv_n$. We define $T: V \to W$ by \[
+    T(c_1v_1 + \dots + c_nv_n) = c_1w_1 + \dots + c_nw_n
+  \]
+  Since the choice for $c_i$ is unique, this function is well defined. Taking $c_i = 1$ and $c_j = 0$ for $i \neq j$ yields $T(v_i) = T(w_i)$, as required.
+
+  We now show $T$ is linear. Let $u, v \in V$ with $u = b_1v_1 + \dots + b_nv_n$ and $v = c_1v_1 + \dots + c_nv_n$ and let $\alpha \in F$. Then by definition of $T$ we have
+  \begin{align*}
+    T(u+v) &= T((b_1 + c_1)v_1 + \dots + (b_n+c_n)v_n)\\
+    &= (b_1+c_1)w_1 + \dots + (b_n + c_n)w_n\\
+    &= b_1w_1 + \dots + b_nw_n + c_1w_1 + \dots + c_nw_n\\
+    &= T(u) + T(v).\\
+  \end{align*}
+  We also have
+  \begin{align*}
+    T(\alpha v) &= T(\alpha c_1v_1 + \dots + \alpha c_nv_n)\\
+    &= \alpha c_1w_1 + \dots + \alpha c_nw_n\\
+    &= \alpha (c_1w_1 + \dots + c_nw_n)\\
+    &= \alpha T(v)\\
+  \end{align*}
+  and so $T$ is linear.
+
+  We now show it is unique. Suppose $F: T \to W$ is a linear map with $F(v_i) = w_i$ for each $i$. We show $F = T$. Let $v \in V$. Then $v = c_1v_1 + \dots + c_nv_n$ for some $c_i \in F$. By the fact that $F$ is linear and by definition of $T$, we have
+  \begin{align*}
+    F(v) &= F(c_1v_1 + \dots + c_nv_n)\\
+    &= c_1F(v_1) + \dots + c_nF(v_n)\\
+    &= c_1w_1 + \dots + c_nw_n\\
+    &= T(v)
+  \end{align*}
+\end{proof}
+\begin{example}
+  Let $T: \R^2 \to \R^2$ be the linear map that satisfies $T(1, 0) = (7, -7)$ and $T(0, 1) = (5, 2)$. Find the formula for $T(x, y)$.
+
+  We note that we have the fact $(x, y) = x(1, 0) + y(0, 1)$. Using the fact that $T$ is linear:
+  \begin{align*}
+    T(x, y) &= T(x(1, 0) + y(0, 1))\\
+    &= xT(1, 0) + yT(0, 1)\\
+    &= x(7, -7) + y(5, 2)\\
+    &= (7x + 5y, -7x + 2y)\\
+  \end{align*}
+\end{example}
+\begin{example}
+  Let $T: \R^2 \to \R^2$ be the linear map that satisfies $T(1, 2) = (5, 7)$ and $T(2, -3) = (-2, 3)$. Find the formula for $T(x, y)$.
+
+  We must find $c_1, c_2$ such that \[
+    (x, y) = c_1(1, 2) + c_2(2, -3)\\
+  \]
+  Think of $x, y$ as fixed. Search for $c_1,c_2$ in terms of $x, y$. We solve:
+  \[
+    \begin{bmatrix}
+      1 & 2 & x\\
+      2 & -3 & y\\
+    \end{bmatrix} \to
+    \begin{bmatrix}
+      1 & 0 & \frac{3x + 2y}{7}\\
+      0 & 1 & \frac{2x - y}{7}\\
+    \end{bmatrix}
+  \]
+  Thus we have \[
+    (x, y) = \frac{3x + 2y}{7}(1, 2) + \frac{2x - y}{7}(2, -3)
+  \]
+  Using the fact that $T$ is linear, we have
+  \begin{align*}
+    T(x,y) &= T\left(\frac{3x + 2y}{7}(1, 2) + \frac{2x - y}{7}(2, -3)\right)\\
+    &= \frac{3x + 2y}{7}T(1, 2) + \frac{2x - y}{7}T(2, -3)\\
+    &= \frac{3x + 2y}{7}(5, 7) + \frac{2x - y}{7}(-2, 3)\\
+    &= \left(\frac{11x + 12y}{7}, \frac{27x + 11y}{7}\right)
+  \end{align*}
+\end{example}
+\begin{example}
+  Let $T: \R^2 \to \R^2$ be the linear map that satisfies $T(1, 0) = (1, 1)$ and $T(0, 1) = (1, 1)$.
+
+  Since $(x, y) = x(1, 0) + y(0, 1)$, we have
+  \begin{align*}
+    T(x, y) &= T(x(1, 0) + y(0, 1))\\
+    &= xT(1, 0) + yT(0, 1)\\
+    &= x(1, 1) + y(1, 1)\\
+    &= (x+y, x+y)\\
+  \end{align*}
+\end{example}
+\subsection{Operations on Linear Maps}
+\begin{definition}
+  Let $V$ and $W$ be vector spaces over a field $F$. For linear maps $S: V \to W$ and $T: V \to W$, define the map $S + T: V \to W$ by \[
+    (S+T)(v) = S(v) + T(v)
+  \]
+  for all $v \in V$. Let $\alpha \in F$, define the map $\alpha T : V \to W$ by \[
+    (\alpha T)(v) = \alpha(T(v))
+  \] for all $v \in V$.
+\end{definition}
+\begin{theorem}
+  Let $V$ and $W$ be a vector space over a field $F$. Let $S: V \to W$ and $T: V \to W$ be linear maps, and let $\alpha \in F$. Then the maps $S + T$ and $\alpha T$ are linear maps.
+\end{theorem}
+\begin{proof}
+  Proof is omitted for brevity.
+\end{proof}
+\begin{theorem}
+  Fix vector spaces $V, W$ both over $F$. Let $\mathcal{L}(V, W)$ be the set of all linear maps from $V \to W$. Using the addition and scalar multiplication operations, $\mathcal{L}$ is a vector space over $F$.
+\end{theorem}
+\begin{definition}
+  Let $U, V, W$ be vector spaces over the same field $F$. Let $S: V \to W$ and $T: U \to V$ be linear maps. The product $ST$ mapping from $U$ to $W$ is defined by \[
+    (ST)(u) = S(T(u))
+  \]
+\end{definition}
+\begin{theorem}
+  Let $U, V, W$ be vector spaces over $F$ with $S: V \to W$ and $T: U \to V$ be linear maps. Then the product map $ST$ is a linear map.
+\end{theorem}
+\begin{proof}
+  Let $u, v \in U$ and let $c \in F$. Then
+  \begin{align*}
+    (ST)(u+v) &= S(T(u+v))\\
+    &= S(T(u) + T(v))\\
+    &= S(T(u)) + S(T(u))\\
+    &= (ST)(u) + (ST)(v)
+  \end{align*} and
+  \begin{align*}
+    (ST)(cv) &= S(T(cv))\\
+    &= S(cT(v))\\
+    &= cS(T(v))\\
+    &= c(ST)(v)\\
+  \end{align*}
+  Thus $ST$ is a linear map.
+\end{proof}
+\begin{example}
+  Let $D: P(\R) \to P(\R)$ be the differentiation map (so $D(p(x)) = p'(x)$) and let $T: P(\R) \to P(\R)$ be defined by $T(p(x)) = xp(x)$. Find formulas for $TD$ and $DT$.
+
+  Since the domains and co-domains are the same, both are defined.
+  We have
+  \begin{align*}
+    (TD)(p(x)) &= T(D(p(x)))\\
+    &= T(p'(x))\\
+    &= xp'(x)\\
+  \end{align*} and
+  \begin{align*}
+    (DT)(p(x)) &= D(T(p(x)))\\
+    &= D(xp(x))\\
+    &= p(x) + xp'(x)\\
+  \end{align*}
+
+  Note that in general, products are non-commutative.
+\end{example}
+\begin{cthm}[Properties of Linear Map Multiplication]
+  Let $U, V, W$ be vector spaces over $F$. Let $T: U \to V, S: V \to W, P: V \to W, Q: U \to V$.
+  Then,
+  \begin{enumerate}
+    \item $(cS)T = S(cT) = c(ST)$
+    \item $T(S + P) = TS + TP$
+    \item $(Q + T)S = QS + TS$
+    \item $\mathrm{id}T = T\mathrm{id}$
+    \item $0T = 0$ and $T0 = 0$
+  \end{enumerate}
+\end{cthm}
+\begin{definition}
+  Let $V$ be a vector space. Let $T: V \to V$ be a linear map, and let $m \in \N$. We define $T^1: V \to V$ by $T^1 = T$, and for $m \geq 1$, define $T^{m+1}: V \to V$ by $T^{m+1} = TT^m$.
+
+  I.e. the map $T^m$ is found by applying the map $T$ repeatedly $m$ times.
+\end{definition}
+\begin{example}
+  Define $T: \R^2 \to \R^2$ by $T(x, y) = (x + y, x-y)$. Show that $T$ is linear, and then find formulas for $T^2(x, y)$ and $T^3(x, y)$.
+
+  We will use a previously seen trick to write it as a matrix mapping.
+  \begin{align*}
+    T
+    \begin{bmatrix}
+      x\\y\\
+    \end{bmatrix} &=
+    \begin{bmatrix}
+      x + y\\
+      x - y\\
+    \end{bmatrix}\\
+    &= x
+    \begin{bmatrix}
+      1\\1\\
+    \end{bmatrix} + y
+    \begin{bmatrix}
+      1\\-1\\
+    \end{bmatrix}\\
+    &=
+    \begin{bmatrix}
+      1 & 1\\
+      1 & -1\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      x\\y\\
+    \end{bmatrix}
+  \end{align*}
+  Since $T(v) = Av$ for matrix $A$, $T$ is linear.
+
+  We have
+  \begin{align*}
+    T^2(x, y) &= T(T(x, y))\\
+    &= T(x+y, x-y)\\
+    &= ((x+y) + (x-y), (x+ y) - (x-y))\\
+    &= (2x, 2y)\\
+  \end{align*} and
+  \begin{align*}
+    T^3(x, y) &= T(T^2(x, y))\\
+    &= T(2x, 2y)\\
+    &= (2x + 2y, 2x - 2y)\\
+  \end{align*}
+
+  We could also do
+  \begin{align*}
+    T^2
+    \begin{bmatrix}
+      x\\y\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      1 & 1\\
+      1 & -1\\
+    \end{bmatrix}^2
+    \begin{bmatrix}
+      x\\y\\
+    \end{bmatrix}\\
+    &=
+    \begin{bmatrix}
+      2 & 0\\
+      0 & 2\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      x\\y\\
+    \end{bmatrix}
+  \end{align*}
+\end{example}
+\begin{example}
+  Let $T: P_3(\R) \to P_3(\R)$ be defined by $T(f(x)) = \frac{df(x)}{dx}$. Consider $T^n$ for all $n \geq 1$.
+
+  By Power Rule, the terms of $T^m(ax^3 + bx^2 + cx + d)$ will be ground down to $0$ after 4 terms, so for $n > 3$, $T^n$ will be 0.
+\end{example}
+\end{document}
+

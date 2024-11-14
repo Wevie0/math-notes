@@ -1,0 +1,3037 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\input{preamble.tex}
+\DeclareMathOperator{\nullity}{nullity}
+\DeclareMathOperator{\spn}{span}
+\DeclareMathOperator{\colspace}{colspace}
+\DeclareMathOperator{\proj}{proj}
+\DeclarePairedDelimiterX{\inner}[2]{\langle}{\rangle}{#1, #2}
+
+\begin{document}
+\title{MATH 2152 Notes}
+\date{Winter Term 2 2022}
+
+\maketitle
+
+\begin{tcolorbox}[title=, fonttitle=\huge\sffamily\bfseries\selectfont,interior style={left color=contcol1!40!white,right color=contcol2!40!white},frame style={left color=contcol1!80!white,right color=contcol2!80!white},coltitle=black,top=2mm,bottom=2mm,left=2mm,right=2mm,drop fuzzy shadow,enhanced,breakable]
+  \tableofcontents
+\end{tcolorbox}
+
+\newpage
+\section{Review of 1152}
+\begin{theorem}
+  The Non-Singularity Theorem:
+
+  Let $A$ be a $n \times n$ matrix with entries in $F$, then the following are equivalent:
+  \begin{itemize}
+    \item $A$ is non-singular
+    \item $N(A) = \{0\}$
+    \item $A$ is invertible
+    \item $\rank A = n$
+    \item RREF $A = I_n$
+    \item $\nullity A = 0$
+    \item rows and cols are a basis of $F^n$ (linear independent \& span)
+    \item $A\textbf{x} = 0 \implies \textbf{x} = 0$
+    \item $\exists!$ solution to $A\textbf{x} = \textbf{b}$ for all $\textbf{b}$
+  \end{itemize}
+\end{theorem}
+\section{Linear Maps}
+\subsection{Matrix Mapping}
+\begin{theorem}
+  Let $T: F^n \to F^m$ be linear. Then $\exists!$ A $m \times n$ matrix such that $T(\textbf{v}) = A\textbf{v}$ for all $\textbf{v} \in F$. Thus,
+  \[A =
+    \begin{pmatrix}
+      T(e_1), \ldots, T(e_n)
+  \end{pmatrix}\] i.e. the columns of $A$ are $T(e_i)$.
+\end{theorem}
+\begin{example}
+  Let $T: \R^3 \to \R^2$ be defined by $T(x, y, z) = (x+y+z, \frac{1}{2}x)$.
+
+  Then,
+  \begin{align*}
+    A &=
+    \begin{pmatrix}
+      T(e_1) & T(e_2) &T(e_3)
+    \end{pmatrix}\\
+    &=
+    \begin{pmatrix}
+      T(1, 0, 0) & T(0, 1, 0) & T(0, 0, 1)
+    \end{pmatrix}\\
+    &=
+    \begin{pmatrix}
+      1 & 1 & 1\\
+      \frac{1}{2} & 0 & 0\\
+    \end{pmatrix}
+  \end{align*}
+\end{example}
+\begin{theorem}
+  Let $V, W$ be vector spaces over $F$ with $\dim W = m$ and $\dim V = n$. Then $\exists!$ an $m \times n$ matrix $A$. Let $T: V \to W$ be a linear transformation. Given basis' $\mathcal{B}_V$ and $\mathcal{B}_W$, we have \[
+    [T(\textbf{v})]_{\mathcal{B}_W} = A[\textbf{v}]_{\mathcal{B}_V}
+  \] for all $\textbf{v} \in V$.
+
+  The formula to compute $A$ is given by:
+  \[
+    A =
+    \begin{pmatrix}
+      [T(v_1)]_{\mathcal{B}_W} & \ldots & [T(v_n)]_{\mathcal{B}_W}
+    \end{pmatrix}
+  \]
+
+\end{theorem}
+\begin{example}
+  Let $T: P_3(\R) \to P_2(\R)$ be defined by $T(p(x)) = p'(x)$. Let $\mathcal{B}_{P_3(\R)} = \{x^3, x^2, x, 1\}$ and $\mathcal{B}_{P_2(\R)} = \{x^2, x, 1\}$. Then,
+  \begin{align*}
+    A &=
+    \begin{pmatrix}
+      [T(x^3)]_{\mathcal{B}_{P_2(\R)}} & [T(x^2)]_{\mathcal{B}_{P_2(\R)}} & [T(x)]_{\mathcal{B}_{P_2(\R)}} & [T(1)]_{\mathcal{B}_{P_2(\R)}}
+    \end{pmatrix}\\
+    &=
+    \begin{pmatrix}
+      [3x^2]_{\mathcal{B}_{P_2(\R)}} & [2x]_{\mathcal{B}_{P_2(\R)}} & [1]_{\mathcal{B}_{P_2(\R)}} & [0]_{\mathcal{B}_{P_2(\R)}}\\
+    \end{pmatrix}\\
+    &=
+    \begin{pmatrix}
+      3 & 0 & 0 & 0\\
+      0 & 2 & 0 & 0\\
+      0 & 0 & 1 & 0\\
+    \end{pmatrix}
+  \end{align*}
+  Let $V = ax^3 + bx^2 + cx + d$, then \[[T(\textbf{v})]_{\mathcal{B}_W} = [3ax^2 + 2bx + c]_{\mathcal{B}_W} =
+    \begin{pmatrix}
+      3a\\2b\\c\\
+  \end{pmatrix}\] and \[A[\textbf{v}]_{\mathcal{B}_V} =
+    \begin{pmatrix}
+      3 & 0 & 0 & 0\\
+      0 & 2 & 0 & 0\\
+      0 & 0 & 1 & 0\\
+    \end{pmatrix}
+    \begin{pmatrix}
+      a\\b\\c\\d\\
+    \end{pmatrix} =
+    \begin{pmatrix}
+      3a\\2b\\c\\
+  \end{pmatrix}\]
+\end{example}
+\begin{proof}
+  We must check that $[T(\textbf{v}) = A[\textbf{v}]_{\mathcal{B}_V}$. Let $\mathcal{B}_V = \{v_1, \ldots, v_n\}$ and $\textbf{v} = c_1v_1 + \dots + c_nv_n$
+    Then on the LHS:
+    \begin{align*}
+      [T(v)]_{\mathcal{B}_V} &= [T(c_1v_1+ \dots + c_nv_n)]_{\mathcal{B}_W}\\
+      &= [c_1T(v_1) + \dots + c_nT(v_n)]_{\mathcal{B}_W}\\
+      &= [c_1T(v_1)]_{\mathcal{B}_W} + \dots + [c_nT(v_n)]_{\mathcal{B}_W}\\
+    \end{align*}
+    On the RHS:
+    \begin{equation*}
+      \begin{pmatrix}
+      T(v_1)]_{\mathcal{B}_W} & \dots & [T(v_n)]_{\mathcal{B}_W}
+    \end{pmatrix}
+    \begin{pmatrix}
+      c_1\\\vdots\\c_n\\
+    \end{pmatrix} = LHS
+  \end{equation*}
+\end{proof}
+\begin{theorem}
+  Let $V, W$ be finite dimensional vector spaces over the same field $F$, and let $S : V \to W$ and $T: U \to V$ be linear maps. Fix bases $\mathcal{B}_V$ of $V$ and $\mathcal{B}_W$ of $W$, and let $A_S$ and $A_T$ be the matrices for $S$ and $T$ with respect to those bases. Let $\alpha \in F$.
+
+  Then $S + T = A_S + A_T$ and $\alpha T = \alpha A_T$.
+\end{theorem}
+\begin{theorem}
+  Let $U, V, W$ be finite dimensional vector spaces of dimension $p, n$, and $m$ respectively. Let $\mathcal{B}_U, \mathcal{B}_V, \mathcal{B}_W$ be bases of $U, V, W$. Let $S : V \to W$ and $T: U \to V$ be linear maps with corresponding matrices $A_S \in M_{mn}(F)$ and $A_T \in M_{np}(F)$ with respect to their corresponding bases. Then the linear map $S \circ T: U \to W$ has matrix $A_SA_T$ with respect to $\mathcal{B}_U$ and $\mathcal{B}_W$.
+\end{theorem}
+\begin{proof}
+  Let $\textbf{u} \in U$ and $\textbf{v} \in V$. Then by the matrix mapping theorem, we have \[
+    [S\textbf{v}]_{\mathcal{B}_W} = A_S[\textbf{v}]_{\mathcal{B}_V}
+  \]
+  and \[
+    [T\textbf{u}]_{\mathcal{B}_V} = A_T[\textbf{u}]_{\mathcal{B}_U}
+  \]
+  Thus,
+  \begin{align*}
+    [(ST)(\textbf{u})]_{\mathcal{B}_W} &= [S(T(\textbf{u}))]_{\mathcal{B}_W}\\
+    &= A_S[T(\textbf{u})]_{\mathcal{B}_V}\\
+    &= A_SA_T[\textbf{u}]_{\mathcal{B}_U}
+  \end{align*}
+\end{proof}
+\begin{example}
+  Define a linear map $T: \R^2 \to \R^2$ by \[
+    T(x, y) = (-8x + 5y, -10x + 7y)
+  \]
+  First, we find a matrix $A_1$ such that \[
+    T
+    \begin{bmatrix}
+      x\\y\\
+    \end{bmatrix} = A_1
+    \begin{bmatrix}
+      x\\y\\
+    \end{bmatrix}
+  \]
+  Then, let \[
+    \mathcal{B}_2 = \{(1, 1), (1, 2)\}
+  \]
+  and find $A_2$, the matrix for $T$ with respect to $\mathcal{B}_2$. Can either $A_1$ or $A_2$ be used to find a general formula for the individual components of $T^m(x, y)$.
+
+  To find $A_1$, we use the usual trick or the special case of the Matrix Mapping Theorem. Since $T(1, 0) = (-8, -10)$ and $T(0, 1) = (5, 7)$, the latter yields \[
+    A_1 =
+    \begin{bmatrix}
+      -8 & 5\\
+      -10 & 7\\
+    \end{bmatrix}
+  \]
+  To find $A_2$, we use the Theorem. We have $T(1, 1) = (-3, -3)$. We write this as a linear combination of the vectors in $\mathcal{B}_2 = \{(1, 1), (1, 2)\}$. Since $T(1, 1) = -3(1, 1) + 0(1, 2)$, we have $[T(1, 1)]_{\mathcal{B}_2} = (-3, 0)$. This is the first column of $A_2$. Similarly, $T(1, 2) = (2, 4) = 0(1, 1) + 2(1, 2)$, and so $[T(1, 2)]_{\mathcal{B}_2}$. We have \[
+    A_2 =
+    \begin{bmatrix}
+      -3 & 0\\
+      0 & 2\\
+    \end{bmatrix}
+  \]
+  Now we find a general formula for the individual components of $T^m(\textbf{v})$. Since $T(\textbf{v}) = A_1\textbf{v}$, we have $T^m\textbf{v} = A_1^m\textbf{v}$ for \[
+    A_1 =
+    \begin{bmatrix}
+      -8 & 5\\
+      -10 & 7\\
+    \end{bmatrix}
+  \]
+  This is very tricky.
+
+  Since $[T(\textbf{v})] = A_2[\textbf{v}]_{\mathcal{B}_2}$ for \[A_2 =
+    \begin{bmatrix}
+      -3 & 0\\
+      0 & 2\\
+  \end{bmatrix}\]. since $A_2$ is a diagonal matrix, it is easy to find the $m$th power.
+  \[
+    A_2^m =
+    \begin{bmatrix}
+      (-3)^m & 0\\
+      0 & 2^m\\
+    \end{bmatrix}
+  \]
+  Now we find $[(x, y)]_{\mathcal{B}_2}$. We write $(x, y)$ as a linear combination of the vectors of $\mathcal{B}_2$. \[
+    \begin{bmatrix}
+      1 & 1 & x\\
+      1 & 2 & y\\
+    \end{bmatrix} \to
+    \begin{bmatrix}
+      1 & 0 & 2x - y\\
+      0 & 1 & y- x\\
+    \end{bmatrix}
+  \]
+  Thus \[
+    (x, y) = (2x - y)(1, 1) + (y - x)(1, 2)
+  \] and so \[
+    [(x, y)]_{\mathcal{B}_2} = (2x - y, y - x)
+  \]
+  Since $[T^m(\textbf{v})]_{\mathcal{B}_2} = A_2^m[\textbf{v}]_{\mathcal{B}_2}$, we have
+  \begin{align*}
+    \begin{bmatrix}
+      T^m
+      \begin{bmatrix}
+        x\\y\\
+      \end{bmatrix}
+    \end{bmatrix}_{\mathcal{B}_2} &= A_2^m
+    \begin{bmatrix}
+      \begin{bmatrix}
+        x\\y\\
+      \end{bmatrix}
+    \end{bmatrix}_{\mathcal{B}_2}\\
+    &=
+    \begin{bmatrix}
+      (-3)^m & 0\\
+      0 & 2^m\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      2x - y\\
+      y - x\\
+    \end{bmatrix}\\
+    &=
+    \begin{bmatrix}
+      (-3)^m (2x - y)\\
+      2^m (y - x)\\
+    \end{bmatrix}
+  \end{align*}
+  This is the coordinate vector for $T^m(x, y)$ with respect to $\mathcal{B}_2$. To find $T^m(x, y)$, we use the entries of the coordinate vector as coefficients in a linear combination of the elements of $\mathcal{B}_2$. Thus
+  \begin{align*}
+    T^m
+    \begin{bmatrix}
+      x\\y\\
+    \end{bmatrix} &= (-3)^m(2x - y)
+    \begin{bmatrix}
+      1\\1\\
+    \end{bmatrix} + 2^m (y - x)
+    \begin{bmatrix}
+      1\\2\\
+    \end{bmatrix}\\
+    &=
+    \begin{bmatrix}
+      (-3)^m (2x - y) + 2^m(y-x)\\
+      (-3)^m (2x - y) + 2^{m+1}(y-x)\\
+    \end{bmatrix}
+  \end{align*}
+
+  To compute $T^{100}(5, 2)$ for example, we use the formula to find \[
+    T^{100}(5, 2) = (8(-3)^{100} + 3 \cdot 2^{100}, 8(-3)^{100} + 3 \cdot 2^{101})
+  \]
+\end{example}
+\subsection{Null Space and Range}
+\begin{definition}
+  Let $T: V \to W$ be a linear map. The \textbf{null space} of $T$ is \[
+    N(T) = \{v \in V \mid T(v) = 0\}
+  \]
+  In other words, it is all vectors in $v$ that map to the $0$ vector in $W$.
+  It is a subspace of $V$.
+\end{definition}
+\begin{definition}
+  Let $T: V \to W$ be a linear map. The \textbf{range} of $T$ is \[
+    \range(T) = \{T(v) \mid v \in V\}
+  \]
+  In other words, it is all vectors in $W$ that get mapped to by all vectors in $V$.
+  It is a subspace of $W$.
+\end{definition}
+\begin{example}
+  Define $T: \R^3 \to \R^2$ by \[
+    T(x, y, z) = (2x - 3y + z, 5x + y - 2z)
+  \]
+  Given that this is a linear map, find bases for $N(T)$ and $\range T$.
+
+  The null space contains the vectors in $\R^3$ that $T$ sends to $0$. We have $T(x, y, z) = (0, 0)$ iff $(x, y, z)$ is a solution to the system
+  \begin{align*}
+    2x - 3y + z &= 0\\
+    5x + y - 2z &= 0\\
+  \end{align*}
+  We solve by row reducing:
+  \[
+    \begin{bmatrix}
+      2 & -3 & 1\\
+      5 & 1 & -2\\
+    \end{bmatrix} \to
+    \begin{bmatrix}
+      1 & 0 & \frac{-5}{17}\\
+      0 & 1 & \frac{-9}{17}\\
+    \end{bmatrix}
+  \]
+  Since $z$ is free, set $z = t$. Then
+  \begin{align*}
+    N(T) &= \left\{ t
+      \begin{bmatrix}
+        \frac{5}{17}\\
+        \frac{9}{17}\\
+        1\\
+    \end{bmatrix} \mid t \in \R \right\}\\
+    &= \spn \left\{
+      \begin{bmatrix}
+        \frac{5}{17}\\
+        \frac{9}{17}\\
+        1\\
+    \end{bmatrix} \right\}\\
+    &= \spn \left\{
+      \begin{bmatrix}
+        5\\9\\17\\
+    \end{bmatrix}\right\}
+  \end{align*}
+  Thus a basis for $N(T)$ is the above. We can check our work by verifying that $T(5, 9, 17) = 0$.
+
+  Let's find a basis for the $\range$ of $T$. We have
+  \begin{align*}
+    \range T &= \left\{
+      \begin{bmatrix}
+        2x - 3y + z\\
+        5x + y - 2z\\
+    \end{bmatrix} \mid x, y, z \in \R \right\}\\
+    &= \left\{ x
+      \begin{bmatrix}
+        2\\5\\
+      \end{bmatrix} + y
+      \begin{bmatrix}
+        -3\\1\\
+      \end{bmatrix} + z
+      \begin{bmatrix}
+        1\\-2\\
+    \end{bmatrix} \mid x, y, z \in \R \right\}\\
+    &= \spn \left\{
+      \begin{bmatrix}
+        2\\5\\
+      \end{bmatrix},
+      \begin{bmatrix}
+        -3\\1\\
+      \end{bmatrix},
+      \begin{bmatrix}
+        1\\-2\\
+    \end{bmatrix}\right\}
+  \end{align*}
+  Note that the $\range$ of $T$ is equal to the column space of the matrix. We now row reduce to find \[
+    \begin{bmatrix}
+      1 & 0 & -\frac{5}{17}\\
+      0 & 1 & -\frac{9}{17}
+    \end{bmatrix}
+  \]
+  that the last column is linearly dependent and so a basis of the range/col space of the matrix is $\{(2, 5), (-3, 1)\}$.
+\end{example}
+\begin{example}
+  Let $D: P_2(\R) \to P_2(\R)$ be the differentiation map, which is linear. Find bases for $N(D)$ and $\range D$.
+
+  If $p(x) = ax^2 + bx + c$, then $D(p(x)) = p'(x) = 2ax + b$. The null space of $D$ consists of all polynomials that $D$ sends to $0$. This is only $a= b = 0$ with $c$ free. Thus
+  \begin{align*}
+    N(D) &= \{c \mid c \in \R\}\\
+    &= \spn \{1\}
+  \end{align*}
+  The null space therefore consists of all constant polynominals.
+
+  We have
+  \begin{align*}
+    \range(D) &= \{2ax + b \mid a, b \in \R\}\\
+    &= \spn \{2x, 1\}\\
+    &= \spn \{x, 1\}\\
+  \end{align*}
+  Thus a basis of $\range T$ is $\{x, 1\}$.
+\end{example}
+\subsection{Fundamental Theorem of Linear Maps}
+\begin{theorem}
+  Let $V, W$ be finite dimensional vector spaces over $F$. Let $\mathcal{B}_V, \mathcal{B}_W$ be bases. Let $T: V \to W$ be a linear map. Let $A$ be the matrix for $T$, as given by the matrix mapping theorem. Then,
+  \[
+    v \in N(T) \iff [v]_{\mathcal{B}_V} \in N(A)
+  \] and \[
+    w \in \range T \iff [w]_{\mathcal{B}_W} \in \colspace A
+  \]
+\end{theorem}
+\begin{proof}
+  By the matrix mapping theorem, we have \[
+    [T(v)]_{\mathcal{B}_W} = A[v]_{\mathcal{B}_V}
+  \]
+  Thus
+  \begin{align*}
+    v \in N(T) &\iff T(v) = 0\\
+    &\iff [T(v)]_{\mathcal{B}_W} = 0\\
+    &\iff A[v]_{\mathcal{B}_V} = 0\\
+    &\iff [v]_{\mathcal{B}_V} \in N(A)
+  \end{align*}
+  We also have
+  \begin{align*}
+    w \in \range(T) &\iff w = T(v) \text{ for } v \in V\\
+    &\iff [w]_{\mathcal{B}_W} = [T(v)]_{\mathcal{B}_W} \text{ for } v \in V\\
+    &\iff [w]_{\mathcal{B}_W} = A[v]_{\mathcal{B}_V} \text{ for } v \in V\\
+    &\iff [w]_{\mathcal{B}_W} \in \colspace A\\
+  \end{align*}
+  Since $A[v]_{\mathcal{B}_V}$ is a linear combination of the columns of $A$.
+\end{proof}
+\begin{cthm}[The Fundamental Theorem of Linear Maps]
+  Let $V, W$ be finite dimensional vector spaces and let $T: V \to W$ be a linear map. Then, \[
+    \dim V = \dim(N(T)) + \dim(\range(T))
+  \]
+\end{cthm}
+\begin{proof}
+  Fix bases of $V, W$. Let $\dim v = n$ and $\dim W = m$. Then the matrix $A$ for $T$ with respect to bases is $m \times n$. By previous theorem, $N(A)$ consists of the co-ordinate vectors for vectors in $N(T)$ Thus \[
+    \dim(\range(T)) = \dim(\colspace A) = \rank A
+  \]
+  By the rank-nullity theorem, we have $\rank A + \nullity A = n$. Thus we have the result.
+\end{proof}
+\begin{corollary}
+  We have \[
+    \dim(N(T)) \geq 0
+  \] and \[
+    \dim(\range(T)) \leq \dim V
+  \]
+\end{corollary}
+\subsection{Injective and Surjective Linear Maps}
+\begin{definition}
+  Let $V, W$ be vector spaces over the same field, and let $T: V \to W$ be a linear map. $T$ is \textbf{injective} if for all $u, v \in V$, $T(u) = T(v) \implies u = v$.
+\end{definition}
+\begin{theorem}
+  Let $V, W$ be vector spaces over the same field, and let $T: V \to W$ be a linear map. Then $T$ is injective if and only if $N(T) = \{0\}$.
+\end{theorem}
+\begin{proof}
+  We prove the forwards direction:
+
+  Suppose $T$ is injective. Since $T(0) = 0$, we have $0 \in N(T)$. Now suppose $v \in N(T)$. Then \[
+    T(v) = 0 = T(0)
+  \]
+  Since $T$ is injective, this implies $v = 0$. Thus $N(T) = \{0\}$.
+
+  We prove the reverse direction:
+
+  Suppose $N(T) = \{0\}$. Let $u, v \in V$, and suppose $T(u) = T(v)$. Then since $T$ is linear, we have \[
+    0 = T(u) - T(v) = T(u-v)
+  \]
+  Thus $u-v \in N(T)$ and hence $u-v = 0 \implies u = v$.
+\end{proof}
+\begin{example}
+  Let $T: \R^3 \to \R^3$ be the linear map defined by \[
+    T(x, y, z) = (x + y + 2z, y + z, 2x - y + z)
+  \]
+  Determine if $T$ is injective.
+
+  We use the matrix mapping theorem. The matrix $A$ is \[
+    \begin{bmatrix}
+      1 & 1 & 2\\
+      0 & 1 & 1\\
+      2 & -1 & 1\\
+    \end{bmatrix}
+  \] which row reduces to \[
+    \begin{bmatrix}
+      1 & 0 & 1\\
+      0 & 1 & 1\\
+      0 & 0 & 0\\
+    \end{bmatrix}
+  \]
+  Since there is a free variable, there are non-trivial solutions to the homogeneous matrix, and so $T$ is not injective.
+\end{example}
+\begin{definition}
+  Let $V, W$ be vector spaces over the same field, and let $T: V \to W$ be a linear map. Then $T$ is surjective if $\range(T) = W$.
+\end{definition}
+\begin{example}
+  Let $D_1: P_2(\R) \to P_2(\R)$ and $D_2: P_2(\R) \to P_1(\R)$ both be differentiation maps. Determine if $D_i$ is injective or surjective.
+
+  Consider the null spaces of the maps. It will consist of polynomials that have the $0$ polynominal as their derivative. This is satisfied by all constant polynomials, and so it is not injective.
+
+  The range of the map consists of all polynomials of degree 1 or less, so $D_2$ is surjective but not $D_1$.
+\end{example}
+\begin{example}
+  Let $T_1: \R^3 \to \R^2$ and $T_2: R^2 \to R^3$ be linear maps. Can $T_1$ be injective and an $T_2$ be surjective?
+
+  The answer is no. We have \[
+    \dim(N(T)) + \dim(\range(T)) = 3
+  \]
+  Since $\range(T_1)$ is a subspace of $\R^2$, we have \[
+    \dim(\range(T_1)) \leq \dim(\R^2) = 2
+  \]
+  Thus \[
+    \dim(N(T_1)) = 3 - \dim(\range(T_1)) \geq 3 - 2 =1
+  \] and so $N(T_1) \neq \{0\}$ (not injective).
+
+  Since $T_2: \R^2 \to \R^3$, we have \[
+    \dim(N(T_2)) + \dim(\range(T_2)) = 2
+  \]
+  Since $\dim(N(T_2)) \geq 0$, we have \[
+    \dim(\range(T_2)) = 2 - \dim(N(T_2)) \leq 2
+  \]
+  Since $\R^3$ has dimension $3$, we have $\range(T_2) \neq \R^3$ and so it is not surjective.
+\end{example}
+\subsection{Invertible Linear Maps}
+\begin{definition}
+  Let $V, W$ be vector spaces over the same field. A linear map $T: V \to W$ is invertible if there is a linear map $S: W \to V$ with $ST = I_V$ and $TS = I_W$. We call $S$ the \textbf{inverse} of $T$, and write $S = T^{-1}$.
+\end{definition}
+\begin{theorem}
+  An invertible linear map has a unique inverse.
+\end{theorem}
+\begin{proof}
+  Suppose $T: V \to W$ is invertible and $S_1, S_2$ are inverses of $T$.
+  Then,
+  \begin{align*}
+    S_1 &= S_1I_W\\
+    &= S_1(TS_2)\\
+    &= (S_1T)S_2\\
+    &= I_vS_2\\
+    &= S_2\\
+  \end{align*}
+\end{proof}
+\begin{theorem}
+  Let $V, W$ be vector spaces over the same field, and let $T: V \to W$ be linear. Then $T$ is invertible iff $T$ is injective and surjective.
+\end{theorem}
+\begin{theorem}
+  Let $V$ and $W$ be finite dimensional vector spaces over the same field, and let $T: V \to W$ be a linear map. If $T$ is invertible, then $\dim V = \dim W$.
+\end{theorem}
+\begin{proof}
+  Since $T$ is invertible, the previous theorem implies $T$ is injective and surjective. Since $T$ is injective, we have $N(T) = \{0\}$ and so $\dim(N(T)) = 0$. Since $T$ is surjective, we have $\range T = W$, and so $\dim(\range(T)) = \dim W$. The FTLM yields \[
+    \dim V = \dim(N(T)) + \dim(\range(T)) = \dim W
+  \]
+\end{proof}
+\begin{theorem}
+  Let $V, W$ be finite dimensional vector spaces, and let $T: V \to W$ be a linear map. Fix bases of $V, W$ and let $A$ be the matrix for $T$. Then $T$ is invertible iff $A$ is invertible. Furthermore, the matrix for $T^{-1}$ is $A^{-1}$.
+\end{theorem}
+\subsection{Isomorphisms}
+\begin{definition}
+  Let $V, W$ be vector spaces over the same field. If there is an invertible linear map $T: V \to W$, then we say $V$ is \textbf{isomorphic} to $W$, and $T$ is called an \textbf{isomorphism}.
+\end{definition}
+\begin{remark}
+  An invertible map between vector spaces V and W pairs up the vectors
+  between the vector spaces. Each vector in V is matched with exactly one
+  vector in W , and vice versa.
+  Furthermore, since the map is linear, this pairing respects the vector space
+  operations.
+  If there is an invertible linear map from one vector space to another, it
+  essentially shows that other than possibly the names we are using for the
+  vectors, they are the same vector space at their core, and the invertible
+  linear map is telling us how to translate from one vector space to the
+  other. The one vector space is really the same as the other, it’s just “in
+  disguise.” When this happens, we saw that $V$ is isomorphic to $W$ , a word
+  that literally means “same shape.”
+\end{remark}
+\begin{corollary}
+  Let $V$ be a vector space over $F$ and let $\dim V = n$. Then $V \simeq F^n$.
+\end{corollary}
+\begin{theorem}
+  Let $V$ be a finite dimensional vector space with $\dim V = n$. Fix a basis $\mathcal{B}$ of $V$. Let $T: V \to F^n$ be defined by $T(v) = [v]_\mathcal{B}$. Then $T$ is an isomorphism and $V$ is isomorphic to $F^n$.
+\end{theorem}
+\begin{remark}
+  It turns out that any vector space of dimension n is isomorphic to $F^n$. Every n-dimensional vector space is really $F^n$ “in disguise!”
+\end{remark}
+\begin{theorem}
+  Let $V, W$ be finite dimensional vector spaces over $F$. Then $V$ is isomorphic to $W$ iff $\dim V = \dim W$.
+\end{theorem}
+\subsection{Change of Basis}
+\begin{theorem}
+  Let $V$ be a finite dimensional vector space, and let $\mathcal{B}_1 = \{v_1, \ldots, v_n\}$ and $\mathcal{B}_2$ be two bases of $V$. Let $P$ be the $n \times n$ matrix with $i$th column equal to $[v_i]_{\mathcal{B}_2}$. Then for any $v \in V$, \[
+    [v]_{\mathcal{B}_2} = P[v]_{\mathcal{B}_1}
+  \]
+  P is called the \textbf{change of basis matrix} from $\mathcal{B}_1$ to $\mathcal{B}_2$.
+\end{theorem}
+\begin{theorem}
+  Let $\mathcal{B}_1$ and $\mathcal{B}_2$ be two bases of a finite dimensional space $V$, and let $P$ be the change of basis matrix from $\mathcal{B}_1$ to $\mathcal{B}_2$. Then $P$ is non-singular and $P^{-1}$ is the change of basis matrix from $\mathcal{B}_2$ to $\mathcal{B}_1$.
+\end{theorem}
+\begin{example}
+  Consider $\R^3$ over $\R$ with bases
+  \[
+    \mathcal{B}_1 = \{(1, 0, 2), (-2, -1, -1), (8, 3, 8)\}
+  \] and \[
+    \mathcal{B}_2 = \{(1, 1, 1), (0, 1, 1), (0, 0, 1)\}
+  \]
+  Find $P$, the change of basis matrix from $\mathcal{B}_1$ to $\mathcal{B}_2$.
+
+  Let $v_i$ be the $i$th vector of $\mathcal{B}_1$. By the Change of Basis Theorem, the $i$th column of $P$ is $[v_i]_{\mathcal{B}_2}$. Thus the first column of $P$ is $(a, b, c)$ where $a, b, c \in \R$ satisfies \[
+    a
+    \begin{bmatrix}
+      1\\1\\1\\
+    \end{bmatrix}+b
+    \begin{bmatrix}
+      0\\1\\1\\
+    \end{bmatrix} + c
+    \begin{bmatrix}
+      0\\0\\1\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      1\\0\\2\\
+    \end{bmatrix}
+  \] and the second column is \[
+    a
+    \begin{bmatrix}
+      1\\1\\1\\
+    \end{bmatrix}+b
+    \begin{bmatrix}
+      0\\1\\1\\
+    \end{bmatrix} + c
+    \begin{bmatrix}
+      0\\0\\1\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      -2\\-1\\-1\\
+    \end{bmatrix}
+  \] and the third column is \[
+    a
+    \begin{bmatrix}
+      1\\1\\1\\
+    \end{bmatrix}+b
+    \begin{bmatrix}
+      0\\1\\1\\
+    \end{bmatrix} + c
+    \begin{bmatrix}
+      0\\0\\1\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      8\\3\\8\\
+    \end{bmatrix}
+  \]
+
+  We can solve all three systems at once by including a constant column:
+  \[
+    \left[
+      \begin{array}{ccc|ccc}
+        1 & 0 & 0 & 1 & -2 & 8\\
+        1 & 1 & 0 & 0 & -1 & 3\\
+        1 & 1 & 1 & -2 & -1 & 8\\
+    \end{array}\right] \to \left[
+      \begin{array}{ccc|ccc}
+        1 & 0 & 0 & 1 & -2 & 8\\
+        0 & 1 & 0 & -1 & 1 & -5\\
+        0 & 0 & 1 & 2 & 0 & 5
+    \end{array}\right]
+  \]
+  Thus $P$ is the right side of the above.
+
+  Let's test it. Let $v$ be the vector where $[v]_{\mathcal{B}_1} = (1, 2, 3)$. We have
+  \begin{align*}
+    [v]_{\mathcal{B}_2} &= P[v]_{\mathcal{B}_1}\\
+    &=
+    \begin{bmatrix}
+      1 & -2 & 8\\
+      -1 & 1 & -5\\
+      2 & 0 & 5\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      1\\2\\3\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      21\\-14\\17\\
+    \end{bmatrix}
+  \end{align*}
+
+  On one hand, since $[v]_{\mathcal{B}_1} = (1, 2, 3)$, we have \[
+    v =
+    \begin{bmatrix}
+      1\\0\\2\\
+    \end{bmatrix} + 2
+    \begin{bmatrix}
+      -2\\-1\\-1\\
+    \end{bmatrix} + 3
+    \begin{bmatrix}
+      8\\3\\8\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      21\\7\\24\\
+    \end{bmatrix}
+  \] and on the other, we have $[v]_{\mathcal{B}_2} = (21, -14, 17)$ \[
+    v = 21
+    \begin{bmatrix}
+      1\\1\\1\\
+    \end{bmatrix} -14
+    \begin{bmatrix}
+      0\\1\\1\\
+    \end{bmatrix} + 17
+    \begin{bmatrix}
+      0\\0\\1\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      21\\7\\24\\
+    \end{bmatrix}
+  \]
+\end{example}
+\begin{theorem}
+  Let $\mathcal{B}_1 = \{v_1, \ldots, v_n\}$ and $\mathcal{B}_2 = \{w_1, \ldots, w_n\}$ be two bases for $F^n$. Then the RREF of the matrix \[
+    \left[
+      \begin{array}{cccc|cccc}
+        w_1 & w_2 & \dots & w_n & v_1 & v_2 & \dots & v_n
+    \end{array}\right]
+  \] is \[
+    \left[
+      \begin{array}{c|c}
+        I & P
+    \end{array}\right]
+  \]
+  where $P$ is the change of basis matrix from $\mathcal{B}_1$ to $\mathcal{B}_2$.
+\end{theorem}
+\begin{example}
+  Consider $P_1(\R)$ with bases $\mathcal{B}_1 = \{x+1, x-1\}$ and $\mathcal{B}_2 = \{x+2, 2x + 1\}$. Find $P$, the change of basis matrix from $\mathcal{B}_1 \to \mathcal{B}_2$.
+
+  Let $p_1(x) = x+1$ and $p_2(x) = x-1$. Then by the Change of Basis Theorem, the $i$th column of $P$ is $[p_i(x)]_{\mathcal{B}_2}$. Thus the first column of $P$ will be given by $a, b \in \R$ with \[
+    a(x+2) + b(2x-1) = x+1
+  \] so we must solve the system
+  \begin{align*}
+    a + 2b &= 1\\
+    2a - b &= 1\\
+  \end{align*}
+  The second column of $P$ will be given by $a, b \in \R$ with \[
+    a(x+2) + b(2x-1) = x - 1
+  \] so we must solve the system
+  \begin{align*}
+    a + 2b *= 1\\
+    2a + b &= -1\\
+  \end{align*}
+
+  We have \[
+    \begin{array}{cc|cc}
+      1 & 2 & 1 & 1\\
+      2 & 1 & 1 & -1\\
+    \end{array} \to
+    \begin{array}{cc|cc}
+      1 & 0 & \frac{1}{3} & -1\\
+      0 & 1 & \frac{1}{3} & 1\\
+    \end{array}
+  \]Thus \[
+    P =
+    \begin{bmatrix}
+      \frac{1}{3} & -1\\
+      \frac{1}{3} & 1\\
+    \end{bmatrix}
+  \]
+\end{example}
+\begin{theorem}
+  Let $\mathcal{B}_1, \mathcal{B}_2$ be bases of a finite dimensional vector space $V$. Let $P$ be the change of basis matrix from $\mathcal{B}_1 \to \mathcal{B}_2$. Let $T: V \to V$ be a linear map. Let $A_{\mathcal{B}_1}, A_{\mathcal{B}_2}$ be the matrices for $T$ with respect to $A_1, A_2$. Then \[
+    A_{\mathcal{B}_1} = P^{-1}A_{\mathcal{B}_2}P
+  \]
+\end{theorem}
+\begin{proof}
+  By change of basis theorems, we have for any $v \in V$ \[
+    [v]_{\mathcal{B}_2} = P[v]_{\mathcal{B}_1}
+  \] and \[
+    [v]_{\mathcal{B}_1} = P^{-1}[v]_{\mathcal{B}_2}
+  \]
+  The matrix mapping theorem yields \[
+    [T(v)]_{\mathcal{B}_1} = A_{\mathcal{B}_1}[v]_{\mathcal{B}_1}
+  \] and \[
+    [T(v)_{\mathcal{B}_2}] = A_{\mathcal{B}_2}[v]_{\mathcal{B}_2}
+  \]
+  Thus,
+  \begin{align*}
+    P^{-1}A_{\mathcal{B}_2}P[v]_{\mathcal{B}_1} &= P^{-1}A_{\mathcal{B}_2}[v]_{\mathcal{B}_2}\\
+    &= P^{-1}[T(v)]_{\mathcal{B}_2}\\
+    &= [T(v)]_{\mathcal{B}_1}\\
+    &= A_{\mathcal{B}_1}[v]_{\mathcal{B}_1}\\
+  \end{align*} and since this holds for any vector in $V$, we have \[
+    P^{-1}A_{\mathcal{B}_2}P = A_{\mathcal{B}_1}
+  \]
+\end{proof}
+\begin{example}
+  Consider $T: \R^2 \to \R^2$ given by \[
+    T(x, y) = (3x + y, x + 3y)
+  \]
+  Let $\mathcal{B}_1 = \{(1, 1), (1, -1)\}$ and $\mathcal{B}_2 = \{(1, 0), (0, 1)\}$. Find $A_{\mathcal{B}_1}$ in 2 ways: first directly by using the matrix mapping theorem and then by using the $\mathcal{B}_2$ and the change of basis theorem. Finally, find a general formula for the individual components of $T^m(x, y)$.
+
+  Let's use the matrix mapping theorem. We know that $A_{\mathcal{B}_1}$ has columns equal to $[T(v_i)]_{\mathcal{B}_2}$. Since $T(1, 1) = (4, 4)$, we find $a, b \in \R$ with \[
+    a(1, 1) + b(1, -1) = (4, 4)
+  \] and similarly \[
+    a(1, 1) + b(1, -1) = (2, -2)
+  \]
+  We have \[
+    \left[
+      \begin{array}{cc|cc}
+        1 & 1 & 4 & 2\\
+        1 & -1 & 4 & -2\\
+    \end{array}\right] \to \left[
+      \begin{array}{cc|cc}
+        1 & 0 & 4 & 0\\
+        0 & 1 & 0 & 2\\
+    \end{array}\right]
+  \]
+  Thus we have $A_{\mathcal{B}_1} =
+  \begin{bmatrix}
+    4 & 0\\
+    0 & 2\\
+  \end{bmatrix}$
+
+  We now use the new method. Since $\mathcal{B}_2$ is the standard basis, we have $A_{\mathcal{B}_2} =
+  \begin{bmatrix}
+    3 & 1\\
+    1 & 3\\
+  \end{bmatrix}$ Now we form the matrix $
+  \begin{array}{c|c}
+    \mathcal{B}_2 & \mathcal{B}_1
+  \end{array}$ which is \[
+    \left[
+      \begin{array}{cc|cc}
+        1 & 0 & 1 & 1\\
+        0 & 1 & 1 & -1\\
+    \end{array}\right]
+  \] which is already in RREF. Thus $P =
+  \begin{bmatrix}
+    1 & 1\\
+    1 & -1\\
+  \end{bmatrix}$. Now we find $P^{-1}$ using the usual RREF method, which is \[
+    \frac{1}{2}
+    \begin{bmatrix}
+      1 & 1\\
+      1 & -1\\
+    \end{bmatrix}
+  \] Then our new theorem yields
+  \begin{align*}
+    A_{\mathcal{B}_1} &= P^{-1}A_{\mathcal{B}_2}P\\
+    &= \frac{1}{2}
+    \begin{bmatrix}
+      1 & 1\\
+      1 & -1\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      3 & 1\\
+      1 & 3\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      1 & 1\\
+      1 & -1\\
+    \end{bmatrix}\\
+    &=
+    \begin{bmatrix}
+      4 & 0\\
+      0 & 2\\
+    \end{bmatrix}
+  \end{align*}
+
+  Now we find a formula for $T^m(x, y)$. We have \[
+    T^m
+    \begin{bmatrix}
+      x\\y\\
+    \end{bmatrix} =
+    \begin{bmatrix}
+      3 & 1\\
+      1 & 3\\
+    \end{bmatrix}^m
+    \begin{bmatrix}
+      x\\y\\
+    \end{bmatrix}
+  \] However, we can use $A_{\mathcal{B}_1}$ and rearrange the change of basis formula.
+  \begin{align*}
+    A_{\mathcal{B}_2}^m &= (PA_{\mathcal{B}_1}P^{-1})^m\\
+    &= PA_{\mathcal{B}_1}P^{-1}PA_{\mathcal{B}_1}P^{-1} \dots \tag{$m$ copies}\\
+    &= PA_{\mathcal{B}_1}A_{\mathcal{B}_1}\dots A_{\mathcal{B}_1}P^{-1} \tag{$m$ copies of $A_{\mathcal{B}_1}$}\\
+    &= PA_{\mathcal{B}_1}^mP^{-1}\\
+    &=
+    \begin{bmatrix}
+      1 & 1\\
+      1 & -1\\
+    \end{bmatrix}
+    \begin{bmatrix}
+      4 & 0\\
+      0 & 2\\
+    \end{bmatrix}^m \left(\frac{1}{2}\right)
+    \begin{bmatrix}
+      1 & 1\\
+      1 & -1\\
+    \end{bmatrix}\\
+    &= \frac{1}{2}
+    \begin{bmatrix}
+      4^m + 2^m & 4^m - 2^m\\
+      4^m - 2^m & 4^m + 2^m\\
+    \end{bmatrix}
+  \end{align*} and so $T^m
+  \begin{bmatrix}
+    x\\y\\
+  \end{bmatrix} =
+  \begin{bmatrix}
+    (4^m + 2^m)x & (4^m - 2^m)y\\
+    (4^m - 2^m)x & (4^m + 2^m)y\\
+  \end{bmatrix}$
+\end{example}
+\subsection{Similar Matrices}
+\begin{definition}
+  Let $A, B$ be $n \times n$ matrices. Then $A$ is \textbf{similar} to $B$ if there exists a non-singular matrix $P$ with $B = P^{-1}AP$.
+  Matrix similarity is an equivalence relation.
+\end{definition}
+\begin{theorem}
+  Two $n \times n$ matrices are similar iff they are matrices for the same linear map $T: F^n \to F^n$ with respect to two bases.
+\end{theorem}
+\begin{theorem}
+  Let $A, B$ be similar matrices. Then $\rank A = \rank B$.
+\end{theorem}
+\begin{proof}
+  Let $A, B$ be similar matrices. Then $A, B$ are both matrices for the same linear map $T$ wrt 2 bases. Since both $\colspace A$ and $\colspace B$ contain the co-ordinate vectors for $\range T$, we have $\dim \colspace A = \dim \range T$ and $\dim \colspace B = \dim \range T$. Thus
+  \begin{align*}
+    \rank A &= \dim \colspace A\\
+    &= \dim \range T\\
+    &= \dim \colspace B\\
+    &= \rank B
+  \end{align*}
+\end{proof}
+\section{Determinants}
+\begin{definition}
+  Given an $n \times n$ matrix $A$, let $M_{ij}$ be the $n - 1 \times n - 1$ matrix obtained by removing the $i$th row and $j$th column of A. $M_{ij}$ is called a \textbf{minor} of $A$.
+
+  We define the \textbf{determinant} of $A$, denoted $\det A$ or $\abs{A}$, as follows.
+
+  If $A$ is $1 \times 1$, then $\det A = [A]_{11}$.
+  If $A$ is $n \times n$ for $n \geq 2$, then \[
+    \det A = [A]_{11} \det M_{11} - [A]_{12} \det M_{12} + \dots + (-1)^{n+1}[A]_{1n}\det M_{1n}
+  \] or \[
+    \sum_{i=1}^n (-1)^{i+1}[A]_{1i}\det M_{1i}
+  \]
+\end{definition}
+\begin{definition}
+  Let $A$ be $n \times n$. The \textbf{cofactor} of $[A]_{ij}$, denoted $C_{ij}$ is \[
+    C_{ij} = (-1)^{i+j} \det M_{ij}
+  \]
+\end{definition}
+\begin{theorem}
+  Let $A$ be $n \times n$. Fix $i$ with $1 \leq i \leq n$. Then \[
+    \det A = [A]_{i1}C_{11} + [A]_{i2}C_{i2} + \dots + [A]_{in}C_{in}
+  \] or \[
+    \sum_{j=1}^n [A]_{ij}C_{ij}
+  \]
+\end{theorem}
+\subsection{Row Operations and Determinants}
+\begin{theorem}
+  Let $A$ be a square matrix.
+  \begin{enumerate}
+    \item If $B$`is obtained from $A$ by interchanging two rows or columns, then $\det B = -\det A$.
+    \item If $B$ is obtained from $A$ by multiplying a row or column by a scalar $c$, then $\det B = c\det A$.
+    \item If $B$ is obtained from $A$ by adding a multiple of a row or column to another, then $\det B = \det A$.
+  \end{enumerate}
+\end{theorem}
+\begin{example}
+  Compute the determinant of \[
+    \begin{bmatrix}
+      3 & 7 & -1\\
+      -6 & -16 & 5\\
+      3 & 5 & 7\\
+    \end{bmatrix}
+  \]
+  We have
+  \begin{align*}
+    \begin{bmatrix}
+      3 & 7 & -1\\
+      -6 & -16 & 5\\
+      3 & 5 & 7\\
+    \end{bmatrix} &\to
+    \begin{bmatrix}
+      3 & 7 & -1\\
+      0 & -2 & 3\\
+      0 & 2 & 8\\
+    \end{bmatrix}
+    \begin{matrix}
+      \\
+      R2 + 2R1\\
+      R3 - R1\\
+    \end{matrix}\\
+    &\to
+    \begin{bmatrix}
+      3 & 7 & -1\\
+      0 & -2 & 3\\
+      0 & 0 & 5\\
+    \end{bmatrix}
+    \begin{matrix}
+      \\
+      \\
+      R3 - R2\\
+    \end{matrix}
+  \end{align*}
+  This is an upper triangular matrix, and so its determinant is the product of the diagonal entries $(3)(-2)(5) = -30$. The row operations leave the determinant unchanged and so the determinant of the original matrix is also $-30$.
+\end{example}
+\subsection{Determinants and Singularity}
+\begin{theorem}
+  The determinants of elementary matrices are as follows:
+  \begin{enumerate}
+    \item If $E_{ij}$ is the elementary matrix for the ERO that interchanges row $i$ with $j$, then $\det E_{ij} = -1$.
+    \item If $E_i(\alpha)$ is the elementary matrix for the ERO that multiplies row $i$ by $\alpha$, then $\det E_i(\alpha) = \alpha$.
+    \item If $E_{ij}(\alpha)$ is the elementary matrix for the ERO that adds $\alpha$ times row $i$ to row $j$, then $\det E_{ij}(\alpha) = 1$.
+  \end{enumerate}
+\end{theorem}
+\begin{theorem}
+  Let $A$ be a square matrix, and $E$ an elementary matrix of the same size. Then $\det EA = \det E \cdot \det A$.
+\end{theorem}
+\begin{theorem}
+  A square matrix $A$ is singular if and only if $\det A = 0$.
+\end{theorem}
+\begin{proof}
+  Let $B$ be the RREF of $A$. Then $\exists$ elementary matrices $E_i$ with \[
+    E_k\dots E_iA = B
+  \]
+  By previous theorem, we have
+  \begin{align*}
+    \det B &= \det (E_kE_{k-1}\dots E_1A)\\
+    &= \det E_k (\det E_{k-1}\dots E_1A)\\
+    &= \dots\\
+    &= (\det E_k)\dots(\det E_1)(\det A)\\
+  \end{align*}
+  Since the determinant of an elementary matrix is either $1, -1$ or $\alpha$ for $\alpha \neq 0$, it follows that \[
+    \det A = 0 \iff \det B = 0
+  \]
+  Now we prove that $A$ is singular if and only if $\det A = 0$.
+
+  Suppose $n \times n$ matrix $A$ is singular, then $\rank A < n$, and so $B$ has at least one zero row, so that means $\det B = 0$ by expanding on this row. Thus it follows that $\det A = 0$.
+
+  Suppose $A$ is non-singular. Then $B = I_n$ and so $\det B = 1 \neq 0$. It follows that $\det A \neq 0$.
+\end{proof}
+\begin{example}
+  Is \[
+    A =
+    \begin{bmatrix}
+      1 & 2 & 3\\
+      4 & 5 & 6\\
+      7 & 8 & 9\\
+    \end{bmatrix}
+  \] singular?
+
+  We have
+  \begin{align*}
+    \det A &= 1 \det
+    \begin{bmatrix}
+      5 & 6\\
+      8 & 9\\
+    \end{bmatrix} - 2 \det
+    \begin{bmatrix}
+      4 & 6\\
+      7 & 9\\
+    \end{bmatrix} + 3 \det
+    \begin{bmatrix}
+      4 & 5\\
+      7 & 8\\
+    \end{bmatrix}\\
+    &= 45 - 48 = 2(36 - 42) + 3(32 - 35)\\
+    &= 0\\
+  \end{align*}
+  Since the determinant is $0$, we have that $A$ is singular.
+
+  Alternatively, we could have seen that the columns of $A$ are linearly dependent, or we could have row reduced.
+\end{example}
+\begin{example}
+  Find all values of $x \in \R$ for which \[
+    A =
+    \begin{bmatrix}
+      -2 & x & 1\\
+      x & 1 & 1\\
+      2 & 3 & -1\\
+    \end{bmatrix}
+  \] is invertible.
+
+  We have
+  \begin{align*}
+    \det A &= =2\det
+    \begin{bmatrix}
+      1 & 1\\
+      3 & -1\\
+    \end{bmatrix} - x\det
+    \begin{bmatrix}
+      x & 1\\
+      2 & -1\\
+    \end{bmatrix} + 1\det
+    \begin{bmatrix}
+      x & 1\\
+      2 & 3\\
+    \end{bmatrix}\\
+    &= -2(1-3) - x(-x - 2) + 3x - 2\\
+    &= x^2 + 5x + 6\\
+    &= (x+2)(x+3)\\
+  \end{align*}
+  Thus $\det A = 0 \iff x = -3, -2$. So $A$ is invertible for all $x$ except $-2, -3$.
+\end{example}
+\subsection{Additional Results on Determinants}
+\begin{theorem}
+  Let $A$ and $B$ be square matrices of the same size, then \[
+    \det AB = \det A \cdot \det B
+  \]
+\end{theorem}
+\begin{theorem}
+  Let $A$ be a non-singular square matrix. Then $\det A^{-1} = (\det A)^{-1}$.
+\end{theorem}
+\begin{theorem}
+  Let $A, B$ be similar. Then $\det A = \det B$.
+\end{theorem}
+\begin{theorem}
+  Let $A$ be square matrix. Then $\det A^t = \det A$.
+\end{theorem}
+\begin{theorem}
+  Let $A$ be upper/lower triangular matrix. Then \[
+    \det A = \prod_{i=1}^n a_{ii}
+  \]
+\end{theorem}
+\section{Eigenvalues and Eigenvectors}
+\begin{definition}
+  Let $V$ be a vector space over a field of scalars $F$. Let $T: V \to V$ be a linear map. If there is a scalar $\lambda$ such that \[
+    T(v) = \lambda v
+  \] for some $v \in V$ with $v \neq 0$, then $\lambda$ is called an \textbf{eigenvalue} of $T$ with corresponding \textbf{eigenvector} $v$.
+\end{definition}
+\begin{example}
+  Consider the linear map $T: \R^2 \to \R^2$ given by \[
+    T(x, y) = (-8x + ty, -10x + 7y)
+  \] We were given basis $\mathcal{B} = \{(1, 1), (1, 2)\}$. We have
+  \begin{align*}
+    T(1, 1) &= -3(1, 1)\\
+    T(1, 2) &= 2(1, 2)\\
+  \end{align*} thus $-3, 2$ are eigenvalues with $(1, 1), (1, 2)$ their corresponding eigenvectors.
+
+  Notice that
+  \begin{align*}
+    T(c(1, 1)) &= cT(1, 1)\\
+    &= c(-3, -3)\\
+    &= -3c(1, 1)\\
+  \end{align*} and so $c(1, 1)$ is also an eigenvector of $T$ corresponding to eigenvalue $-3$.
+\end{example}
+\begin{definition}
+  Let $A$ be an $n \times n$ matrix with entries in $F$. If $\exists \lambda \in F$ such that \[
+    Av = \lambda v
+  \] for some $v \in F^n$ with $v \neq 0$, then $\lambda$ is called an \textbf{eigenvalue} of $A$ with corresponding \textbf{eigenvector} $v$.
+\end{definition}
+\begin{remark}
+  How can we find the eigenvectors and values? We have \[
+    Av = \lambda v \iff Av - \lambda v = 0
+  \]
+  We add an identity so we can factor and get \[
+    Av = \lambda v \iff (A - \lambda I)v = 0
+  \] and so \[
+    Av = \lambda v \iff v \in N(A - \lambda I)
+  \]
+\end{remark}
+\begin{theorem}
+  Suppose $\lambda$ is an eigenvalue of $n \times n$ matrix $A$. Then eigenvectors corresponding to $\lambda$ are non-zero vectors in $N(A - \lambda I)$, subspace of $F^n$. Denote this subspace by $E_\lambda$ and call it the \textbf{eigenspace} of $A$ corresponding to $\lambda$.
+\end{theorem}
+\begin{remark}
+  If $N(A - \lambda I) = \{0\}$, that is if it is non singular, then $\lambda$ has no corresponding eigenvectors, that is $\lambda$ is not an eigenvalue. Thus we must have $A - \lambda I$ singular, which means the determinant must be $0$.
+\end{remark}
+\begin{definition}
+  Let $A$ be square matrix. Then $\det (A - \lambda I)$ is called the \textbf{characteristic polynominal of $A$}, denoted by $p_A(\lambda)$.
+\end{definition}
+\begin{theorem}
+  Let $A$ be square matrix. Then $\lambda$ is an eigenvalue of $A$ iff $\det(A - \lambda I) = 0$.
+\end{theorem}
+\begin{example}
+  Find the eigenvalues and vectors for \[
+    A =
+    \begin{bmatrix}
+      -8 & 5\\
+      -10 & 7\\
+    \end{bmatrix}
+  \]
+
+  We have
+  \begin{align*}
+    \det (A - \lambda I) &= \det \left(
+      \begin{bmatrix}
+        -8 & 5\\
+        -10 & 7\\
+      \end{bmatrix} - \lambda
+      \begin{bmatrix}
+        1 & 0\\
+        0 & 1\\
+    \end{bmatrix}\right)\\
+    &= \det
+    \begin{bmatrix}
+      -8 - \lambda & 5\\
+      -10 & 7 - \lambda\\
+    \end{bmatrix}\\
+    &= \lambda^2 + \lambda - 6\\
+    &= (\lambda - 2)(\lambda + 3)\\
+  \end{align*}
+  and so $\det(A - \lambda I) = 0$ for $\lambda = -3, 2$. These are the eigenvalues of $A$.
+
+  Now we find $E_{-3}$. We have \[
+    E_{-3} = N(A -(-3)I) = N\left(
+      \begin{bmatrix}
+        -5 & 5\\
+        -10 & 10\\
+    \end{bmatrix}\right)
+  \] which row reduces to \[
+    \begin{bmatrix}
+      1 & -1\\
+      0 & 0\\
+    \end{bmatrix}
+  \] Thus \[
+    E_{-3} = \left\{ t
+      \begin{bmatrix}
+        1\\1\\
+    \end{bmatrix}\mid t \in \R \right\} = \spn \left\{
+      \begin{bmatrix}
+        1\\1\\
+    \end{bmatrix}\right\}
+  \]
+  Similarly we have \[
+    E_2 = N(A - 2I) = N\left(
+      \begin{bmatrix}
+        -10 & 5\\
+        -10 & 5\\
+    \end{bmatrix}\right)
+  \] which row reduces to \[
+    \begin{bmatrix}
+      1 & -\frac{1}{2}\\
+      0 & 0\\
+    \end{bmatrix}
+  \] Thus \[
+    E_{2} = \left\{ t
+      \begin{bmatrix}
+        \frac{1}{2}\\1\\
+    \end{bmatrix}\mid t \in \R \right\} = \spn \left\{
+      \begin{bmatrix}
+        1\\2\\
+    \end{bmatrix}\right\}
+  \]
+\end{example}
+\begin{example}
+  Find the eigenvalues and corresponding eigenspaces for \[
+    A =
+    \begin{bmatrix}
+      1 & -3 & 3\\
+      3 & -5 & 3\\
+      6 & -6 & 4\\
+    \end{bmatrix}
+  \]
+
+  We have
+  \begin{align*}
+    \det (A - \lambda I) &= \det
+    \begin{bmatrix}
+      1 - \lambda & -3 & 3\\
+      3 & -5 - \lambda & 3\\
+      6 & -6 & 4 - \lambda\\
+    \end{bmatrix}\\
+    &= \det
+    \begin{bmatrix}
+      1 - \lambda & -2 - \lambda & 3\\
+      2 + \lambda & 0 & 0\\
+      6 & 0 & 4 - \lambda\\
+    \end{bmatrix}\\
+    &= (-1)^{1 + 2}(-2 - \lambda)\det
+    \begin{bmatrix}
+      2 + \lambda & 0 \\
+      6 & 4 - \lambda\\
+    \end{bmatrix}\\
+    &= (\lambda + 2)((2 + \lambda)(4- \lambda) - 0)\\
+    &= -(\lambda + 2)^2(\lambda - 4)\\
+  \end{align*} and so $\lambda = -2, 4$ which are the eigenvalues.
+
+  We have \[
+    E_4 = N(A - 4I) = N\left(
+      \begin{bmatrix}
+        -3 & 3 & 3\\
+        3 & -9 & 3\\
+        6 & -6 & 0\\
+    \end{bmatrix}\right)
+  \] which row reduces to \[
+    \begin{bmatrix}
+      1 & 0 & -\frac{1}{2}\\
+      0 & 1 & -\frac{1}{2}\\
+      0 & 0 & 0\\
+    \end{bmatrix}
+  \] Thus \[
+    E_{4} = \left\{ t
+      \begin{bmatrix}
+        \frac{1}{2}\\\frac{1}{2}\\1\\
+    \end{bmatrix}\mid t \in \R \right\} = \spn \left\{
+      \begin{bmatrix}
+        1\\1\\2\\
+    \end{bmatrix}\right\}
+  \]
+
+  We have \[
+    E_{-2} = N(A - (-2)I) = N\left(
+      \begin{bmatrix}
+        3 & -3 & 3\\
+        3 & -3 & 3\\
+        6 & -6 & 6\\
+    \end{bmatrix}\right)
+  \] which row reduces to \[
+    \begin{bmatrix}
+      1 & -1 & 1\\
+      0 & 0 & 0\\
+      0 & 0 & 0\\
+    \end{bmatrix}
+  \] Thus \[
+    E_{4} = \left\{ s
+      \begin{bmatrix}
+        1\\1\\0\\
+      \end{bmatrix} + t
+      \begin{bmatrix}
+        -1\\0\\1\\
+    \end{bmatrix}\mid s,t \in \R \right\} = \spn \left\{
+      \begin{bmatrix}
+        1\\1\\0\\
+      \end{bmatrix},
+      \begin{bmatrix}
+        -1\\0\\1\\
+    \end{bmatrix}\right\}
+  \]
+\end{example}
+\subsection{Solving Higher Degree Polynomial Equations}
+\begin{cthm}[Fundamental Theorem of Algebra]
+  Every degree $n$ polynominal with coefficients in $\C$ factors uniquely as \[
+    a(x-c_1)\dots(x-c_n)
+  \]
+  for $a, c_i \in \C$ with $c_i$ not necessarily distinct. When factoring over $\R$, there may be irreducible quadratic factors. Every degree $n$ polynomial with coefficients in $\R$ factors uniquely as \[
+    a(x-r_1)\dots(x-r_m)(x^2 + b_1x+c_1) \dots(x^2 + b_px + c_p)
+  \]
+  for $a, r_i, b_i, c_i \in \R$ where $m+2p = n$ and each $x^2 + b_ix + c_i$ is irreducible over $\R$. Note it may be that $m = 0$ or $p = 0$.
+\end{cthm}
+\begin{theorem}
+  Factoring in $\Z_p$ is more complicated. For example, consider \[
+    x^2 + 1 = 0
+  \]
+  Over $\Z_3$, it is best to substitute $1, 2, 3$ into the equation and reducing. Over $\Z_2$, since $2 \equiv 0$, we have \[
+    x^2 + 1 \equiv (x+1)^2 \pmod{2}
+  \]
+  We see that $x \equiv 1$ is a solution.
+\end{theorem}
+\begin{remark}
+  Remember factor theorem and long division from high school.
+\end{remark}
+\subsection{Basic Theorems on Eigenvalues and Eigenvectors}
+\begin{theorem}
+  Let $A$ be square. $0$ is an eigenvalue of $A$ if and only if $A$ is singular.
+\end{theorem}
+\begin{proof}
+  We have
+  \begin{align*}
+    0 \text{ is an eigenvalue of }A &\iff \det (A - 0I) = 0\\
+    &\iff \det A = 0\\
+    &\iff A \text{ is singular.}\\
+  \end{align*}
+\end{proof}
+
+\begin{theorem}
+  Let $A$ be square matrix with eigenvalue $\lambda$.
+  \begin{enumerate}
+    \item $\lambda$ is an eigenvalue of $A^t$.
+    \item If $\lambda \neq 0$, then $\lambda^{-1}$ is an eigenvalue of $A^{-1}$.
+    \item Let $c$ be a scalar, then $c\lambda$ is an eigenvalue of $cA$.
+    \item Let $m \in \N$. Then $\lambda^m$ is an eigenvalue of $A^m$.
+  \end{enumerate}
+\end{theorem}
+\begin{theorem}
+  Let $A, B$ be similar matrices. Then $A, B$ have the same characteristic polynominal, and hence the same eigenvalues.
+
+  Note that the eigenvectors may be different, with $w = Pv$ as an eigenvalue.
+\end{theorem}
+\begin{proof}
+  We have $B = P^{-1}AP$ for some non-singular matrix $P$. Thus
+  \begin{align*}
+    p_B(\lambda) &= \det (B - \lambda I)\\
+    &= \det (P^{-1}AP - \lambda P^{-1}IP)\\
+    &= \det (P^{-1}AP - P^{-1}(\lambda I)P)\\
+    &= \det (P^{-1} (A - \lambda I)P)\\
+    &= (\det P^{-1})(\det (A - \lambda I))(\det P)\\
+    &= (\det P)^{-1}(\det P)(\det (A - \lambda I))\\
+    &= \det (A - \lambda I)\\
+    &= p_A(\lambda)\\
+  \end{align*}
+\end{proof}
+\subsection{Complex Eigenvalues for Real Matrices}
+\begin{example}
+  Find the eigenvalues and associated eigenspaces for \[
+    A =
+    \begin{bmatrix}
+      2 & 2\\
+      -4 & -2\\
+    \end{bmatrix}
+  \]
+
+  We have
+  \begin{align*}
+    \det (A - \lambda I) &= \det
+    \begin{bmatrix}
+      2 - \lambda & 2\\
+      -4 & -2-\lambda\\
+    \end{bmatrix}\\
+    &= (2-\lambda)(-2-\lambda) - (2)(-4)\\
+    &= \lambda^2 + 4\\
+  \end{align*}
+  This has no real eigenvalues, but if we are working over $\C$, then we have $\lambda^2 = -4$ and so $\lambda = \pm 2i$.
+  We have $\lambda_1 = 2i$ and $\lambda_2 = -2i$.
+
+  Let's find $E_{2i}$. We have \[
+    E_{2i} = N(A - 2iI) = N \left(
+      \begin{bmatrix}
+        2 -2i & 2\\
+        -3 & -2 -2i\\
+    \end{bmatrix}\right)
+  \]
+  We row reduce: \[
+    \begin{bmatrix}
+      2 - 2i & 2\\
+      -4 & -2-2i\\
+    \end{bmatrix} \to
+    \begin{bmatrix}
+      1 & \frac{1 + i}{2}\\
+      0 & 0\\
+    \end{bmatrix}
+  \]
+  Thus $x_2 = t$ is free and $x_1 = \left(-\frac{1+i}{2}\right)t$. We have
+  \begin{align*}
+    E_{2i} &= \left\{ t
+      \begin{bmatrix}
+        -\frac{1 + i}{2}\\\
+        1\\
+    \end{bmatrix}\mid t \in \C \right\}\\
+    &= \spn \left\{
+      \begin{bmatrix}
+        1 + i\\
+        -2\\
+    \end{bmatrix}\right\}
+  \end{align*}
+\end{example}
+\begin{theorem}
+  Let $A \in M_{nn}(\R)$. Let $\lambda$ be an eigenvalue of $A$ with corresponding eigenvector $v$. Let $\overline{v}$ be the vector with entries that are the complex conjugates of the entries of $v$. Then $\overline{\lambda}$ is an eigenvalue of $A$ with corresponding eigenvector $\overline{v}$.
+\end{theorem}
+\begin{example}
+  For the example above, \[
+    E_{-2i} = \spn \left\{
+      \begin{bmatrix}
+        1 - i\\
+        -2\\
+    \end{bmatrix}\right\}
+  \]
+\end{example}
+\subsection{The Characteristic Polynomial}
+\begin{theorem}
+  Let $F$ be a field and let $A$ be $n \times n$ with entries in $P_1(F)$. Then $\det A \in P_n(F)$.
+\end{theorem}
+\begin{theorem}
+  Let $F$ be a field, $n \geq 2$, and $A \in M_{nn}(F)$. Let $[A]_{ij} = a_{ij}$. Then \[
+    p_A(\lambda) = (a_{11} - \lambda)\dots(a_{nn} - \lambda) + g(\lambda)
+  \] where $g(\lambda) \in P_{n-2}(\lambda)$.
+\end{theorem}
+\begin{theorem}
+  Let $F$ be a field and let $A_{nn}(F)$. Then $p_A(\lambda)$ is a degree $n$ polynominal in $\lambda$ with \[
+    p_A(\lambda) = (-1)^n\lambda^n + (-1)^{n-1}\Tr A\lambda^{n-1} + c_{n-2}\lambda^{n-2} + \dots + c_1\lambda + \det A
+  \]
+\end{theorem}
+\begin{example}
+  If \[
+    A =
+    \begin{bmatrix}
+      5 & 2\\
+      -3 & 7\\
+    \end{bmatrix}
+  \]
+  Then $\Tr A =  12$ and $\det A = 41$. Thus \[
+    p_A(\lambda) = \lambda^2 - 12\lambda + 41
+  \]
+\end{example}
+\begin{definition}
+  If $f(x) \in P_n(F)$ factors into a product of degree one factors over $F$, that is if \[
+    f(x) = a\prod_{i=1}^n (x-c_i)
+  \] for $a, c_i \in F$, then we say that f \textbf{splits} over $F$.
+\end{definition}
+\begin{theorem}
+  If \[
+    p_A(\lambda) = (-1)^n \prod_{i=1}^n (\lambda - \lambda_i)
+  \] then \[
+    \det A = \prod_{i=1}^n \lambda_i
+  \] and \[
+    \Tr A = \sum_{i=1}^n \lambda_i
+  \]
+  That is, if $p_A(\lambda)$ splits over $F$, then $\det A$ is equal to the product of eigenvalues with multiplicity and $\Tr A$ is equal to the sum of eigenvalues with multiplicity.
+\end{theorem}
+\subsection{Algebraic and Geometric Multiplicity}
+\begin{definition}
+  Suppose $A \in M_{nn}(F)$ has eigenvalue $\lambda_1$ and \[
+    p_A(\lambda) = (\lambda - \lambda_1)^{\alpha_A(\lambda_1}q_A(\lambda)
+    \] where $\alpha_A(\lambda_1) \in \N$ and $q_A(\lambda_1) \neq 0$. Then $\alpha_A(\lambda_1)$ is the \textbf{algebraic multiplicity} of $\lambda_1$. The \textbf{geometric multiplicity} $\gamma_A(\lambda_1)$ of $\lambda_1$ is equal to $\dim(E_{\lambda_1}$ or $\dim (A - \lambda_1I)$. If the matrix $A$ is clear, can write $\alpha(\lambda_1)$ and $\gamma(\lambda_1)$ instead.
+    \end{definition}
+    \begin{theorem}
+      Suppose $A \in M_{nn}(F)$ has eigenvalue $\lambda_1$. Then, \[
+        1 \leq \gamma(\lambda_1) \leq \alpha(\lambda_1) \leq n
+      \]
+    \end{theorem}
+    \begin{proof}
+      Since $\lambda_1$ is an eigenvalue with algebraic multiplicity $\alpha(\lambda_1)$, $(\lambda-\lambda_1)^{\alpha(\lambda_1)}$ is a factor of the characteristic polynominal $p_A(\lambda)$, a polynominal of degree $n$. Thus, $\alpha(\lambda_1) \leq n$.
+      Since $\lambda_1$ is an eigenvalue, there is some $v \neq 0$ in $E_{\lambda_1}$. Thus $E_{\lambda_1} \neq \{0\}$ and so $\gamma(\lambda_1) = \dim E_{\lambda_1} \geq 1$.
+
+      Let $g = \gamma(\lambda_1)$, and let $v_1, \ldots, v_g$ be a basis of $E_{\lambda_1}$. By the Linear Independence to Basis Theorem, we can find $u_1, \ldots, u_{n-g} \in F^n$ so that $v_1, \ldots, v_g, u_1, \ldots, u_{n-g}$ is a basis of $F^n$. Let $P =
+      \begin{bmatrix}
+        v_1 & \dots & v_g & u_1 & \dots & u_{n-g}\\
+      \end{bmatrix}$. Then $P$ is $n \times n$. Since the columns of $P$ are linearly independent, $P$ is non-singular and is invertible. Note that \[
+        \begin{bmatrix}
+          e_1 & \dots & e_n\\
+        \end{bmatrix} = I = P^{-1}P = P^{-1}
+        \begin{bmatrix}
+          v_1 & \dots & v_g & u_1 & \dots & u_{n-g}
+        \end{bmatrix}
+      \] and so for $1 \leq i \leq g$, we have \[
+        P^{-1}v_i = e_i
+      \]
+      Let $B = P^{-1}AP$. Since $A, B$ are similar, we have $p_A(\lambda) = p_B(\lambda)$. Since \[
+        B = P^{-1}AP = P^{-1}A
+        \begin{bmatrix}
+          v_1 & \dots & v_g & u_1 & \dots & u_{n-g}\\
+        \end{bmatrix}
+      \] for $1 \leq i \leq g$, the $i$th column of $B$ is equal to $P^{-1}Av_i$.
+
+      Since $v_i \in E_{\lambda_1}$, for $1 \leq i \leq g$, the $i$th column of $B$ is equal to
+      \begin{align*}
+        P^{-1}Av_i &= P^{-1}(\lambda_1v_i)\\
+        &= \lambda_1P^{-1}v_i\\
+        &= \lambda_1e_i\\
+      \end{align*}
+      Thus
+      \begin{align*}
+        p_A(\lambda) &= p_B(\lambda)\\
+        &= \det
+        \begin{bmatrix}
+          \lambda_1 - \lambda & 0 & \dots & 0 & c_{11} & \dots & c_{1(n-g)}\\
+          0 & \lambda_1 - \lambda & \dots & 0 & c_{21} & \dots & c_{2(n-g)}\\
+          \vdots & \vdots & \ddots& \vdots & \vdots & \ddots & \vdots\\
+          0 & 0 & \dots & \lambda_1 - \lambda & \vdots & \dots & \vdots\\
+          0 & 0 & \dots & 0 & \vdots & \dots & \vdots\\
+          \vdots & \vdots & \ddots& \vdots & \vdots & \ddots & \vdots\\
+          0 & 0 & \dots & 0 & c_{n1} & \dots & c_{n(n-g)}\\
+        \end{bmatrix}
+        &= (\lambda_1 - \lambda)^g \det M
+      \end{align*}
+      by expanding the determinant along the first column, repeated $g$ times for some matrix $M$ (where the $c_{ij}$ may depend on $\lambda$)
+
+      We have shown that \[
+        p_A(\lambda) = (\lambda_1 - \lambda)^g \det M = (-1)^g (\lambda - \lambda_1)^g \det M
+      \]
+      for some matrix $M$. Since $\det M$ is some polynominal in $\lambda$, we have shown that $(\lambda - \lambda_1)^g$ is a factor of $p_A(\lambda)$. Since $\alpha(\lambda_1)$ is the greatest power of $(\lambda - \lambda_1)$ that divides $p_A(\lambda)$, we have $\gamma(\lambda_1) = g \leq \alpha(\lambda_1)$.
+    \end{proof}
+    \begin{example}
+      Find a basis for each eigenspace of $A =
+      \begin{bmatrix}
+        3 & 2 & 4\\
+        2 & 0 & 2\\
+        4 & 2 & 3\\
+      \end{bmatrix}$.
+
+      We have \[
+        \det (A - \lambda I) = -(\lambda - 8)(\lambda + 1)^2
+      \]
+      Thus the eigenvalues are $-1, 8$.
+
+      Since the algebraic multiplicity of $\lambda = 8$ is $\alpha(8) = 1$, and by previous inequality, have $\dim E_8 = \gamma(8) = 1$.
+
+      Since the algebraic multiplicity of $\lambda = -1$ is $\alpha(-1) = 2$, and $1 \leq \gamma(-1) \leq \alpha(-1) = 2$, have $\dim E_{-1} = \gamma(-1)$ either equal to $1$ or $2$.
+
+      We have \[
+        E_{-1} = N(A + I) = N\left(
+          \begin{bmatrix}
+            4 & 2 & 4\\
+            2 & 1 & 2\\
+            4 & 2 & 4\\
+        \end{bmatrix}\right)
+      \]
+
+      If we can find linear combinations of the columns that yield $0$, then the vector containing the coefficients is in $E_{-1}$, which we know is either $1$-dimensional or $2$-dimensional.
+
+      Note that column $1$ minus $3$ is $0$, thus $(1, 0, -1) \in E_{-1}$ and that column $1$ minus twice column $2$ is $0$, thus $(1, -2, 0) \in E_{-1}$. A basis of $E_{-1}$ are those two vectors.
+
+      If we weren't able to find the above 2 by inspection, we would have to row reduce.
+
+      Have \[
+        E_8 = N(A - 8I) = N\left(
+          \begin{bmatrix}
+            -5 & 2 & 4\\
+            2 & -8 & 2\\
+            4 & 2 & -5\\
+        \end{bmatrix}\right)
+      \]
+      We know it is $1$-dimensional. Can notice that the sum of the first and last columns is $-\frac{1}{2}$ times the second, or $2v_1 + v_2 + 2v_3 = 0$ and so a basis is \[
+        \left\{
+          \begin{bmatrix}
+            2\\1\\2\\
+        \end{bmatrix}\right\}
+      \]
+    \end{example}
+    \subsection{Combining Spaces of Eigenspaces}
+    \begin{theorem}
+      Let $A$ be square matrix, and for $i = 1, \ldots, m$, let $v_i$ be an eigenvector corresponding to eigenvalue $\lambda_i$ where each $\lambda_i$ is distinct ($\lambda_i \neq \lambda_j$ for $i \neq j$). Then $v_i, \ldots, v_m$ are linearly independent.
+    \end{theorem}
+    \begin{proof}
+      If $m = 1$, then $v_1$ is linearly independent since eigenvectors are non-zero.
+
+      Suppose $m \geq 2$, and use a proof by contradiction. Suppose $v_1, \ldots, v_m$ are linearly dependent. Let $k$ be an integer such that $v_1, \ldots, v_k$ is linearly dependent but $v_1, \ldots, v_k$ is linearly independent. Note that the vector $v_1$ by itself is linearly independent. Note that if the collection $v_1, \ldots, v_k$ is linearly dependent, then $v_1, \ldots, v_\ell$ where $\ell \geq k$ is as well.
+
+      Since $v_1, \ldots, v_k$ are dependent, there are $c_i$ not all $0$ with \[
+        c_1v_1 + \dots + c_kv_k = 0
+      \]
+      Using the fact that $v_i$ is an eigenvector of $A$ corresponding to eigenvalue $\lambda_i$, we have
+      \begin{align*}
+        0 &= (A - \lambda_kI)0\\
+        &= (A - \lambda_kI)(c_1v_1 + \dots + c_kv_k)\\
+        &= c_1(A - \lambda_kI)v_1 + \dots + c_{k-1}(A - \lambda_kI)v_{k-1} + c_k(A - \lambda_kI)v_k\\
+        &= c_1(Av_1 - \lambda_kv_1) + \dots + c_{k-1}(Av_{k-1} - \lambda_kv_{k-1}) + c_k(Av_k - \lambda_kv_k)\\
+        &= c_1(\lambda_1v_1 - \lambda_kv_1) + \dots + c_{k-1}(\lambda_{k-1}v_{k-1} - \lambda_kv_{k-1}) + c_k(\lambda_kv_k - \lambda_kv_k)\\
+        &= c_1(\lambda_1 - \lambda_k)v_1 + \dots + c_{k-1}(\lambda_{k-1} - \lambda_k)v_{k-1} + 0\\
+        &= c_1(\lambda_1 - \lambda_k)v_1 + \dots + c_{k-1}(\lambda_{k-1} - \lambda_k)v_{k-1}\\
+      \end{align*}
+      Since $v_1, \ldots, v_{k-1}$ are independent, have $c_i(\lambda_i - \lambda_k) = 0$ for all $1 \leq i \leq k-1$. Since $\lambda_i \neq \lambda_k$, have $c_i = 0$ for all $i$.
+
+      Recall have \[
+        c_1v_1 + \dots + c_kv_k = 0
+      \] for not all $c_i$ zero. Since $c_i = 0$ for $1 \leq i \leq k-1$, this yields \[
+        c_kv_k = 0
+      \] with $c_k \neq 0$. Thus $v_k = 0$. This is a contradiction as $v_k$ is an eigenvector and cannot be $0$.
+    \end{proof}
+    \begin{theorem}
+      Let $A$ be square. The union of bases of distinct eigenspaces of $A$ is linearly independent.
+    \end{theorem}
+    \begin{proof}
+      Let $\lambda_1, \ldots, \lambda_m$ be distinct eigenvalues of $A$. Let \[
+        \mathcal{B}_i = \{v_{1i}, \dots, v_{in_i}\}
+      \] be a basis for $E_{\lambda_i}$ so $n_i = \dim E_{\lambda_i}$. Suppose \[
+        \sum_{i=1}^m\sum_{j=1}^{n_i} c_{ij}v_{ij} = 0
+      \]
+      Let \[
+        w_i = \sum_{j=1}^{n_i} c_{ij}v_{ij}
+      \]
+      Since $w_i$ is a linear combination of eigenvectors corresponding to $\lambda_i$, we have $w_i \in E_{\lambda_i}$. Thus either $w_i$ is an eigenvector corresponding to $\lambda_i$ or $w_i = 0$. Then we have \[
+        \sum_{i=1}^m w_i = 0
+      \]
+      If some $w_i = 0$, then they can be dropped from the sum without changing it. This is a sum of eigenvectors from distinct eigenspaces. By the previous theorem, the vectors appearing in this sum are linearly independent, and so this sum must be empty (since if not, then these vectors would be linearly dependent). That is, for each $i$ we have $w_i = 0$.
+
+      Using the definition of $w_i$, for each $i$ we have \[
+        0 = w_i = \sum_{j=1}^{n_i} c_{ij}v_{ij}
+      \]
+      Since $v_{i1}, \ldots, v_{in}$ form a basis of $E_{\lambda_i}$, they are independent. Thus for each $i$ we have $c_{ij} = 0$ for all $j$. That is, $c_{ij} = 0$ for all $i, j$, and so $v_{ij}$ are independent.
+    \end{proof}
+    \subsection{Diagonalization}
+    \begin{definition}
+      Let $A$ be square. $A$ is \textbf{diagonalizable} if $A$ is similar to a diagonal matrix. That is, if there is a diagonal matrix $D$ and a non-singular matrix $P$ such that $D = P^{-1}AP$.
+    \end{definition}
+    \begin{theorem}
+      A $n \times n$ matrix $A$ is diagonalizable iff there is a basis of $F^n$ consisting of eigenvectors of $A$.
+    \end{theorem}
+    \begin{proof}
+      We prove the reverse direction. Let \[
+        \mathcal{B} = \{v_1, \ldots, v_n\}
+      \] be a basis of $F^n$ consisting of eigenvectors of $A$, so that for each $i$ we have \[
+        Av_i = \lambda_iv_i
+      \] for some eigenvalue $\lambda_i$ (not necessarily distinct). We must show that $A$ is similar to a diagonal matrix. Let $P$ be the change of basis matrix from $\mathcal{B}$ to the standard basis $\mathcal{S}$ of $F^n$. Then by the change of basis theorem, we have \[
+        P =
+        \begin{bmatrix}
+          v_1 & \dots & v_n
+        \end{bmatrix}
+      \]
+      Note that $[v_i]_{\mathcal{B}} = e_i$. Since $P$ is the change of basis matrix from $\mathcal{B}$ to $\mathcal{S}$, it follows that $P^{-1}$ is the change of basis matrix from $\mathcal{S}$ to $\mathcal{B}$. Thus for any $v$, we have $P[v]_\mathcal{B} = [v]_\mathcal{S}$ and $P^{-1}[v]_\mathcal{S} = [v]_\mathcal{B}$. Also since $\mathcal{S}$ is the standard basis, for any $v$ we have $[v]_\mathcal{S} = v$.
+
+      The $i$th column of $P^{-1}AP$ is
+      \begin{align*}
+        P^{-1}APe_i &= P^{-1}AP[v_i]_\mathcal{B}\\
+        &= P^{-1}A[v_i]_\mathcal{S}\\
+        &= P^{-1}Av_i\\
+        &= P^{-1}\lambda_i v_i\\
+        &= \lambda_i P^{-1}v_i\\
+        &= \lambda_i P^{-1}[v_i]_\mathcal{S}\\
+        &= \lambda_i[v_i]_\mathcal{B}\\
+        &= \lambda_i e_i
+      \end{align*}
+      Since the $i$th column of $P^{-1}AP$ is $\lambda_ie_i$, $P^{-1}AP = D$ where $D$ is a diagonal matrix with $[D]_{ii} = \lambda_i$. Thus $A$ is similar.
+
+      We now prove the forward direction. Suppose $A$ is similar to a diagonal matrix $D$. Then $D = P^{-1}AP$ for some non-singular matrix $P$. We must show there is a basis of $F^n$ consisting of eigenvectors of $A$. Let $\mathcal{B} = \{v_1, \ldots, v_n\}$ consist of the columns of $P$. Since $P$ is non-singular, $\mathcal{B}$ is a basis of $F^n$. We must now show that each $v_i$ is an eigenvector of $A$. Note that since $\mathcal{B}$ is a basis, we must have $v_i \neq 0$ for each $i$.
+
+      Let $[D]_{ii} = \lambda_i$. We have $AP = PD$. Since the $i$th column of $PD$ is a linear combination of the columns of $P$ using the entries of the $i$th column of $D$ as coefficients, it is equal to $\lambda_iv_i$. On the other hand, the $i$th column of $AP$ is $Av_i$. Thus we have \[
+        Av_i = \lambda_iv_i
+      \] and so each $v_i$ is an eigenvector of $A$.
+    \end{proof}
+    \begin{example}
+      We saw that the eigenvalues of $A =
+      \begin{bmatrix}
+        1 & -3 & 3\\
+        3 & -5 & 4\\
+        6 & -6 & 4\\
+      \end{bmatrix}$ are $4$ and $-2$ with $E_4 = \spn \left\{
+        \begin{bmatrix}
+          1\\1\\2\\
+      \end{bmatrix}\right\}$ and $E_{-2} = \spn \left\{
+        \begin{bmatrix}
+          1\\1\\0\\
+        \end{bmatrix},
+        \begin{bmatrix}
+          -1\\0\\1\\
+      \end{bmatrix}\right\}$
+
+      Thus $A = PDP^{-1}$ for $P =
+      \begin{bmatrix}
+        1 & 1 & -1\\
+        1 & 1 & 0\\
+        2 & 0 & 1\\
+      \end{bmatrix}$ and $D =
+      \begin{bmatrix}
+        4 & 0 & 0\\
+        0 & -2 & 0\\
+        0 & 0 & -2\\
+      \end{bmatrix}$
+    \end{example}
+    \begin{cthm}
+      Let $A$ be square matrix. Suppose $p_A(\lambda)$ splits over $F$. Then \[
+        \gamma(\lambda_i) = \alpha(\lambda_i)
+      \] for each $i$ iff $A$ is diagonalizable.
+    \end{cthm}
+    \begin{proof}
+      Let $A$ be $n \times n$ matrix. Then $p_A(\lambda)$ is a degree $n$ polynominal. Let $\lambda_i$ be the distinct eigenvalues of $A$. We show the forwards direction. We have \[
+        n = \sum_i \alpha(\lambda_i) = \sum_i \gamma(\lambda_i) = \sum_i \dim E_{\lambda_i}
+      \]
+      Thus the union of bases of distinct eigenspaces contains $n$ vectors. By a previous theorem, the vectors in this union are linearly independent. Since $\dim F^n = n$, this implies that these vectors form a basis of $F^n$, and hence $A$ is diagonalizable.
+
+      We show the reverse direction. Suppose we have $\gamma(\lambda_k) \neq \alpha(\lambda_k)$ for some $k$. Since we have previously shown that for all $i$ we have $\gamma(\lambda_i) \leq \alpha(\lambda_i)$, it follows that $\gamma(\lambda_k) < \alpha(\lambda_k)$. Then \[
+        n = \sum_i \alpha(\lambda_i) > \sum_i \gamma(\lambda_i) = \sum_i \dim E_{\lambda_i}
+      \]
+      Thus the union of bases of distinct eigenspaces contains strictly less than $n$ vectors. It follows that there is no basis of $F^n$ consisting of eigenvectors of $A$ since if there were, we would have $\sum_i \dim E_{\lambda_i} = n$ and so $A$ is not diagonalizable.
+    \end{proof}
+    \begin{theorem}
+      Let $A$ be a diagonalizable matrix with $A = PDP^{-1}$ for $D$ a diagonal matrix and $P$ non-singular. Then for all $k \in \N$, we have \[
+        A^k = PD^kP^{-1}
+      \] for a non-singular matrix $P$.
+    \end{theorem}
+    \begin{proof}
+      We have
+      \begin{align*}
+        A^k &= (PDP^{-1})^k\\
+        &= (PDP^{-1})(PDP^{-1})\dots(PDP^{-1})\\
+        &= PD(P^{-1}P)D(P^{-1}P)\dots(P^{-1}P)DP^{-1}\\
+        &= PD\dots DP^{-1}\\
+        &= PD^kP^{-1}
+      \end{align*}
+    \end{proof}
+    \begin{example}
+      Let $A =
+      \begin{bmatrix}
+        2 & -4\\
+        -1 & -1\\
+      \end{bmatrix}$ and let $k \in \N$. Find $A^k$.
+
+      We have
+      \begin{align*}
+        \det (A - \lambda I) &= \det
+        \begin{bmatrix}
+          2 - \lambda & -4 \\
+          -1 & -1 - \lambda\\
+        \end{bmatrix}\\
+        &= (2 - \lambda)(-1 - \lambda) - (-4)(-1)\\
+        &= \lambda^2 - \lambda + 6\\
+        &= (\lambda - 3)(\lambda + 2)\\
+      \end{align*}
+      Thus the eigenvalues of $A$ are $-2, 3$ and are both $1D$.
+
+      Since $A - 3I =
+      \begin{bmatrix}
+        -1 & -4\\
+        -1 & -4\\
+      \end{bmatrix}$, by inspection a basis for $E_3$ is $\spn\left\{
+        \begin{bmatrix}
+          4\\-1\\
+      \end{bmatrix}\right\}$. Since $A + 2I =
+      \begin{bmatrix}
+        4 & -4\\
+        -1 & 1\\
+      \end{bmatrix}$, by inspection a basis for $E_{-2}$ is $\spn\left\{
+        \begin{bmatrix}
+          1\\1\\
+      \end{bmatrix}\right\}$. Thus $A$ is diagonalizable with $P =
+      \begin{bmatrix}
+        4 & 1\\
+        -1 & 1\\
+      \end{bmatrix}$ and $D =
+      \begin{bmatrix}
+        3 & 0\\
+        0 & -2\\
+      \end{bmatrix}$. Note that $P^{-1} = \frac{1}{4(1) - (1)(-1)}
+      \begin{bmatrix}
+        1 & -1\\
+        1 & 4\\
+      \end{bmatrix} = \frac{1}{5}
+      \begin{bmatrix}
+        1 & -1\\
+        1 & 4\\
+      \end{bmatrix}$
+      Thus
+      \begin{align*}
+        A^k &= PD^kP^{-1}\\
+        &=
+        \begin{bmatrix}
+          4 & 1\\
+          -1 & 1\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          3 & 0\\
+          0 & -2\\
+        \end{bmatrix}^k\frac{1}{5}
+        \begin{bmatrix}
+          1 & -1\\
+          1 & 4\\
+        \end{bmatrix}\\
+        &= \frac{1}{5}
+        \begin{bmatrix}
+          4 & 1\\
+          -1 & 1\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          3^k & 0\\
+          0 ^ (-2)^k\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          1 & -1\\
+          1 & 4\\
+        \end{bmatrix}\\
+        &= \frac{1}{5}
+        \begin{bmatrix}
+          4 & 1\\
+          -1 & 1\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          3^k & -3^k\\
+          (-2)^k & 4(-2)^k\\
+        \end{bmatrix}\\
+        &= \frac{1}{5}
+        \begin{bmatrix}
+          4 \cdot 3^k + (-2)^k & -4 \cdot 3^k + 4(-2)^k\\
+          -3^k + (-2)^k & 3^k + 4(-2)^k\\
+        \end{bmatrix}
+      \end{align*}
+    \end{example}
+    \subsection{Fibonacci Numbers}
+    \begin{definition}
+      The \textbf{Fibonacci numbers} satisfy $F_1 = 1, F_2 = 1$ and \[
+        F_n = F_{n-1} + F_{n-2}
+      \] for $n \geq 3$.
+    \end{definition}
+    \begin{example}
+      Notice that \[
+        \begin{bmatrix}
+          F_n\\
+          F_{n-1}\\
+        \end{bmatrix} =
+        \begin{bmatrix}
+          1 & 1 \\
+          1 & 0\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          F_{n-1}\\
+          F_{n-2}\\
+        \end{bmatrix}
+      \]
+      Let $A =
+      \begin{bmatrix}
+        1 & 1\\
+        1 & 0\\
+      \end{bmatrix}$
+      Have
+      \begin{align*}
+        \begin{bmatrix}
+          F_3\\
+          F_2\\
+        \end{bmatrix} &= A
+        \begin{bmatrix}
+          F_2\\
+          F_1\\
+        \end{bmatrix} = A
+        \begin{bmatrix}
+          1\\1\\
+        \end{bmatrix}\\
+        \begin{bmatrix}
+          F_4\\
+          F_3\\
+        \end{bmatrix} &= A
+        \begin{bmatrix}
+          F_3\\
+          F_2\\
+        \end{bmatrix} = A^2
+        \begin{bmatrix}
+          1\\1\\
+        \end{bmatrix}\\
+        \begin{bmatrix}
+          F_5\\
+          F_4\\
+        \end{bmatrix} &= A
+        \begin{bmatrix}
+          F_4\\
+          F_3\\
+        \end{bmatrix} = A^3
+        \begin{bmatrix}
+          1\\1\\
+        \end{bmatrix}\\
+      \end{align*} and in general, \[
+        \begin{bmatrix}
+          F_n\\F_{n-1}
+        \end{bmatrix} = A^{n-2}
+        \begin{bmatrix}
+          1\\1\\
+        \end{bmatrix}
+      \]
+
+      We find the eigenvalues and eigenvectors of $A$.
+
+      Have
+      \begin{align*}
+        \det (A - \lambda I) &= \det
+        \begin{bmatrix}
+          1 - \lambda & 1\\
+          1 & -\lambda\\
+        \end{bmatrix}\\
+        &= (1-\lambda)(-\lambda) - 1\\
+        &= \lambda^2 - \lambda - 1\\
+      \end{align*} and so \[
+        \lambda = \frac{-(-1) \pm \sqrt{(-1)^2 -4(-1)}}{2} = \frac{1 \pm \sqrt{5}}{2}
+      \] and the eigenvalues are $\lambda_1 = \frac{1 + \sqrt{5}}{2}$ and $\lambda_2 = \frac{1 - \sqrt{5}}{2}$.
+
+      Now, find a basis for $E_{\lambda_1}$.
+
+      Have \[
+        A - \lambda_1 I =
+        \begin{bmatrix}
+          \frac{1 - \sqrt{5}}{2} & 1\\
+          1 & \frac{-1 - \sqrt{5}}{2}\\
+        \end{bmatrix}
+      \]
+
+      Since column $1$ minus $\frac{1 - \sqrt{5}}{2}$ times column $2$ is zero, see that \[
+        \begin{bmatrix}
+          1\\
+          -\frac{1 - \sqrt{5}}{2}
+        \end{bmatrix} =
+        \begin{bmatrix}
+          1\\
+          -\lambda_2
+        \end{bmatrix}
+      \] is a basis for $E_{\lambda_1}$. Similarly, a basis for $E_{\lambda_2}$ is \[
+        \begin{bmatrix}
+          1\\
+          -\lambda_1\\
+        \end{bmatrix}
+      \]
+      Now, write $(1, 1)$ as a linear combination of eigenvectors.
+      \[
+        c_1
+        \begin{bmatrix}
+          1\\-\lambda_2\\
+        \end{bmatrix} + c_2
+        \begin{bmatrix}
+          1\\-\lambda_1\\
+        \end{bmatrix} =
+        \begin{bmatrix}
+          1\\1\\
+        \end{bmatrix}
+      \] So, have \[
+        \begin{bmatrix}
+          1 & 1 & 1\\
+          -\lambda_2 & -\lambda_1 & 1\\
+        \end{bmatrix} \to
+        \begin{bmatrix}
+          1 & 0 & -\frac{1 + \lambda_1}{\lambda_2 - \lambda_1}\\
+          0 & 1 & \frac{1 + \lambda_2}{\lambda_2 - \lambda_1}
+        \end{bmatrix}
+      \]
+      Since $\lambda_i$ satisfies $\lambda^2 - \lambda - 1 = 0$, have $\lambda + 1 = \lambda^2$. Also, \[
+        \lambda_2 - \lambda_1 = \frac{1 - \sqrt{5}}{2} - \frac{1 + \sqrt{5}}{2} = -\sqrt{5}
+      \] Thus $c_1 = \frac{1}{\sqrt{5}}\lambda_1^2$ and $c_2 = -\frac{1}{\sqrt{5}}\lambda_2^2$.
+
+      Therefore,
+      \begin{align*}
+        \begin{bmatrix}
+          F_n\\F_{n-1}\\
+        \end{bmatrix} &= A^{n-2}
+        \begin{bmatrix}
+          1\\1\\
+        \end{bmatrix}\\
+        &= A^{n-2}\left(\frac{1}{\sqrt{5}} \lambda_1^2
+          \begin{bmatrix}
+            1\\-\lambda_2\\
+          \end{bmatrix} - \frac{1}{\sqrt{5}}\lambda_2^2
+          \begin{bmatrix}
+            1\\
+            -\lambda_1\\
+        \end{bmatrix}\right)\\
+        &= \frac{1}{\sqrt{5}}\left(\lambda_1^2A^{n-2}
+          \begin{bmatrix}
+            1\\-\lambda_2\\
+          \end{bmatrix} -\lambda_2^2A^{n-2}
+          \begin{bmatrix}
+            1\\-\lambda_1\\
+        \end{bmatrix}\right)\\
+        &= \frac{1}{\sqrt{5}}\left(\lambda_1^2\lambda_1^{n-2}
+          \begin{bmatrix}
+            1\\-\lambda_2\\
+          \end{bmatrix} -\lambda_2^2\lambda_2^{n-2}
+          \begin{bmatrix}
+            1\\-\lambda_1\\
+        \end{bmatrix}\right)\\
+        &= \frac{1}{\sqrt{5}}\left(\lambda_1^{n}
+          \begin{bmatrix}
+            1\\-\lambda_2\\
+          \end{bmatrix} -\lambda_2^n
+          \begin{bmatrix}
+            1\\-\lambda_1\\
+        \end{bmatrix}\right)\\
+      \end{align*}
+      Thus \[
+        F_n = \frac{1}{\sqrt{5}} (\lambda_1^n - \lambda_2^n) = \frac{1}{\sqrt{5}}\left(\left(\frac{1 + \sqrt{5}}{2}\right)^n - \left(\frac{1-\sqrt{5}}{2}\right)^n\right)
+      \] is an explicit formula for $F_n$.
+    \end{example}
+    \subsection{Population Models}
+    \begin{example}
+      Suppose in year $n$ there are $x_n$ children and $y_n$ adult goats. Each year, the following happens
+      \begin{itemize}
+        \item Each adult has 1.5 offspring. The offspring will be children in the next year.
+        \item $30\%$ of children survive to be an adult in the next year.
+        \item $40\%$ of adults survive in the next year.
+      \end{itemize}
+      What is the long term behaviour?
+
+      Have
+      \begin{align*}
+        x_{n+1} &= 1.5y_n\\
+        y_{n+1} &= 0.3x_n + 0.4y_n\\
+      \end{align*}
+      and so \[
+        \begin{bmatrix}
+          x_{n+1}\\
+          y_{n+1}\\
+        \end{bmatrix} =
+        \begin{bmatrix}
+          0 & 1.5\\
+          0.3 & 0.4\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          x_n\\y_n\\
+        \end{bmatrix}
+      \]
+      Letting $A =
+      \begin{bmatrix}
+        0 & 1.5\\
+        0.3 & 0.4\\
+      \end{bmatrix}$ we have
+      \begin{align*}
+        \begin{bmatrix}
+          x_1\\y_1\\
+        \end{bmatrix} &= A
+        \begin{bmatrix}
+          x_0\\y_0\\
+        \end{bmatrix}\\
+        \begin{bmatrix}
+          x_2\\y_2\\
+        \end{bmatrix} &= A
+        \begin{bmatrix}
+          x_1\\y_1\\
+        \end{bmatrix} = A^2
+        \begin{bmatrix}
+          x_1\\y_1\\
+        \end{bmatrix}
+      \end{align*} and in general, \[
+        \begin{bmatrix}
+          x_n\\y_n\\
+        \end{bmatrix} = A^n
+        \begin{bmatrix}
+          x_0\\y_0\\
+        \end{bmatrix}
+      \]
+
+      We have
+      \begin{align*}
+        \det (A - \lambda I) &= \det
+        \begin{bmatrix}
+          -\lambda & 1.5\\
+          0.3 & 0.4 - \lambda\\
+        \end{bmatrix}\\
+        &= \lambda^2 - 0.4\lambda -0.45\\
+        &= (\lambda - 0.9)(\lambda + 0.5)
+      \end{align*}
+      Thus the eigenvalues of $A$ are $\lambda_1 = 0.9$ and $\lambda_2 = -0.5$. By inspection, we have \[
+        E_{0.9} = N(A - 0.9I) = \spn\left\{
+          \begin{bmatrix}
+            5\\3\\
+        \end{bmatrix}\right\}
+      \] and \[
+        E_{-0.5} = N(A + 0.5I) = \spn\left\{
+          \begin{bmatrix}
+            3\\-1\\
+        \end{bmatrix}\right\}
+      \]
+
+      Let \[
+        \begin{bmatrix}
+          x_0\\y_0\\
+        \end{bmatrix} = c_1
+        \begin{bmatrix}
+          5\\3\\
+        \end{bmatrix} + c_2
+        \begin{bmatrix}
+          3\\-1\\
+        \end{bmatrix}
+      \] and so
+      \begin{align*}
+        \begin{bmatrix}
+          x_n\\y_n\\
+        \end{bmatrix} &= A^n
+        \begin{bmatrix}
+          x_0\\y_0\\
+        \end{bmatrix}\\
+        &= A^n\left(c_1
+          \begin{bmatrix}
+            5\\3\\
+          \end{bmatrix} + c_2
+          \begin{bmatrix}
+            3\\-1\\
+        \end{bmatrix}\right)\\
+        &= c_1A^n
+        \begin{bmatrix}
+          5\\3\\
+        \end{bmatrix} + c_2A^n
+        \begin{bmatrix}
+          3\\-1\\
+        \end{bmatrix}\\
+        &= c_1(0.9)^n
+        \begin{bmatrix}
+          5\\3\\
+        \end{bmatrix} + c_2(-0.5)^n
+        \begin{bmatrix}
+          3\\-1\\
+        \end{bmatrix}
+      \end{align*}
+      For large $n$, $0.9^n >> 0.5^n$ and so \[
+        \begin{bmatrix}
+          x_n\\y_n\\
+        \end{bmatrix} \approx c_1(0.9)^n
+        \begin{bmatrix}
+          5\\3\\
+        \end{bmatrix}
+      \]
+      $0.9$ is called the dominant eigenvalue.
+
+      The asymptotic growth rate of the population is $0.9$, which means that it is shrinking. The asymptotic proportion of children to adults is $5:3$.
+
+      We can change the birth rate from $1.5$ to $b$ to find where the population stabilizes, i.e., the asymptotic growth rate is $1$.
+
+      Have $A =
+      \begin{bmatrix}
+        0 & b\\
+        0.3 & 0.4\\
+      \end{bmatrix}$ so
+      \begin{align*}
+        \det (A - \lambda I) &= \det
+        \begin{bmatrix}
+          -\lambda & b\\
+          0.3 & 0.4-\lambda\\
+        \end{bmatrix}\\
+        &= \lambda^2 - 0.4\lambda -0.3b\\
+      \end{align*}
+      We want $\lambda = 1$ to be an eigenvalue and therefore a root. Letting $\lambda = 1$ and setting equal to $0$ yields \[
+        0 = 1 - 0.4 - 0.3b = 0.6 - 0.3b
+      \] and so $b = 2$. Setting $b = 2$, the characteristic polynominal is \[
+        \lambda^2 - 0.4\lambda - 0.6 = (\lambda - 1)(\lambda + 0.6)\\
+      \] and so the other polynominal is $-0.6$ so $1$ is the dominant. Thus \[
+        E_1 = N(A - I) = \spn \left\{
+          \begin{bmatrix}
+            2\\1\\
+        \end{bmatrix}\right\}
+      \] and \[
+        E_{-0.6} = N(A + 0.6I) = \spn\left\{
+          \begin{bmatrix}
+            10\\-3\\
+        \end{bmatrix}\right\}
+      \]
+      Thus \[
+        \begin{bmatrix}
+          x_n\\y_n\\
+        \end{bmatrix} = c_1(1)^n
+        \begin{bmatrix}
+          2\\1\\
+        \end{bmatrix} + c_2(-0.6)^n
+        \begin{bmatrix}
+          10\\-3\\
+        \end{bmatrix}
+      \] and so as $n \to \infty$, the proportion of children to adults approaches $2:1$.
+    \end{example}
+    \section{Geometry}
+    \begin{definition}
+      The \textbf{norm} of $w = (x_1, \ldots, x_n) \in \R^n$ is defined as \[
+        \norm{w} = \sqrt{x_1^2 + \dots + x_n^2}
+      \]
+    \end{definition}
+    \begin{corollary}
+      The norm maps from $\R^n \to \R$, but it is not a linear map. In particular,
+      \begin{align*}
+        \norm{cw} &= \sqrt{(cx_1)^2 + \dots + (cx_n)^2}\\
+        &= \sqrt{c^2(x_1^2 + \dots + x_n^2)}\\
+        &= \abs{c}\sqrt{x_1^2 + \dots +x_n^2}\\
+        &= \abs{c}\norm{w}\\
+      \end{align*}
+    \end{corollary}
+    \begin{definition}
+      The \textbf{inner product} or \textbf{dot product} of $u = (x_1, \ldots, x_n) \in \R^n$ and $v = (y_1, \ldots, y_n) \in \R^n$ is \[
+        u \cdot v = x_1y_1 + \dots +x_ny_n
+      \]
+
+      This maps from $\R^n \to \R$.
+    \end{definition}
+    \begin{corollary}
+      \[
+        u \cdot u = x_1^2 + \dots +x_n^2 = \norm{u}^2
+      \]
+    \end{corollary}
+    \begin{theorem}
+      Fix $v \in \R^n$. Then the map from $\R^n \to \R$ that sends $u$ to $u \cdot v$ is linear.
+    \end{theorem}
+    \begin{remark}
+      Let $u = (a_1, a_2), v = (b_1, b_2)$ and $w = u - v = (a_1 - b_1, a_2-b_2)$.
+      Then
+      \begin{align*}
+        w \cdot w &= (a_1 - b_1)^2 + (a_2 - b_2)^2\\
+        &= (a_1^2 + a_2^2) + (b_1^2 + b_2^2) - 2(a_1b_1 + a_2b_2)\\
+        &= u \cdot u + v\cdot v - 2(u\cdot v)
+      \end{align*}
+      Thus \[
+        \norm{w}^2 = \norm{u}^2 + \norm{v}^2 - 2\norm{u}\norm{v} \cos \theta
+      \]
+      Equating these yields \[
+        u\cdot v = \norm{u}\norm{v}\cos\theta
+      \]
+    \end{remark}
+    \begin{definition}
+      The angle $\theta$ between $2$ vectors $u, v$ in $\R^n$ is the value of $\theta$ between $0$ and $\pi$ that satisfies \[
+        \cos \theta = \frac{u\cdot v}{\norm{u}\norm{v}}
+      \]
+    \end{definition}
+    \begin{definition}
+      Vectors $u, v \in \R^n$ are \textbf{orthogonal} or perpendicular iff $u \cdot v = 0$.
+    \end{definition}
+    \begin{example}
+      Find all vectors $(x, y, z) \in \R^3$ that are orthogonal to $(1, 2, 3)$.
+
+      We need $(x, y, z) \cdot (1, 2, 3) = 0$ and so $x + 2y + 3z = 0$.
+      This is a plane in $\R^3$, let $y = s$ and $z = t$ and so $x = -2s - 3t$ and so the solution is \[
+        \begin{bmatrix}
+          x\\y\\z\\
+        \end{bmatrix} =
+        \begin{bmatrix}
+          -2s - 3t\\
+          s\\t\\
+        \end{bmatrix} = s
+        \begin{bmatrix}
+          -2\\1\\0\\
+        \end{bmatrix} + t
+        \begin{bmatrix}
+          -3\\0\\1\\
+        \end{bmatrix}
+      \]
+      That is, the set of all vectors in $\R^3$ orthogonal to $(1, 2, 3)$ is the plane \[
+        \spn\left\{
+          \begin{bmatrix}
+            -2\\1\\0\\
+          \end{bmatrix},
+          \begin{bmatrix}
+            -3\\0\\1\\
+        \end{bmatrix}\right\}
+      \]
+    \end{example}
+    \begin{corollary}
+      We can use matrix multiplication to represent the dot product. Let $u =
+      \begin{bmatrix}
+        x_1\\
+        \vdots\\
+        x_n\\
+      \end{bmatrix}$ and $v =
+      \begin{bmatrix}
+        y_1\\
+        \vdots\\
+        y_n\\
+      \end{bmatrix}$. Then \[
+        u \cdot v =
+        \begin{bmatrix}
+          x_1 &\dots & x_n
+        \end{bmatrix}
+        \begin{bmatrix}
+          y_1\\\vdots\\y_n
+        \end{bmatrix} = u^tv
+      \]
+
+      We can also use the dot product to describe matrix multiplication. Let $A \in M_{mn}(\R)$ and $B \in M_{nr}(\R)$. Let $u_1, \ldots, u_m$ be the rows of $A$ and $v_1, \ldots, v_r$ be the columns of $B$.
+      Then \[
+        [AB]_{ij} = \sum_{k=1}^n [A]_{ik}[B]_{kj} = u_i \cdot v_k
+      \]
+    \end{corollary}
+    \begin{definition}
+      Let $v = (z_1, \ldots, z_n) \in \C^n$. Then \[
+        \norm{v} = \sqrt{\abs{z_1}^2 + \dots + \abs{z_n}^2}
+      \] where $\abs{z_i}$ is the modulus defined by \[
+        |z| = \sqrt{(\Re z)^2 + (\Im z)^2} = \sqrt{z\overline{z}}
+      \]
+    \end{definition}
+    \begin{definition}
+      Let $u = (w_1, \ldots, w_n)$ and $v = (z_1, \ldots, z_n)$ in $\C^n$. The inner product in $\C$ is defined as \[
+        \inner{u}{v} =  w_1\overline{z_1} + \dots + w_n\overline{z_n}
+      \]
+    \end{definition}
+    \begin{corollary}
+      Not commutative.
+      \begin{align*}
+        \inner{v}{u} &= z_1\overline{w_1} + \dots + z_n\overline{w_n}\\
+        &= \overline{w_1\overline{z_1} + \dots + w_n\overline{z_n}}\\
+        &= \overline{\inner{u}{v}}
+      \end{align*}
+    \end{corollary}
+    \subsection{Inner Product Spaces}
+    \begin{remark}
+      We have looked at the Euclidean Inner Product on $\R^n$ and $\C^n$. Now, we generalize for any vector space.
+    \end{remark}
+    \begin{definition}
+      Let $V$ be a vector space over $F$ with $F = \R$ or $F = \C$. An \textbf{inner product} on $V$ is a function that maps an ordered pair of vectors $(u, v)$ to a number $\inner{u}{v}$ in $F$ that satisfies the following:
+
+      For any $u, v, w \in V$ and $c \in F$, have
+      \begin{itemize}
+        \item $\inner{u}{v} \geq 0$
+        \item $\inner{u}{u} = 0 \iff u = 0$
+        \item $\inner{u+v}{w} = \inner{u}{w} + \inner{v}{w}$
+        \item $\inner{cu}{v} = c\inner{u}{v}$
+        \item $\inner{u}{v} = \overline{\inner{v}{u}}$
+      \end{itemize}
+
+      $V$ and its inner product are called an inner product space.
+    \end{definition}
+    \begin{example}
+      The \textbf{Euclidean inner product} on $F^n$ is defined by \[
+        \inner{(u_1, \ldots, u_n)}{(v_1, \ldots, v_n)} = u_1\overline{v_1} + \dots + u_n\overline{v_n} = \sum_{i=1}^n u_i\overline{v_i}
+      \]
+
+      Let's verify this is an inner product. Let $u = (u_1, \ldots, u_n)$ and $v = (v_1, \ldots, v_n)$ and $w = (w_1, \ldots, w_n)$ be in $F^n$ and $c \in F$.
+
+      1. We have \[
+        \inner{u}{u} = \sum_{i=1}^n v_i\overline{v_i} = \sum_{i=1}^n \abs{v_i}^2
+      \]
+
+      Since $\abs{v_i} \in \R$, $\inner{v}{v}$ is the sums of squares of real numbers, which are non-negative.
+
+      2. We have
+      \begin{align*}
+        \inner{v}{v} = 0 &\iff \sum_{i=1}^n \abs{v_i}^2 = 0\\
+        &\iff v_i = 0 \tag{for each $i$}\\
+        &\iff v = 0
+      \end{align*}
+
+      3. We have
+      \begin{align*}
+        \inner{u+v}{w} &= \sum_{i=1}^n (u_i + v_i)\overline{w_i}\\
+        &= \sum_{i=1}^n (u_i\overline{w_i} + v_i\overline{w_i})\\
+        &= \sum_{i=1}^n (u_i\overline{w_i}) + \sum_{i=1}^n (v_i\overline{w_i})\\
+        &= \inner{u}{w} + \inner{v}{w}\\
+      \end{align*}
+
+      4. We have
+      \begin{align*}
+        \inner{cu}{v} &= \sum_{i=1}^n (cu_i)\overline{v_i}\\
+        &= c\sum_{i=1}^n u_i\overline{v_i}\\
+        &= c\inner{u}{v}
+      \end{align*}
+
+      5. We have
+      \begin{align*}
+        \overline{\inner{v}{u}} &= \overline{\sum_{i=1}^n v_i\overline{u_i}}\\
+        &= \sum_{i=1}^n \overline{v_i}u_i\\
+        &= \sum_{i=1}^n u_i\overline{v_i}\\
+        &= \inner{u}{v}
+      \end{align*}
+    \end{example}
+    \begin{definition}
+      Let $c_1, \ldots, c_n$ be fixed positive numbers. The \textbf{weighted Euclidean inner product} on $F^n$ is defined by \[
+        \inner{(u_1, \ldots, u_n)}{(v_1, \ldots, v_n)} = c_1u_1\overline{v_1} + \dots + c_nu_n\overline{v_n} =\sum_{i=1}^n c_iu_i\overline{v_i}
+      \]
+    \end{definition}
+    \begin{example}
+      Let $V$ be the vector space of continuous real valued functions defined on $[-1, 1]$ over field of scalars $\R$. We define \[
+        \inner{f}{g} = \int_{-1}^1 f(x)g(x) \; dx
+      \]
+
+      We show that is is an inner product.
+
+      1. We have \[
+        \inner{f}{f} = \int_{-1}^1 (f(x))^2 \; dx \geq 0
+      \]
+
+      2. We have
+      \begin{align*}
+        \inner{f}{f} = 0 &\iff \int_{-1}^1 (f(x))^2 \; dx = 0\\
+        &\iff f(x) = 0
+      \end{align*}
+
+      3. We have
+      \begin{align*}
+        \inner{f + g}{h} &= \int_{-1}^1 (f(x) + g(x))h(x) \; dx\\
+        &= \int_{-1}^1 f(x)h(x) + g(x)h(x) \; dx\\
+        &= \int_{-1}^1 f(x)h(x) \; dx + \int_{-1}^1 g(x)h(x) \; dx\\
+        &= \inner{f}{h} + \inner{g}{h}
+      \end{align*}
+
+      4. We have
+      \begin{align*}
+        \inner{cf}{g} &= \int_{-1}^1 cf(x)g(x) \; dx\\
+        &= c\int_{-1}^1 f(x)g(x) \; dx\\
+        &= c\inner{f}{g}
+      \end{align*}
+
+      5. We have
+      \begin{align*}
+        \inner{f}{g} &= \int_{-1}^1 f(x)g(x) \; dx\\
+        &= \int_{-1}^1 g(x)f(x) \; dx\\
+        &= \inner{g}{f}\\
+      \end{align*}
+    \end{example}
+    \begin{theorem}
+      Let $V$ be an inner product space. Then the following hold:
+      \begin{itemize}
+        \item Fix $v \in V$. the map that sends $u \in V$ to $\inner{u}{v} \in F$ is linear.
+        \item For any $u \in V$, $\inner{u}{0} = \inner{0}{u} = 0$.
+        \item $\inner{u}{v+w} = \inner{u}{v} + \inner{u}{w}$ for all $u,v,w \in V$.
+        \item $\inner{u}{cv} = \overline{c}\inner{u}{v}$ for all $u, v \in V$ and $c \in F$.
+      \end{itemize}
+    \end{theorem}
+    \begin{proof}
+      3. We have
+      \begin{align*}
+        \inner{u}{v+w} &= \overline{\inner{v+w}{u}}\\
+        &= \overline{\inner{v}{u} + \inner{w}{u}}\\
+        &= \inner{u}{v} + \inner{u}{w}\\
+      \end{align*}
+
+      4. We have
+      \begin{align*}
+        \inner{u}{cv} &= \overline{\inner{cv}{u}}\\
+        &= \overline{c}\overline{\inner{v}{u}}\\
+        &= \overline{c}\inner{u}{v}
+      \end{align*}
+    \end{proof}
+    \begin{definition}
+      Let $V$ be an inner product space. The $\textbf{norm} \norm{v}$ of $v \in V$ is defined by \[
+        \norm{v} = \sqrt{\inner{v}{v}}
+      \]
+
+      Note that since $\inner{v}{v} \in \R$ with $\inner{v}{v} \geq 0$ we have $\norm{v} \in \R$ with $\norm{v} \geq 0$.
+    \end{definition}
+    \begin{example}
+      Consider $F^n$ with the Euclidean inner product. Let $v = (v_1, \ldots, v_n)$. Then \[
+        \inner{v}{v} = \sum_{i=1}^n v_i\inner{v_i} = \sum_{i=1}^n \abs{v_i}^2
+      \] and so \[
+        \norm{v} = \sqrt{\abs{v_1}^2 + \dots + \abs{v_n}^2}
+      \] as before. If $F = \R$, we have \[
+        \norm{v} = \sqrt{v_1^2 + \dots + v_n^2}
+      \]
+
+      For example, if $f(x) = x$, then \[
+        \norm{f} = \sqrt{\int_{-1}^1 x^2 \; dx} = \sqrt{\frac{1}{3}x^3\Big|_{-1}^1} = \sqrt{\frac{2}{3}}
+      \]
+    \end{example}
+    \begin{theorem}
+      Let $V$ be an inner product space, and let $v \in V$. Then
+      \begin{itemize}
+        \item $\norm{v} \geq 0$
+        \item $\norm{v} = 0 \iff v = 0$
+        \item $\norm{cv} = \abs{c}\norm{v}$
+      \end{itemize}
+    \end{theorem}
+    \begin{theorem}
+      Let $V$ be an inner product space. If $v \neq 0$, then $\frac{v}{\norm{v}}$ is a unit vector and a positive multiple of $v$.
+    \end{theorem}
+    \begin{example}
+      Find a unit vector scalar multiple of $(1, 2, 3)$.
+      We have \[
+        \norm{(1, 2, 3)} = \sqrt{1^2 + 2^2 + 3^2} = \sqrt{14}
+      \]
+      Thus the unit vector is \[
+        \frac{1}{\sqrt{14}}(1, 2, 3)
+      \]
+    \end{example}
+    \subsection{Orthogonality}
+    \begin{definition}
+      Vectors $u, v$ are an inner product space $V$ are orthogonal if $\inner{u}{v} = 0$.
+    \end{definition}
+    \begin{example}
+      Show that $\sin (n\pi x)$ and $\cos (n\pi x)$ are orthogonal.
+
+      We have
+      \begin{align*}
+        \inner{\sin (n\pi x)}{\cos (n\pi x)} &= \int_{-1}^1 \sin (n\pi x) \cos (n\pi x) \; dx\\
+        &= \frac{1}{2}\int_{-1}^1 \sin(2n\pi x) \; dx\\
+        &= -\frac{1}{4n\pi}\cos(2n\pi x)\Big|_{-1}^1\\
+        &= -\frac{1}{4n\pi}(\cos(2n\pi) - cos(-2\pi))\\
+        &= -\frac{1}{4n\pi}(1-1)\\
+        &= 0
+      \end{align*}
+    \end{example}
+    \begin{theorem}
+      Every $v \in V$ is orthogonal to $0$. Furthermore, $0$ is the only vector $V$ that is orthogonal to itself.
+    \end{theorem}
+    \begin{theorem}
+      If $u$ is orthogonal to $v$, then for any scalar $c$, $u$ is orthogonal to $cv$.
+    \end{theorem}
+    \begin{theorem}
+      Suppose $u, v$ are orthogonal. Then \[
+        \norm{u + v}^2 = \norm{u}^2 + \norm{v}^2
+      \]
+    \end{theorem}
+    \begin{proof}
+      We have
+      \begin{align*}
+        \norm{u+v}^2 &= \inner{u+v}{u+v}\\
+        &= \inner{u}{u+v} + \inner{v}{u+v}\\
+        &= \inner{u}{u} + \inner{u}{v} + \inner{v}{u} + \inner{v}{v}\\
+        &= \norm{u}^2 + \norm{v}^2
+      \end{align*}
+    \end{proof}
+    \begin{theorem}
+      Let $u, v \in V$ with $v \neq 0$. Let $c = \frac{\inner{u}{v}}{\inner{v}{v}}$ and let $w = u -cv$. Then $u = cv + w$ and $\inner{w}{v} = 0$.
+    \end{theorem}
+    \begin{proof}
+      Clearly we have $cv + w = cv + (u-cv) = u$. We have
+      \begin{align*}
+        \inner{w}{v} &= \inner{u-cv}{v}\\
+        &= \inner{u}{v} - c\inner{v}{v}\\
+        &= \inner{u}{v} - \frac{\inner{u}{v}}{\inner{v}{v}} \inner{v}{v}\\
+        &= 0\\
+      \end{align*}
+    \end{proof}
+    \begin{definition}
+      The \textbf{projection} of $u$ onto $v$ is $\proj_vu = \frac{\inner{u}{v}}{\inner{v}{v}}v$
+    \end{definition}
+    \begin{cthm}[The Cauchy-Schwartz Inequality]
+      Let $u, v \in V$. Then \[
+        \abs{\inner{u}{v}} \leq \norm{u}\norm{v}
+      \]
+      Furthermore, equality holds iff $u, v$ are scalar multiples of each other.
+    \end{cthm}
+    \begin{proof}
+      If $v = 0$, then $\abs{\inner{u}{0}} = 0$ and $\norm{u}\norm{0} = 0$ so equality holds. Suppose $v \neq 0$. By previous theorem, we can write \[
+        u = \frac{\inner{u}{v}}{\inner{v}{v}}v + w
+      \] with $v$ orthogonal to $w$ and hence its scalar multiple. Then
+      \begin{align*}
+        \norm{u}^2 &= \norm{\frac{\inner{u}{v}}{\inner{v}{v}}v}^2 + \norm{w}^2\\
+        &= \frac{\abs{\inner{u}{v}}^2}{(\inner{v}{v})^2} + \norm{w}^2\\
+        &= \frac{\abs{\inner{u}{v}}^2}{\norm{v}^2} + \norm{w}^2\\
+        &\geq \frac{\abs{\inner{u}{v}}^2}{\norm{v}^2}
+      \end{align*}
+      Thus $\abs{\inner{u}{v}}^2 \leq \norm{u}^2 \norm{v}^2$ and since norm is non-negative the result holds. We have equality iff $\norm{w}^2 = 0 \iff w = 0$. Since $u = cv + w$, this holds iff u is a scalar multiple of $v$.
+    \end{proof}
+    \begin{cthm}[The Triangle Inequality]
+      Let $u, v \in V$. Then \[
+        \norm{u+v} \leq \norm{u} + \norm{v}
+      \] with equality iff $u$ and $v$ are scalar multiples of each other.
+    \end{cthm}
+    \begin{proof}
+      We have
+      \begin{align*}
+        \norm{u + v}^2 &= \inner{u+v}{u+v}\\
+        &= \inner{u}{u} + \inner{u}{v} + \inner{v}{u} + \inner{v}{v}\\
+        &= \inner{u}{u} + \inner{u}{v} + \overline{\inner{u}{v}} + \inner{v}{v}\\
+        &= \norm{u}^2 + 2\Re\inner{u}{v} + \norm{v}^2\\
+        &\leq \norm{u}^2 + 2\abs{\inner{u}{v}} + \norm{v}^2\\
+        &\leq \norm{u}^2 + 2\norm{u}\norm{v} + \norm{v}^2\\
+        &= (\norm{u}+ \norm{v})^2
+      \end{align*}
+      In the 5th line, we used \[
+        \abs{z} = \sqrt{(\Re z)^2 + (\Im z)^2} \geq \sqrt{(\Re z)^2} = \abs{\Re z} \geq \Re z
+      \]
+
+      we have equality in the first inequality above if and only if $\inner{u}{v}$ is real and non-negative. We then have equality in the second if and only if $\inner{u}{v} = \norm{u}\norm{v}$.
+
+      Suppose $u = cv$ with $c \geq 0$. Then \[
+        \inner{u}{v} = \inner{cv}{v} = c\inner{v}{v} = \abs{c}\norm{v}^2 = \norm{cv}\norm{v} = \norm{u}\norm{v}
+      \]
+
+      Conversely, suppose we have equality. Then $\inner{u}{v} = \norm{u}\norm{v}$. By Cauchy-Schwarz, one of $u, v$ must be a scalar multiple of the other. Say $u = cv$. Then \[
+        \norm{u}\norm{v} = \inner{cv}{v} = c\inner{v}{v}
+      \]
+      Since $\inner{v}{v} \geq 0$, we have $c \geq 0$.
+    \end{proof}
+    \begin{definition}
+      Vectors $v_1, \ldots, v_m$ are \textbf{orthonormal} if each $v_i$ is a unit vector and they are pairwise orthogonal. That is, if \[
+        \inner{u}{v} =
+        \begin{cases}
+          1 & i = j\\
+          0 & i \neq j\\
+        \end{cases}
+      \]
+    \end{definition}
+    \begin{example}
+      The standard basis $e_i$ is orthonormal.
+    \end{example}
+    \begin{example}
+      The following 3 vectors are orthonormal:
+      \begin{align*}
+        v_1 &= \frac{1}{\sqrt{3}}(1, 1, 1)\\
+        v_2 &= \frac{1}{\sqrt{2}}(-1, 1, 0)\\
+        v_3 &= \frac{1}{\sqrt{6}}(1, 1, -2)\\
+      \end{align*}
+    \end{example}
+    \begin{theorem}
+      If $v_1, \ldots, v_m$ are orthonormal, then for any $c_i \in F$ we have \[
+        \norm{c_1v_1 + \dots + c_mv_m}^2 = \abs{c_1}^2 + \dots + \abs{c_m}^2
+      \]
+    \end{theorem}
+    \begin{proof}
+      Note that $c_iv_i$ is orthogonal to $\sum_j c_jv_j$ where the $j$ run over a subset of $\{1, \ldots, m\}$ that doesn't include $i$ since \[
+        \inner{\sum_j c_jv_j}{c_iv_i} = \sum_j c_j\overline{c_i}\inner{v_j}{v_i} = 0
+      \]
+      By the Pythagorean Theorem, we have
+      \begin{align*}
+        \norm{c_1v_1 + \dots + c_mv_m}^2 &= \norm{c_iv_i}^2 + \norm{c_2v_2 + \dots + c_mv_m}^2\\
+        &= \abs{c_1}^2\norm{v_1}^2 + \norm{c_2v_2 + \dots + c_mv_m}^2\\
+        &= \abs{c_1}^2 + \norm{c_2v_2 + \dots + c_mv_m}^2\\
+        &= \dots\\
+        &= \abs{c_1}^2 + \abs{c_2}^2 + \dots + \abs{c_m}^2\\
+      \end{align*}
+    \end{proof}
+    \begin{example}
+      Let
+      \begin{align*}
+        v_1 &= \frac{1}{\sqrt{3}}(1, 1, 1)\\
+        v_2 &= \frac{1}{\sqrt{2}}(-1, 1, 0)\\
+        v_3 &= \frac{1}{\sqrt{6}}(1, 1, -2)\\
+      \end{align*}
+
+      If $v = 17v_1 -13v_2 -5v_3$, then \[
+        \norm{v}^2 = 17^2 + (-13)^2 + (-5)^2 = 483
+      \] and so $\norm{v} = \sqrt{483}$
+    \end{example}
+    \begin{theorem}
+      If $v_1, \ldots, v_m$ are orthonormal, they are linearly independent.
+    \end{theorem}
+    \begin{proof}
+      Suppose $c_1v_1 + \dots +c_mv_m = 0$ for $c_i \in F$. By previous theorem, we have $\abs{c_1}^2 + \dots + \abs{c_m}^2 = 0$, which implies $\abs{c_i}^2 = 0$ for each $i$ and so $c_i = 0$.
+    \end{proof}
+    \begin{theorem}
+      If $\dim V = n$ and $v_i, \ldots, v_n$ are orthonormal, they are a basis of $V$.
+    \end{theorem}
+    \begin{proof}
+      By previous theorem, the $v_i$ are linearly independent. Since there are $n$ of them, they form a basis for $V$.
+    \end{proof}
+    \begin{definition}
+      If $v_1, \ldots, v_n$ are orthonormal and a basis of $V$, then they are called an \textbf{orthonormal basis} of $V$.
+    \end{definition}
+    \begin{definition}
+      The standard basis is an orthonormal basis of $F^n$.
+    \end{definition}
+    \begin{theorem}
+      Let $v_1, \ldots, v_n$ be an orthonormal basis of $V$ and let $w \in V$. Then \[
+        w = \inner{w}{v_1}v_1 + \dots + \inner{w}{v_n}v_n
+      \] and \[
+        \norm{w}^2 = \abs{\inner{w}{v_1}}^2 + \dots + \abs{\inner{w}{v_n}}^2
+      \]
+    \end{theorem}
+    \begin{proof}
+      The second follows from the first part by theorem on norm of a linear combination of orthonormal vectors.
+
+      Since $v_1, \ldots, v_n$ is a basis of $V$, there exist $c_i \in F$ with
+      \[
+        w = c_1v_1 + \dots + c_nv_n
+      \]
+      We must show that $c_i = \inner{w}{v_i}$. We have
+      \begin{align*}
+        \inner{w}{v_i} &= \inner{c_1v_1 + \dots + c_nv_n}{v_i}\\
+        &= \inner{c_1v_1}{v_i} + \dots + \inner{c_nv_n}{v_i}\\
+        &= c_1\inner{v_1}{v_i} + \dots + c_n\inner{v_n}{v_i}\\
+        &= c_i
+      \end{align*}
+    \end{proof}
+    \begin{example}
+      Let
+      \begin{align*}
+        v_1 &= \frac{1}{\sqrt{3}}(1, 1, 1)\\
+        v_2 &= \frac{1}{\sqrt{2}}(-1, 1, 0)\\
+        v_3 &= \frac{1}{\sqrt{6}}(1, 1, -2)\\
+      \end{align*}
+
+      Write $w = (1, 2, 3)$ as a linear combination of the $v_i$.
+
+      The $v_i$ form an orthonormal set of vectors. We have
+      \begin{align*}
+        \inner{w}{v_1} &= \frac{1}{\sqrt{3}}\inner{(1, 2, 3)}{(1, 1, 1)} = \frac{6}{\sqrt{3}}\\
+        \inner{w}{v_2} &= \frac{1}{\sqrt{2}}\inner{(1, 2, 3)}{(-1, 1, 0)} = \frac{1}{\sqrt{2}}\\
+        \inner{w}{v_3} &= \frac{1}{\sqrt{6}}\inner{(1, 2, 3)}{(1, 1, -2)} = -\frac{3}{\sqrt{6}}\\
+      \end{align*}
+      Thus $(1, 2, 3) = \frac{6}{\sqrt{3}}v_1 + \frac{1}{\sqrt{2}}v_2 - \frac{3}{\sqrt{6}}v_3$.
+    \end{example}
+    \subsection{The Gram-Schmidt Algorithm}
+    \begin{theorem}
+      Let $u_1, \ldots, u_m$ be linearly independent. Set $v_1 = u_1$, and for $2 \leq k \leq m$, set
+      \begin{align*}
+        v_k &= u_k - \proj_{v_1}u_k - \dots - \proj_{v_{k-1}}u_k\\
+        &= u_k - \sum_{j=1}^{k-1} \frac{\inner{u_k}{v_j}}{\inner{v_j}{v_j}}v_j
+      \end{align*}
+
+      Now set $w_i = \frac{v_i}{\norm{v_i}}$. Then $w_1, \ldots, w_m$ are orthonormal with \[
+        \spn \{u_1, \ldots, u_m\} = \spn\{w_1, \ldots, w_m\}
+      \]
+    \end{theorem}
+    \begin{example}
+      Let $u_1 = (1, 0, 1, 0)$, $u_2 = (1, 1, 1, 1)$, $u_3 = (1, 2, 3, 4)$.
+
+      Use the G-S Algorithm to find an orthonormal basis for $\spn\{u_1, u_2, u_3\}$.
+
+      Recall that $v_k = u_k - \sum_{j=1}^{k-1} \frac{\inner{u_k}{v_j}}{\inner{v_j}{v_j}}v_j$.
+
+      Then,
+      \begin{align*}
+        v_1 &= u_1 = (1, 0, 1, 0)\\
+        v_2 &= u_2 - \frac{\inner{u_2}{v_1}}{\inner{v_1}{v_1}}v_1 = (0, 1, 0, 1)\\
+        v_3 &= u_3 - \frac{\inner{u_3}{v_1}}{\inner{v_1}{v_1}}v_1 - \frac{\inner{u_3}{v_2}}{\inner{v_2}{v_2}}v_2 = (-1, -1, 1, 1)\\
+      \end{align*}
+      Thus $w_1 = \frac{1}{\sqrt{2}}(1, 0, 1, 0)$, $w_2 = \frac{1}{\sqrt{2}}(0, 1, 0, 1)$, $w_3 = \frac{1}{2}(-1, -1, 1, 1)$ is an orthonormal for the span.
+    \end{example}
+    \subsection{Orthogonal Matrices}
+    \begin{definition}
+      A matrix $A \in M_{nn}(\R)$ is called \textbf{orthogonal} if its columns form an orthonormal basis of $\R^n$.
+    \end{definition}
+    \begin{example}
+      The $n\times n$ identity matrix is orthogonal.
+    \end{example}
+    \begin{theorem}
+      If $A$ is orthogonal, then $A^{-1} = A^t$.
+    \end{theorem}
+    \begin{theorem}
+      $A$ is orthogonal iff $A^{-1} = A^t$.
+    \end{theorem}
+    \begin{theorem}
+      If $A$ is orthogonal, then $\det A = \pm 1$.
+    \end{theorem}
+    \begin{theorem}
+      If $A$ is orthogonal, then so is $A^{-1}$. If $A, B$ are both orthogonal, then so is $AB$.
+    \end{theorem}
+    \begin{definition}
+      Let $T: \R^n \to \R^n$ be linear. If $\norm{T(v)} = v$ for all $v \in \R$, then $T$ is called a \textbf{length preserving} linear map or \textbf{isometry}.
+    \end{definition}
+    \begin{theorem}
+      Let $T: \R^n \to \R^n$ be linear and let $A$ be the matrix for $T$ w.r.t. to the standard basis so $T(v) = Av$. Then $A$ is orthogonal iff $T$ is an isometry.
+    \end{theorem}
+    \begin{definition}
+      If $A \in M_{nn}(\R)$ is diagonalizable with real eigenvalues and if there is an orthonormal basis of $\R^n$ consisting of eigenvectors of $A$, then $A$ is \textbf{orthogonally diagonalizable}.
+    \end{definition}
+    \begin{theorem}
+      If $A$ is orthogonally diagonalizable, then $A$ is symmetric.
+    \end{theorem}
+    \begin{cthm}[The Spectral Theorem]
+      $A$ is orthogonally diagonalizable iff $A$ is symmetric.
+    \end{cthm}
+    \begin{example}
+      Let \[
+        A =
+        \begin{bmatrix}
+          1 & -2 & 2\\
+          -2 & 4 & -4\\
+          2 & -4 & 4\\
+        \end{bmatrix}
+      \]
+      Since $A$ is symmetric, it is orthogonally diagonalizable. Find $D$ and $P$ with $A = PDP^t$.
+
+      We have $\det (A - \lambda I) = -\lambda^2(\lambda-9)$. Thus the e. values are $0$ and $9$.
+
+      We have $E_9 = \spn \left\{
+        \begin{bmatrix}
+          1\\-2\\2\\
+      \end{bmatrix}\right\}$. Since $\norm{(1, -2, 2)} = \sqrt{1^2 + (-2)^2 + 2^2} = 3$, an orthonormal basis of $E_9$ consists of $\frac{1}{3}(1, -2, 2)$.
+
+      Similarly, $E_0 = N(A) = \spn \left\{
+        \begin{bmatrix}
+          2\\1\\0\\
+        \end{bmatrix},
+        \begin{bmatrix}
+          2\\0\\1\\
+      \end{bmatrix}\right\}$.
+
+      We use G-S on the basis of $E_0$.
+      \begin{align*}
+        v_1 &= u_1 = (2, 1, 0)\\
+        v_2 &= u_2 - \frac{\inner{u_2}{v_1}}{\inner{v_1}{v_1}}v_1\\
+        &= \frac{1}{5}(2, -4, -5)
+      \end{align*}
+      Let's instead use $v_2 = (2, -4, 5)$. Then $w_1 = \frac{1}{\sqrt{5}}(2, 1, 0)$ and $w_2 = \frac{1}{3\sqrt{5}}(2, -4, -5)$ form an orthonormal basis of $E_0$.
+
+      Hence,
+      \[
+        P =
+        \begin{bmatrix}
+          \frac{1}{3} & \frac{2}{\sqrt{5}} & \frac{2}{3\sqrt{5}}\\
+          -\frac{2}{3} & \frac{1}{\sqrt{5}} & -\frac{4}{3\sqrt{5}}\\
+          \frac{2}{3} & 0 & -\frac{5}{3\sqrt{5}}\\
+        \end{bmatrix}
+      \] and \[
+        D =
+        \begin{bmatrix}
+          9&0&0\\
+          0&0&0\\
+          0&0&0\\
+        \end{bmatrix}
+      \]
+    \end{example}
+    \begin{definition}
+      For $A \in M_{nn}(\C)$, the \textbf{conjugate transpose} of $A$ is $A* = \overline{A^t}$. $A$ is \textbf{unitary} iff $A^{-1} = A*$. (analogue of an orthogonal matrix). A is \textbf{Hermitian} iff $A* = A$.
+    \end{definition}
+    \begin{theorem}
+      Let $A$ be Hermitian. Then there exists unitary $P$ and diagonal $D$ such that $A = PDP^*$.
+    \end{theorem}
+    \subsection{Projections onto a Subspace}
+    \begin{definition}
+      We can project a vector onto a subspace. Let $V$ be a subspace of $U$ and let $b \in U$. We want $w \in V$ so that $\forall x \in V, \inner{x}{b-w} = 0$. Such a $w$ is called the \textbf{orthogonal projection} of $b$ onto $V$, denoted $\proj_Vb$.
+    \end{definition}
+    \begin{theorem}
+      Let $v_1, \ldots, v_k$ be an orthogonal basis of $V$. Let \[
+        w = \proj_Vb = \sum_{i=1}^k \frac{\inner{b}{v_i}}{\inner{v_i}{v_i}}v_i
+      \]
+      Then $w \in V$ and for any $x \in V$, we have $\inner{x}{b-w} = 0$.
+    \end{theorem}
+    \begin{theorem}
+      Let $w \in \proj_Vb$. Let $x \in V$. Then $\norm{b-x} \geq \norm{b-w}$.
+    \end{theorem}
+    \subsection{Least Squares Method}
+    \begin{remark}
+      Let $A$ be $m \times n$ in $\R$. Consider the system $Ax = b$. The system has a solution $x \in \R^n$ iff $b \in \colspace A = V$. What if there is no solution? By above a vector $x$ for which $Ax$ is closest to $b$ is $x$ with $Ax = \proj_Vb$. Note that such an $x$ must exist since $\proj_Vb \in \colspace A$. Once we obtain such an $x$, the error is $\norm{Ax - b}$. Writing $[A]_{ij} = a_{ij}$ and $[x]_{i1} = x_i$ and $[b]_{i1} = b_i$, we have \[
+        \norm{Ax - b}^2 = \sum_{k=1}^m ([Ax]_{k1} - b_k)^2  = \sum_{k=1}^m \left(\sum_{\ell = 1}^n a_{k\ell}x_\ell - b_k\right)^2
+      \]
+      We are minimizing a sum of squares, so this is called the \textbf{least squares method}. Given system $Ax = b$ with no solution, how do we find $x$ with $Ax = \proj_Vb$? We can find an orthogonal basis of $\colspace A$ with G-S, then compute the projection, then solve the system using row reduction. However, this is cumbersome and there is a better way.
+
+      Let $A = [a_1 \dots a_n]$ and let $V = \colspace A$. We have
+      \begin{align*}
+        Ax = \proj_Vb &\iff \inner{a_i}{b-Ax} = 0 \; \forall i \tag{$a_i$ form a basis of $v$}\\
+        &\iff a_i^t(b-Ax) = 0 \; \forall i\\
+        &\iff A^t(b-Ax) = 0\\
+        &\iff A^tAx = A^tb\\
+      \end{align*}
+    \end{remark}
+    \begin{theorem}
+      Given system $Ax = b$ with no solution, we solve $A^tAx = A^tb$. Then the error $\norm{Ax - b}$ is minimized.
+    \end{theorem}
+    \begin{example}
+      We have experimental data:
+      \[
+        (-2, 4), (-1, 2), (0, 1), (2, 1), (3, 1)
+      \]
+      Find LoBF $y = a + bx$ for constants $a, b \in \R$. The system $Ax = b$ is \[
+        \begin{bmatrix}
+          1 & x_1\\
+          1 & x_2\\
+          \vdots & \vdots\\
+          1 & x_n\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          a\\b\\
+        \end{bmatrix} =
+        \begin{bmatrix}
+          y_1\\y_2\\\vdots\\y_n\\
+        \end{bmatrix}
+      \]
+      for this data, have \[
+        A =
+        \begin{bmatrix}
+          1 & -2\\
+          1 & -1\\
+          1 & 0\\
+          1 & 2\\
+          1 & 3\\
+        \end{bmatrix}, b =
+        \begin{bmatrix}
+          4\\2\\1\\1\\1\\
+        \end{bmatrix}
+      \]
+      We have \[
+        A^tA =
+        \begin{bmatrix}
+          1 & 1 & 1 & 1 & 1\\
+          -2 & -1 & 0 & 2 & 3\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          1 & -2\\
+          1 & -1\\
+          1 & 0\\
+          1 & 2\\
+          1 & 3\\
+        \end{bmatrix} =
+        \begin{bmatrix}
+          5 & 2\\
+          2 & 18\\
+        \end{bmatrix}
+      \] and \[
+        A^tb =
+        \begin{bmatrix}
+          1 & 1 & 1 & 1 & 1\\
+          -2 & -1 & 0 & 2 & 3\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          4\\2\\1\\1\\1\\
+        \end{bmatrix} =
+        \begin{bmatrix}
+          9\\-5\\
+        \end{bmatrix}
+      \] so \[
+        A^tAx = A^tb \implies
+        \begin{bmatrix}
+          5 & 2\\
+          2 & 18\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          a\\b\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          9\\-5\\
+        \end{bmatrix}
+      \] which has solution $(2, -\frac{1}{2})$. Thus the line of best fit is $y = 2 - \frac{x}{2}$.
+
+      The error is \[
+        \norm{Ax - b} = \norm{
+          \begin{bmatrix}
+            1 & -2\\
+            1 & -1\\
+            1 & 0\\
+            1 & 2\\
+            1 & 3\\
+          \end{bmatrix}
+          \begin{bmatrix}
+            2\\-\frac{1}{2}\\
+          \end{bmatrix} -
+          \begin{bmatrix}
+            4\\2\\1\\1\\1\\
+        \end{bmatrix}} = \norm{
+          \begin{bmatrix}
+            -1\\\frac{1}{2}\\1\\0\\-\frac{1}{2}\\
+        \end{bmatrix}} = \sqrt{\frac{5}{2}}
+      \]
+    \end{example}
+    \begin{example}
+      Find a quadratic LoBF instead.
+      Our system $Ax = b$ is \[
+        \begin{bmatrix}
+          1 & x_1 & x_1^2\\
+          \vdots & \vdots & \vdots\\
+          1 & x_n & x_n^2
+        \end{bmatrix}
+        \begin{bmatrix}
+          a\\b\\c\\
+        \end{bmatrix} =
+        \begin{bmatrix}
+          y_1 \\ \vdots & y_n
+        \end{bmatrix}
+      \]
+      For this data, \[
+        A =
+        \begin{bmatrix}
+          1 & -2 & 4\\
+          1 & -1 & 1\\
+          1 & 0 & 0\\
+          1 & 2 & 4\\
+          1 & 3 & 9\\
+        \end{bmatrix}, b =
+        \begin{bmatrix}
+          4\\2\\1\\1\\1\\
+        \end{bmatrix}
+      \]
+
+      We have \[
+        A^tA =
+        \begin{bmatrix}
+          1 & 1 & 1 & 1 & 1\\
+          -2 & -1 & 0 & 2 & 3\\
+          4 & 1 & 0 & 4 & 9\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          1 & -2 & 4\\
+          1 & -1 & 1\\
+          1 & 0 & 0\\
+          1 & 2 & 4\\
+          1 & 3 & 9\\
+        \end{bmatrix} =
+        \begin{bmatrix}
+          5 & 2 & 18\\
+          2 & 18 & 26\\
+          18 & 26 & 114\\
+        \end{bmatrix}
+      \] and \[
+        A^tb =
+        \begin{bmatrix}
+          1 & 1 & 1 & 1 & 1\\
+          -2 & -1 & 0 & 2 & 3\\
+          4 & 1 & 0 & 4 & 9\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          4\\2\\1\\1\\1\\
+        \end{bmatrix} =
+        \begin{bmatrix}
+          9\\-5\\31\\
+        \end{bmatrix}
+      \]
+      Then \[
+        \begin{bmatrix}
+          5 & 2 & 18\\
+          2 & 18 & 26\\
+          18 & 26 & 114\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          a\\b\\c\\
+        \end{bmatrix} =
+        \begin{bmatrix}
+          9\\-5\\31\\
+        \end{bmatrix}
+      \] has solution $\left(\frac{86}{77}, \frac{-62}{77}, \frac{43}{154}\right)$ so the equation is $y = \frac{86}{77} - \frac{62}{77}x + \frac{43}{154}x^2$
+    \end{example}
+    \begin{example}
+      If doing a plane of best fit, $Ax = b$ is \[
+        \begin{bmatrix}
+          1 & x_1 & y_1\\
+          \vdots & \vdots & \vdots\\
+          1 & x_n & y_n\\
+        \end{bmatrix}
+        \begin{bmatrix}
+          a\\b\\c\\
+        \end{bmatrix} =
+        \begin{bmatrix}
+          z_1\\\vdots\\z_n\\
+        \end{bmatrix}
+      \]
+      For example, if data is $(1, 0, 2), (1, 2, 5), (-1, 0, 2), (-2, -1, 2)$, then we have \[
+        A=
+        \begin{bmatrix}
+          1 & 1 & 0\\
+          1 & 1 & 2\\
+          1 & -1 & 0\\
+          1 & -2 & -1\\
+        \end{bmatrix}, b =
+        \begin{bmatrix}
+          2\\5\\2\\2\\
+        \end{bmatrix}
+      \]
+    \end{example}
+    \end{document}
+
