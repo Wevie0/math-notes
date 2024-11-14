@@ -1,9 +1,9 @@
 *
 !.gitignore
 
-LICENSE
-README.md
-preamble.tex
+!LICENSE
+!README.md
+!preamble.tex
 !*notes.tex
 !*notes.pdf
 !*formulae.tex
