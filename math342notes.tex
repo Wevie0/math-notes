@@ -590,7 +590,7 @@
 \begin{theorem}\label{foo}
   Let \( C  \) be cyclic with generator \[
     g(x) = g_0 + g_1x + \cdots  + g_rx^r
-  \] of degree \( r  \). Then \( \dim C = n - r \) with generator matrix \[
+  \] of degree \( r  \). Then \( \dim C = n-r \) with generator matrix \[
     G =
     \begin{bmatrix}
       g_0 & g_1 & g_2    & \cdots & \cdots & g_r    & 0      & 0      & 0   \\
@@ -599,7 +599,7 @@
       0   & 0   & 0      & g_0    & g_1    & g_2    & \cdots & \cdots & g_r \\
     \end{bmatrix}
   \]
-  This matrix is \( \dim C \times n \).
+  This matrix is \( n-r\times n \).
 \end{theorem}
 \begin{example}
   12.13
@@ -632,7 +632,7 @@
 \end{example}
 \begin{theorem}
   Suppose \( C  \) is cyclic \( [n, k] \)-code with check polynominal
-  \( h(x) = h_0 + h_1x + \cdots + d_kx^k \). Then,
+  \( h(x) = h_0 + h_1x + \cdots + h_kx^k \). Then,
   \begin{enumerate}
     \item a parity-check matrix for \( C  \) is \[
             H =
@@ -648,7 +648,7 @@
           \overline{h}(x) = h_k + h_{k-1}x + \cdots + d_0x^k   \)
   \end{enumerate}
 
-  The size of \( H \) is \( n \times \dim C^\perp = k\) since \( \deg C^\perp = \deg \overline{h} = \deg h = (n -\deg g) = (n - (n - k)) = k\) assuming \( \deg g = n - k \).
+  The size of \( H \) is \( n - k \times n\) since \( n-k = \dim C^\perp = \deg g  \) 
 \end{theorem}
 \begin{definition}
   The polynominal \( \overline{h}(x) = x^kh(x-1) = h_k + h_{k-1}x + \cdots + h_0x^k    \) is called the \textbf{reciprocal polynominal} of \( h \), its coefficients are those of \( h   \) in reverse order.
