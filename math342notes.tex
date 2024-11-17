@@ -1,6 +1,8 @@
 \documentclass{article}
 \usepackage[utf8]{inputenc}
 \usepackage{tgpagella}
+\usepackage{amsopn}
+\DeclareMathOperator{\ham}{Ham}
 
 \input{preamble.tex}
 
@@ -10,10 +12,10 @@
 \maketitle
 
 \begin{tcolorbox}[title=,
-    fonttitle=\huge\sffamily\bfseries\selectfont,interior style={left
-    color=contcol1!40!white,right color=contcol2!40!white},frame
-    style={left color=contcol1!80!white,right
-    color=contcol2!80!white},coltitle=black,top=2mm,bottom=2mm,left=2mm,right=2mm,drop
+  fonttitle=\huge\sffamily\bfseries\selectfont,interior style={left
+      color=contcol1!40!white,right color=contcol2!40!white},frame
+  style={left color=contcol1!80!white,right
+  color=contcol2!80!white},coltitle=black,top=2mm,bottom=2mm,left=2mm,right=2mm,drop
   fuzzy shadow,enhanced,breakable]
   \tableofcontents
 \end{tcolorbox}
@@ -71,7 +73,7 @@
   Let \( G \) be a generator matrix of an \( [n, k] \) code. Using
   EROs, \( G \) can be transformed into \textbf{standard form} \[
     [I_k \mid A]
-  \] where \( I_k \) is the \( k \times k  \) identity and \( A is k
+  \] where \( I_k \) is the \( k \times k  \) identity and \( A \) is \( k
   \times (n-k) \)
 \end{theorem}
 \subsection{Encoding with a Linear Code}
@@ -114,13 +116,190 @@
   Suppose the codeword \( x \) is sent and the codeword \( y \) is
   recieved. Define the \textbf{error vector} \( e \) as \( e = y-x \).
 \end{definition}
+\begin{remark}
+  Decoder must decide from \( y \) which codeword \( x \) was recieved, or equivalently which error vector \( e \) has occurred.
+\end{remark}
+\begin{definition}
+  Suppose \( C \) is \( [n, k] \) code over \( GF(q) \) and \( a \) is a vector in \( V(n, q) \). Then the set \( a + C \) defined by \[
+    a + C = \{ a + x \mid x \in C \}
+  \] is called a \textbf{coset} of \( C \).
+\end{definition}
+\begin{lemma}
+  Suppose \( a+C \) is a coset of \( C \) and that \( b \in a + C \). Then \( b + C = a + C \).
+\end{lemma}
+\begin{theorem}
+  Suppose \( C \) is \( [n, k] \) code over \( GF(q) \). Then \begin{enumerate}
+    \item Every vector of \( V(n, q) \) is in some coset of \( C \).
+    \item Every coset contains \( q^k \) vectors.
+    \item Two cosets either are disjoint or the same.
+  \end{enumerate}
+\end{theorem}
+\begin{proof}
+  \begin{enumerate}
+    \item If \( a \in V(n, q) \), then \( a = a + 0 \in C \) since the zero vector is always a codeword.
+    \item The mapping from \( C \) to \( a + C \) defined by \( x \to a + x \) is bijective. Thus \( \abs{a+C} = \abs{C} = q^k   \)
+    \item Suppose \( a+C, b+C \) overlap. Then for some vector \( v \), have \( v \in (a + C) \cap (b+C) \), thus for \( x,y \in C \), \( v = a + x = b +y \). Thus \( b = a + (x- y) \in a + C \), by previous lemma \( b + C = a + C\).
+  \end{enumerate}
+\end{proof}
+\begin{example}
+  Let C be binary \( [4, 2] \) code with generator \( G = \begin{bmatrix}
+    1 & 0 & 1 & 1 \\
+    0 & 1 & 0 & 1
+  \end{bmatrix} \). That is, \( C = \{0000, 1011, 0101, 1110\} \). Then the cosets are \begin{align*}
+    0000 + C & = C                          \\
+    1000 + C & = \{1000, 0011, 1101, 0110\} \\
+    0100 + C & = \{0100, 1111, 0001, 1010\} \\
+    0010 + C & = \{0010, 1001, 0111, 1100\} \\
+  \end{align*}
+  All other cosets are the same as one of these. For instance, \( 0001 + C = 0100 + C \). This is because \( 0001 \in 0100 + C \) so lemma applies. Note that these cosets contain all 16 possible binary strings of length 4.
+\end{example}
+\begin{definition}
+  The vector having mininum weight in a coset is called the coset leader. Choose arbitrary ones if multiple have the same weight.
+
+  Above theorem shows \( V(n, q) \) is partitioned into disjoint cosets of \( C \): \[
+    V(n, q) = (0 + C) \cup (a_1 + C) \cup \cdots \cup (a_s + C)
+  \]
+  where \( s = q^{n-k} -1 \), and then take \( 0, a_1, \dots, a_s \) to be the coset leaders.
+
+  A \textbf{standard array} for an \( [n, k] \) code \( C \) is a \( q^{n-k} \times q^k \) array of all the vectors in \( V(n, q) \) in which the first row consists of the code \( C \) with \( 0 \) on the extreme left, and the other rows are the cosets \( a_i + C \), each arranged in order with the coset leader on the left.
+\end{definition}
+\begin{proposition}
+  Creation of a standard array:
+  \begin{enumerate}
+    \item List the codewords of \( C \) starting with \( 0 \) as the first row.
+    \item Choose any vector \( a_1 \) not in the first row of min weight. List the coset \( a_1 + C \) as the second row by putting \( a_1 \) under 0 and \( a_1 + x \) under each \( x \in C \).
+    \item Repeat until all cosets are listed and every vector appears exactly once.
+  \end{enumerate}
+\end{proposition}
+\begin{proposition}
+  When a word is recieved, find its position in the array. Find the coset leader in that row, and subtract it from the word. The resulting codeword is the decoded word.
+
+  Briefly, take the codeword in the first row and same column as the recieved word.
+\end{proposition}
+\section{Dual Codes and Syndrome Decoding}
+\begin{definition}
+  Let \( C \) be an \( [n-k] \)-code. The \textbf{dual code} of \( C \), denoted by \( C^\perp \) is defined to be the set of vectors of \( V(n, q) \) which are orthogonal to every codeword of \( C \), i.e., \[
+    C^\perp = \{v \in V(n, q) \mid v \cdot u = 0 \; \forall u \in C\}
+  \]
+\end{definition}
+\begin{lemma}
+  Suppose \( C \) is an \( [n-k] \)-code having a generator matrix \( G \). Then a vector \( v \in V(n, q) \) is in \( C^\perp  \) iff \( v \) orthogonal to every row of \( G \). That is, \( v \in  C^\perp \iff  vG^T = 0 \), where \( G^T \) is the transpose of \( G \).
+\end{lemma}
+\begin{theorem}
+  Suppose \( C \) is an \( [n, k] \)-code over GF(q). Then the dual code \( C^\perp  \) is linear \( [n, n-k] \) code.
+\end{theorem}
+\begin{example}
+  If \( C =\{000, 110, 011, 101\}  \) then \( C^\perp = \{000, 111\}  \).
+\end{example}
+\begin{theorem}
+  \( (C^\perp )^\perp  = C\).
+\end{theorem}
+\begin{definition}
+  A \textbf{parity-check} matrix \( H \) for an \( [n, k] \) code \( C \) is a generator matrix for \( C^\perp  \).
+\end{definition}
+\begin{theorem}
+  If \( G = [I_k \mid A] \) is the standard form generator matrix of an \( [n, k] \)-code \( C \), then a parity check matrix for \( C \) is \( H = [-A^T \mid I_{n-k} ] \).
+\end{theorem}
+\begin{example}
+  If \[
+    G = \begin{bmatrix}
+      1 & 0 & 0 & 0 & 1 & 0 & 1 \\
+      0 & 1 & 0 & 0 & 1 & 1 & 1 \\
+      0 & 0 & 1 & 0 & 1 & 1 & 0 \\
+      0 & 0 & 0 & 1 & 0 & 1 & 1
+    \end{bmatrix}
+  \] then \[
+    H = \begin{bmatrix}
+      1 & 1 & 1 & 0 & 1 & 0 & 0 \\
+      0 & 1 & 1 & 1 & 0 & 1 & 0 \\
+      1 & 1 & 0 & 1 & 0 & 0 & 1
+    \end{bmatrix}
+  \]
+\end{example}
+\begin{definition}
+  A parity check matrix \( H \) is said to be in \textbf{standard form} if \( H = [B \mid I_{n-k} ] \).
+\end{definition}
+\subsection{Syndrome Decoding}
+\begin{definition}
+  Suppose \( H \) is a parity-check matrix of \( [n, k] \)-code \( C \). Then for any vector \( y \in V(n, q) \), the \( 1 \times (n-k) \) row vector \[
+    S(y) = yH^T
+  \] is called the \textbf{syndrome} of \( y \).
+\end{definition}
+\begin{remark}
+  \begin{enumerate}
+    \item If the rows of \( H \) are \( h_1, h_2, \dots, h_{n-k}  \), then \( S(y) = (y \cdot h_1, y \cdot h_2, \dots, y \cdot h_{n-k} ) \).
+    \item \( S(y) = 0 \iff y \in C \)
+  \end{enumerate}
+\end{remark}
+\begin{lemma}
+  Two vectors \( u, v \) are in  the same coset of \( C \) iff they have the same syndrome.
+\end{lemma}
+\begin{proof}
+  \( u, v \) in the same coset \begin{align*}
+     & \iff u + C = v + C \\
+     & \iff u - v \in C   \\
+     & \iff (u-v)H^T = 0  \\
+     & \iff uH^T = vH^T   \\
+     & \iff S(u) = S(v)
+  \end{align*}
+\end{proof}
+\begin{corollary}
+  There is a 1-1 correspondence between cosets and syndromes.
+\end{corollary}
+\begin{proposition}
+  Can simplify decoding by adding a syndromes column to the standard array, so when a word is recieved can calculate \( S(y) \) to match the row in the standard array.
+\end{proposition}
+\begin{proposition}
+  Only need to keep track of two columns, the coset leader and the syndrome \( z \).
+
+  \begin{enumerate}
+    \item For a recieved vector \( y \) calculate \( S(y) = yH^T \).
+    \item Let \( z = S(y) \) and locate the syndrome in the lookup table.
+    \item Let \( f \) map syndromes to their coset leaders. Then decode \( y \) as \( y - f(z) \).
+  \end{enumerate}
+\end{proposition}
+\section{Hamming Codes}
+\begin{definition}
+  Let \( r \) be in \( \Z^+ \) and let \( H \) be an \( r \times (2^r-1) \) matrix whose columns are distinct non-zero vectors of \( V(r, 2) \). Then the code having \( H \) as its parity check matrix is called a \textbf{binary Hamming code} and is denoted by \( \ham(r, 2) \).
+
+  That is, the parity check matrix contains all codewords of length \( r \) that are non-zero.
+\end{definition}
+\begin{example}
+  For \( r = 2 \), \( H = \begin{bmatrix}
+    1 & 1 & 0 \\
+    1 & 0 & 1
+  \end{bmatrix} \)
+\end{example}
+\begin{example}
+  For \( r = 3 \), \[
+    H = \begin{bmatrix}
+      1 & 1 & 1 & 0 & 1 & 0 & 0 \\
+      1 & 1 & 0 & 1 & 0 & 1 & 0 \\
+      1 & 0 & 1 & 1 & 0 & 0 & 1
+    \end{bmatrix}
+  \] and \[
+    G = \begin{bmatrix}
+      1 & 0 & 0 & 0 & 0 & 1 & 1 \\
+      0 & 1 & 0 & 0 & 1 & 0 & 1 \\
+      0 & 0 & 1 & 0 & 1 & 1 & 0 \\
+      0 & 0 & 0 & 1 & 1 & 1 & 1
+    \end{bmatrix}
+  \]
+\end{example}
+\begin{theorem}
+  The binary Hamming code \( \ham(r, 2) \) for \( r \ge 2 \), \begin{enumerate}
+    \item is a \( [2^r-1, 2^r-1-r] \)-code 
+    \item has min distance \( 3 \) 
+    \item is perfect
+  \end{enumerate}
+\end{theorem}
 \section{Cyclic Codes}
 \begin{definition}
   A code \( C \) is cyclic if
   \begin{enumerate}
     \item \( C \) is linear.
     \item \( C \) is closed under shift \( S \), i.e., \( w \in C
-      \implies S(w) \in C \).
+          \implies S(w) \in C \).
   \end{enumerate}
 \end{definition}
 \begin{example}
@@ -300,8 +479,8 @@
   \begin{enumerate}
     \item Let \( a(x)f(x), b(x)f(x) \in \langle f(x) \rangle \). then \( a(x)f(x) + b(x)f(x) = (a(x)+b(x))f(x) \in \langle f(x) \rangle  \)
     \item Let \( a(x)f(x) \in \langle f(x) \rangle\), \( r(x) \in R_n \), then \[
-        r(x)(a(x)f(x)) = (r(x)a(x)) \in \langle f(x) \rangle
-      \]
+            r(x)(a(x)f(x)) = (r(x)a(x)) \in \langle f(x) \rangle
+          \]
   \end{enumerate}
 \end{proof}
 \begin{example}
@@ -315,14 +494,14 @@
   Let \( C  \) be a non-zero cyclic code in \( R_n \). Then,
   \begin{enumerate}
     \item There exists a unique monic polynominal \( g(x)\) of
-      smallest degree in \( C \).
+          smallest degree in \( C \).
     \item \( C = \langle g(x) \rangle  \)
     \item \( g(x) \) is a factor of \( x^n-1 \)
   \end{enumerate}
 \end{theorem}
 \begin{definition}
   The polynominal given by the above is called the \textbf{generator
-  polynominal} of \( C \).
+    polynominal} of \( C \).
 \end{definition}
 \begin{example}
   We find all the binary cyclic codes of length \( n=3 \). Factor \( x^3-1 \) as \( (x-1)(x^2+x+1) \), both irreducible. By \autoref{bar}. Thus, a list of binary cyclic codes is:
@@ -342,17 +521,17 @@
   \begin{center}
     \[
       \begin{array}{ c|c|c }
-        \deg g & g(x) & \dim C \\
+        \deg g & g(x)               & \dim C \\
         \hline
         \hline
-        0 & 1 & 7 \\
-        1 & a(x) & 6\\
-        2 & - & 5\\
-        3 & b(x), c(x) & 4\\
-        4 & a(x)b(x), a(x)c(x) & 3\\
-        5 & - & 2\\
-        6 & b(x)c(x) & 1\\
-        7 & a(x)b(x)c(x) & 0\\
+        0      & 1                  & 7      \\
+        1      & a(x)               & 6      \\
+        2      & -                  & 5      \\
+        3      & b(x), c(x)         & 4      \\
+        4      & a(x)b(x), a(x)c(x) & 3      \\
+        5      & -                  & 2      \\
+        6      & b(x)c(x)           & 1      \\
+        7      & a(x)b(x)c(x)       & 0      \\
       \end{array}
     \]
   \end{center}
@@ -379,10 +558,10 @@
   \] of degree \( r  \). Then \( \dim C = n - r \) with generator matrix \[
     G =
     \begin{bmatrix}
-      g_0 & g_1 & g_2 & \cdots&  \cdots & g_r & 0 & 0 & 0\\
-      0 & g_0 & g_1 & g_2 & \cdots&  \cdots & g_r & 0 & 0\\
-      0 & 0 & \vdots & \vdots & \vdots & \cdots&  \cdots & \ddots & 0\\
-      0 & 0 & 0 & g_0 & g_1 & g_2 & \cdots&  \cdots & g_r\\
+      g_0 & g_1 & g_2    & \cdots & \cdots & g_r    & 0      & 0      & 0   \\
+      0   & g_0 & g_1    & g_2    & \cdots & \cdots & g_r    & 0      & 0   \\
+      0   & 0   & \vdots & \vdots & \vdots & \cdots & \cdots & \ddots & 0   \\
+      0   & 0   & 0      & g_0    & g_1    & g_2    & \cdots & \cdots & g_r \\
     \end{bmatrix}
   \]
   This matrix is \( \dim C \times n \).
@@ -414,24 +593,24 @@
   codeword of \( C \) iff \( c(x)h(x) = 0 \).
 \end{theorem}
 \begin{example}
-  Let \( n = 7 \) working in \( GF(2) \), with \( g(x) =  (x-1)(x^3+x+1)\). Then \( h(x) = x^3+x^2+1 \). Want to know if \( w(x) = x^6+x^3+x^2+x \in C \). Multiplying with \( h(x) \) yields \( 0 \) so it is a codeword. 
+  Let \( n = 7 \) working in \( GF(2) \), with \( g(x) =  (x-1)(x^3+x+1)\). Then \( h(x) = x^3+x^2+1 \). Want to know if \( w(x) = x^6+x^3+x^2+x \in C \). Multiplying with \( h(x) \) yields \( 0 \) so it is a codeword.
 \end{example}
 \begin{theorem}
   Suppose \( C  \) is cyclic \( [n, k] \)-code with check polynominal
   \( h(x) = h_0 + h_1x + \cdots + d_kx^k \). Then,
   \begin{enumerate}
     \item a parity-check matrix for \( C  \) is \[
-        H =
-        \begin{bmatrix}
-          h_k & k_{k-1} & \cdots  & h_0 & 0 & 0 & 0 & 0\\
-          0 & h_k  & k_{k-1} & \cdots  & h_0 & 0 & 0 & 0\\
-          0 & 0 & h_k  & k_{k-1} & \cdots  & h_0 & 0 & 0\\
-          0 & 0 & 0 & h_k  & k_{k-1} & \cdots  & h_0 & 0\\
-          0 & 0 & 0 & 0 & h_k  & k_{k-1} & \cdots  & h_0\\
-        \end{bmatrix}
-      \]
+            H =
+            \begin{bmatrix}
+              h_k & k_{k-1} & \cdots  & h_0     & 0       & 0       & 0      & 0   \\
+              0   & h_k     & k_{k-1} & \cdots  & h_0     & 0       & 0      & 0   \\
+              0   & 0       & h_k     & k_{k-1} & \cdots  & h_0     & 0      & 0   \\
+              0   & 0       & 0       & h_k     & k_{k-1} & \cdots  & h_0    & 0   \\
+              0   & 0       & 0       & 0       & h_k     & k_{k-1} & \cdots & h_0 \\
+            \end{bmatrix}
+          \]
     \item \( C^\perp \) is a cyclic code generated by the polynominal \(
-      \overline{h}(x) = h_k + h_{k-1}x + \cdots + d_0x^k   \)
+          \overline{h}(x) = h_k + h_{k-1}x + \cdots + d_0x^k   \)
   \end{enumerate}
 
   The size of \( H \) is \( n \times \dim C^\perp = k\) since \( \deg C^\perp = \deg \overline{h} = \deg h = (n -\deg g) = (n - (n - k)) = k\) assuming \( \deg g = n - k \).
