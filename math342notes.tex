@@ -288,11 +288,46 @@
 \end{example}
 \begin{theorem}
   The binary Hamming code \( \ham(r, 2) \) for \( r \ge 2 \), \begin{enumerate}
-    \item is a \( [2^r-1, 2^r-1-r] \)-code 
-    \item has min distance \( 3 \) 
+    \item is a \( [2^r-1, 2^r-1-r] \)-code
+    \item has min distance \( 3 \)
     \item is perfect
   \end{enumerate}
 \end{theorem}
+\subsection{Non-Binary Hamming Codes}
+\begin{proposition}
+  Constructing \( H \) for non-binary Hamming codes:
+
+  Consider all lines through zero. Pick one non-zero point on each line as the columns of \( H \).
+\end{proposition}
+\begin{example}
+  \( p=3, r =2 \).
+
+  \[
+    H = \begin{bmatrix}
+      0 & 1 & 2 & 1 \\
+      1 & 1 & 1 & 0
+    \end{bmatrix}
+  \]
+\end{example}
+\begin{example}
+  \( p=3, r=3 \)
+
+  \[
+    H = \begin{bmatrix}
+      0 & 1 & 2 & 0 & \dots & 2 & 0 & 1 & 2 & 1 \\
+      0 & 0 & 0 & 1 & \dots & 2 & 1 & 1 & 1 & 0 \\
+      1 & 1 & 1 & 1 & \dots & 1 & 0 & 0 & 0 & 0
+    \end{bmatrix}
+  \]
+\end{example}
+\begin{proposition}
+  \( n \) in \( \ham(r, p) \) is the number of lines in \( Z_p^r \).
+
+  \[ n = \frac{p^r-1}{p-1} \]
+\end{proposition}
+\begin{proposition}
+  A non-binary hamming code is a \( [\frac{p^r-1}{p-1}, \frac{p^r-1}{p-1} - r] \) linear code.
+\end{proposition}
 \section{Cyclic Codes}
 \begin{definition}
   A code \( C \) is cyclic if
